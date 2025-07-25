@@ -9,13 +9,13 @@ declare global {
   }
 
   interface IUser {
+    _id: string;
     name: string;
     email: string;
-    password: string;
     phone: string;
     role: string;
     type: string;
-    is_active: boolean;
+    is_active?: boolean;
     avatar?: string;
   }
 
@@ -25,7 +25,11 @@ declare global {
     user: {
       _id: string;
       email: string;
+      name: string;
       role: string;
+      phone: string;
+      type: string;
+      avatar?: string;
     };
   }
 
@@ -52,6 +56,10 @@ declare global {
     created_at: Date;
     expire: Date;
     refresh_token: string;
+  }
+
+  interface IVerifyOtp {
+    verify_token: string;
   }
 
   interface ICourses {

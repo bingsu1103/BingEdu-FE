@@ -1,3 +1,4 @@
+import authService from "@/services/auth.service";
 import userService from "@/services/user.service";
 import { createContext, useContext, useEffect, useState } from "react";
 import { ScaleLoader } from "react-spinners";
@@ -24,9 +25,9 @@ export const AppProvider = (props: TProps) => {
 
   useEffect(() => {
     const fetchAccount = async () => {
-      const res = await userService.fetchAccountAPI();
+      const res = await authService.fetchAccountAPI();
       if (res.data) {
-        const user = await userService.getUserAPI(res.data._id);
+        const user = await userService.getUserAPI(res.data.user_id);
         setUser(user.data ?? null);
         setIsAuthenticated(true);
       }

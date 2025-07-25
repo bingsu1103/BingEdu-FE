@@ -1,0 +1,204 @@
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Link, useNavigate } from "react-router";
+import { useState } from "react";
+import authService from "@/services/auth.service";
+import { UseCurrentApp } from "@/components/context/app.context";
+import { Loader2, Eye, EyeOff, Check, X } from "lucide-react";
+import { message } from "antd";
+import { FcGoogle } from "react-icons/fc";
+
+const LoginPage = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [emailError, setEmailError] = useState<string>("");
+  const [passwordError, setPasswordError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const { setIsAuthenticated, setUser } = UseCurrentApp();
+
+  const validateEmail = (value: string) => {
+    if (!value.endsWith("@gmail.com")) {
+      setEmailError("Email must end with @gmail.com");
+    } else {
+      setEmailError("");
+    }
+  };
+  const validatePassword = (value: string) => {
+    const hasUpperCase = /[A-Z]/.test(value);
+    const hasLowerCase = /[a-z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+    const isLongEnough = value.length >= 8;
+
+    const isValid =
+      isLongEnough &&
+      hasUpperCase &&
+      hasLowerCase &&
+      hasNumber &&
+      hasSpecialChar;
+
+    if (!isValid) {
+      setPasswordError(
+        "Password must be at least 8 characters and contain at least one uppercase, one letter, one number, and one special character."
+      );
+    } else {
+      setPasswordError("");
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    const logRes = await authService.loginAPI(email, password);
+    if (logRes.status) {
+      localStorage.setItem("access_token", logRes.data?.access_token || "");
+      navigate("/");
+      setIsAuthenticated(true);
+      message.success("Login successfully!");
+    }
+    setIsLoading(false);
+    setUser(logRes?.data?.user ?? null);
+  };
+  return (
+    <>
+      <div className="flex flex-col h-screen items-center pt-20 md:pt-30 lg:pt-35 relative">
+        <h1 className="scroll-m-20 text-center text-2xl font-extrabold tracking-tight text-balance ">
+          Log in
+        </h1>
+        <Card className="w-full max-w-sm mt-5">
+          <CardHeader>
+            <CardTitle>Login to your account</CardTitle>
+            <CardDescription>
+              Enter your email below to login to your account
+            </CardDescription>
+            <CardAction>
+              <Button
+                variant="link"
+                className="cursor-pointer"
+                onClick={() => {
+                  navigate("/signup");
+                }}
+              >
+                Sign Up
+              </Button>
+            </CardAction>
+          </CardHeader>
+          <form onSubmit={handleSubmit}>
+            <CardContent>
+              <div className="flex flex-col gap-6">
+                <div className="grid gap-2 relative">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="example@gmail.com"
+                    value={email}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setEmail(value);
+                      validateEmail(value);
+                    }}
+                    required
+                  />
+                  {email && (
+                    <span className="absolute right-3 top-8 text-sm">
+                      {!emailError ? (
+                        <Check className="text-green-500 w-4 h-4 rounded-2xl border-2" />
+                      ) : (
+                        <X className="text-red-500 w-4 h-4 rounded-2xl border-2" />
+                      )}
+                    </span>
+                  )}
+                  {emailError && (
+                    <span className="text-xs text-red-500">{emailError}</span>
+                  )}
+                </div>
+                <div className="grid gap-2 relative">
+                  <div className="flex items-center">
+                    <Label htmlFor="password">Password</Label>
+                    <Link
+                      tabIndex={-1}
+                      to="/forgot-password"
+                      className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                    >
+                      Forgot your password?
+                    </Link>
+                  </div>
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setPassword(value);
+                      validatePassword(value);
+                    }}
+                    required
+                  />
+                  {password && (
+                    <span className="absolute right-8 top-[38px] text-sm">
+                      {!passwordError ? (
+                        <Check className="text-green-500 w-4 h-4 rounded-2xl border-2" />
+                      ) : (
+                        <X className="text-red-500 w-4 h-4 rounded-2xl border-2" />
+                      )}
+                    </span>
+                  )}
+                  <span
+                    className="absolute right-3 top-[38px] text-sm cursor-pointer"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4 text-gray-500" />
+                    ) : (
+                      <Eye className="w-4 h-4 text-gray-500" />
+                    )}
+                  </span>
+                  {passwordError && (
+                    <span className="text-xs text-red-500">
+                      {passwordError}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter className="flex-col gap-2 mt-10">
+              <Button
+                disabled={isLoading}
+                type="submit"
+                className="w-full cursor-pointer"
+              >
+                {isLoading && <Loader2 className="mr-1 h-4 w-4 animate-spin" />}
+                Login
+              </Button>
+              <Button variant="outline" className="w-full cursor-pointer">
+                <FcGoogle />
+                Login with Google
+              </Button>
+            </CardFooter>
+          </form>
+        </Card>
+        <div className="flex flex-col items-center justify-center absolute bottom-0 p-1">
+          <span className="text-xs">
+            This site is protected by Google Privacy Policy and Terms of Service
+            apply.
+          </span>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default LoginPage;
