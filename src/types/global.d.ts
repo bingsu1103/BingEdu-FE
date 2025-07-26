@@ -19,6 +19,12 @@ declare global {
     avatar?: string;
   }
 
+  interface IPaginate {
+    users: IUser[];
+    total: number;
+    page: number;
+    limit: number;
+  }
   interface ILogin {
     access_token: string;
     refresh_token: string;

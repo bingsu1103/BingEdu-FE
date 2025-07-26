@@ -18,6 +18,7 @@ import { Button } from "../ui/button";
 import authService from "@/services/auth.service";
 import { MdDashboard } from "react-icons/md";
 import logo from "@/assets/bingedulogo.jpg";
+import { MenuOutlined } from "@ant-design/icons";
 
 const components: { title: string; to: string; description: string }[] = [
   {
@@ -72,8 +73,11 @@ const AppHeader = () => {
   };
   return (
     <>
-      <div className="p-5 flex justify-around items-center">
-        <NavigationMenu viewport={false}>
+      <div className="w-full p-5 flex justify-between sm:justify-around items-center sticky z-1000 top-0 bg-[#000]">
+        <Button className="sm:hidden">
+          <MenuOutlined className="text-2xl" />
+        </Button>
+        <NavigationMenu className="max-sm:hidden" viewport={false}>
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuTrigger>Home</NavigationMenuTrigger>
@@ -212,7 +216,7 @@ const AppHeader = () => {
                         {user?.role === "admin" && (
                           <NavigationMenuLink asChild>
                             <Link
-                              to="#"
+                              to="/admin/dashboard"
                               className="flex-row items-center gap-2"
                             >
                               <MdDashboard />

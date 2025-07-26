@@ -11,6 +11,9 @@ import SignupPage from "./pages/auth/signupPage.tsx";
 import "@ant-design/v5-patch-for-react-19";
 import ForgotPasswordPage from "./pages/auth/forgotPasswordPage.tsx";
 import ResetPasswordPage from "./pages/auth/resetPassword.tsx";
+import NotFoundPage from "./pages/auth/notfoundPage.tsx";
+import AdminDashBoardPage from "./pages/admin/dashBoardPage.tsx";
+import ProtectedRoute from "./components/auth/auth.tsx";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +27,14 @@ const router = createBrowserRouter([
       {
         path: "/about",
         element: <AboutPage />,
+      },
+      {
+        path: "admin/dashboard",
+        element: (
+          <ProtectedRoute>
+            <AdminDashBoardPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -42,6 +53,10 @@ const router = createBrowserRouter([
   {
     path: "/reset-password",
     element: <ResetPasswordPage />,
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
   },
 ]);
 
