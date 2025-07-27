@@ -13,6 +13,7 @@ import { Check, X, Eye, EyeOff } from "lucide-react";
 import { FaUnlock } from "react-icons/fa6";
 import { Label } from "@/components/ui/label";
 import { message } from "antd";
+import validate from "@/utils/validate";
 
 const ResetPasswordPage = () => {
   const location = useLocation();
@@ -59,28 +60,6 @@ const ResetPasswordPage = () => {
       sessionStorage.removeItem("verify_otp");
     }
   };
-  const validatePassword = (value: string) => {
-    const hasUpperCase = /[A-Z]/.test(value);
-    const hasLowerCase = /[a-z]/.test(value);
-    const hasNumber = /[0-9]/.test(value);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
-    const isLongEnough = value.length >= 8;
-
-    const isValid =
-      isLongEnough &&
-      hasUpperCase &&
-      hasLowerCase &&
-      hasNumber &&
-      hasSpecialChar;
-
-    if (!isValid) {
-      setPasswordError(
-        "Password must be at least 8 characters and contain uppercase, lowercase, number, and special character."
-      );
-    } else {
-      setPasswordError("");
-    }
-  };
   return (
     <>
       <div className="flex flex-col h-screen items-center pt-20 md:pt-30 lg:pt-35 relative">
@@ -121,7 +100,7 @@ const ResetPasswordPage = () => {
                     onChange={(e) => {
                       const value = e.target.value;
                       setPassword(value);
-                      validatePassword(value);
+                      validate.validatePassword(value, setPasswordError);
                     }}
                     required
                     className="pr-16"

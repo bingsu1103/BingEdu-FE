@@ -15,6 +15,7 @@ import { useState } from "react";
 import authService from "@/services/auth.service";
 import { Eye, EyeOff, Check, X, Loader2 } from "lucide-react";
 import { message } from "antd";
+import validate from "@/utils/validate";
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -32,53 +33,6 @@ const SignupPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
-
-  const validateEmail = (value: string) => {
-    if (!value.endsWith("@gmail.com")) {
-      setEmailError("Email must end with @gmail.com");
-    } else {
-      setEmailError("");
-    }
-  };
-
-  const validatePassword = (value: string) => {
-    const hasUpperCase = /[A-Z]/.test(value);
-    const hasLowerCase = /[a-z]/.test(value);
-    const hasNumber = /[0-9]/.test(value);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
-    const isLongEnough = value.length >= 8;
-
-    const isValid =
-      isLongEnough &&
-      hasUpperCase &&
-      hasLowerCase &&
-      hasNumber &&
-      hasSpecialChar;
-
-    if (!isValid) {
-      setPasswordError(
-        "Password must be at least 8 characters and contain uppercase, lowercase, number, and special character."
-      );
-    } else {
-      setPasswordError("");
-    }
-  };
-  const validateUsername = (value: string) => {
-    if (!value.trim()) {
-      setUsernameError("Username cannot be empty");
-    } else {
-      setUsernameError("");
-    }
-  };
-
-  const validatePhone = (value: string) => {
-    const isValidPhone = /^[0-9]+$/.test(value);
-    if (!isValidPhone || value.length != 10) {
-      setPhoneError("Phone must contain only numbers with length 10");
-    } else {
-      setPhoneError("");
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -139,7 +93,7 @@ const SignupPage = () => {
                   onChange={(e) => {
                     const value = e.target.value;
                     setEmail(value);
-                    validateEmail(value);
+                    validate.validateEmail(value, setEmailError);
                   }}
                   required
                   className="pr-10"
@@ -168,7 +122,7 @@ const SignupPage = () => {
                   onChange={(e) => {
                     const value = e.target.value;
                     setUsername(value);
-                    validateUsername(value);
+                    validate.validateUsername(value, setUsernameError);
                   }}
                   required
                 />
@@ -197,7 +151,7 @@ const SignupPage = () => {
                   onChange={(e) => {
                     const value = e.target.value;
                     setPhone(value);
-                    validatePhone(value);
+                    validate.validatePhone(value, setPhoneError);
                   }}
                   required
                 />
@@ -225,7 +179,7 @@ const SignupPage = () => {
                   onChange={(e) => {
                     const value = e.target.value;
                     setPassword(value);
-                    validatePassword(value);
+                    validate.validatePassword(value, setPasswordError);
                   }}
                   required
                   className="pr-16"

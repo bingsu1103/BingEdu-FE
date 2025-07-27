@@ -15,7 +15,7 @@ const AdminDashBoardPage = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState("1");
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { borderRadiusLG },
   } = theme.useToken();
 
   const renderContent = () => {
@@ -74,7 +74,6 @@ const AdminDashBoardPage = () => {
             <Header
               style={{
                 padding: 0,
-                background: colorBgContainer,
                 backgroundColor: "#141414",
               }}
             >
@@ -91,13 +90,13 @@ const AdminDashBoardPage = () => {
             </Header>
             <Content
               style={{
-                margin: "24px 16px",
+                margin: "15px",
                 padding: 24,
                 minHeight: 280,
-                background: colorBgContainer,
                 borderRadius: borderRadiusLG,
-                backgroundColor: "#141414",
+                // backgroundColor: "#141414",
               }}
+              className="bg-background text-foreground"
             >
               {renderContent()}
             </Content>

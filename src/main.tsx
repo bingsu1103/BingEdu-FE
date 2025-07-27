@@ -14,6 +14,7 @@ import ResetPasswordPage from "./pages/auth/resetPassword.tsx";
 import NotFoundPage from "./pages/auth/notfoundPage.tsx";
 import AdminDashBoardPage from "./pages/admin/dashBoardPage.tsx";
 import ProtectedRoute from "./components/auth/auth.tsx";
+import ProfilePage from "./pages/profilePage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: "/about",
         element: <AboutPage />,
+      },
+      {
+        path: "/profile",
+        element: <ProfilePage />,
       },
       {
         path: "admin/dashboard",

@@ -5,7 +5,7 @@ declare global {
     status: boolean;
     EC: number;
     message: string;
-    data?: T;
+    data?: T | null;
   }
 
   interface IUser {
@@ -17,6 +17,14 @@ declare global {
     type: string;
     is_active?: boolean;
     avatar?: string;
+  }
+
+  interface IUpdate {
+    acknowledged: boolean;
+    modifiedCount: number;
+    upsertedId: null;
+    upsertedCount: number;
+    matchedCount: number;
   }
 
   interface IPaginate {

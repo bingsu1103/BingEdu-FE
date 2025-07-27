@@ -16,34 +16,38 @@ import {
 } from "@/components/ui/pagination";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import userService from "@/services/user.service";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ExportOutlined, UserAddOutlined } from "@ant-design/icons";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  ExportOutlined,
+  UserAddOutlined,
+  DeleteOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
+import CreateUser from "@/components/manager/createUser";
+import EditUser from "@/components/manager/editUser";
+import { FaCrown } from "react-icons/fa";
+import { message, Popconfirm } from "antd";
 
 const UserDashBoard = () => {
   const [userData, setUserData] = useState<IUser[]>([]);
   const [page, setPage] = useState<number>(1);
-  const [limit] = useState<number>(5);
+  const [limit] = useState<number>(8);
   const [total, setTotal] = useState<number>(0);
   const [search, setSearch] = useState<string>("");
 
@@ -61,11 +65,24 @@ const UserDashBoard = () => {
   }, [page, limit, search]);
 
   const totalPages = Math.ceil(total / limit);
+  const handleDeleteUser = async (id: string) => {
+    try {
+      const result = await userService.deleteUserAPI(id);
+      if (!result.status) {
+        message.error(result.message);
+        return;
+      }
+      message.success("Delete user successfully!");
+    } catch (error) {
+      console.log(error);
+      message.error("Failed to delete user!");
+    }
+  };
 
   return (
     <>
       {/* Search + Actions */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 text-foreground">
         <Input
           placeholder="Find user by name"
           className="w-full sm:w-1/2"
@@ -74,75 +91,23 @@ const UserDashBoard = () => {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex gap-2 max-sm:flex-col">
           <Dialog>
-            <form>
-              <DialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="cursor-pointer flex items-center gap-1"
-                >
-                  <UserAddOutlined />
-                  <span>Create User</span>
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Add User</DialogTitle>
-                  <DialogDescription>
-                    Fill all fields below to add an user
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4">
-                  <div className="grid gap-3">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      placeholder="example@gmail.com"
-                    />
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" name="name" placeholder="User name" />
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                      type="password"
-                      id="password"
-                      name="password"
-                      placeholder="Password"
-                    />
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="phone">Phone</Label>
-                    <Input id="phone" name="phone" placeholder="Phone number" />
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="role">Role</Label>
-                    <Select>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Roles</SelectLabel>
-                          <SelectItem value="admin">Admin</SelectItem>
-                          <SelectItem value="user">User</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DialogClose>
-                  <Button type="submit">Submit</Button>
-                </DialogFooter>
-              </DialogContent>
-            </form>
+            <DialogTrigger asChild>
+              <Button className="cursor-pointer flex items-center gap-1">
+                <UserAddOutlined />
+                <span>Create User</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Add User</DialogTitle>
+                <DialogDescription>
+                  Fill all fields below to add an user
+                </DialogDescription>
+              </DialogHeader>
+              <CreateUser />
+            </DialogContent>
           </Dialog>
 
           <Button className="cursor-pointer flex items-center gap-1">
@@ -161,16 +126,76 @@ const UserDashBoard = () => {
             <TableHead>Phone</TableHead>
             <TableHead className="text-center">Role</TableHead>
             <TableHead className="text-center">Type</TableHead>
+            <TableHead className="text-center">Action</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody className="text-foreground">
           {userData.map((user) => (
-            <TableRow className="leading-12" key={user._id}>
+            <TableRow className="leading-12 text-foreground" key={user._id}>
               <TableCell className="font-medium">{user.email}</TableCell>
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.phone}</TableCell>
-              <TableCell className="text-center">{user.role}</TableCell>
-              <TableCell className="text-center">{user.type}</TableCell>
+
+              <TableCell className="text-center">
+                {user.role === "admin" && (
+                  <Badge
+                    className="bg-blue-500 text-white dark:bg-blue-600"
+                    variant="secondary"
+                  >
+                    ADMIN
+                  </Badge>
+                )}
+                {user.role === "user" && (
+                  <Badge variant="destructive"> USER</Badge>
+                )}
+              </TableCell>
+              <TableCell className="text-center">
+                {user.type === "normal" && (
+                  <Badge className="bg-blue-500 text-white dark:bg-blue-600">
+                    NORMAL
+                  </Badge>
+                )}
+                {user.type === "vip" && (
+                  <Badge className="bg-[#FEB602]">
+                    <FaCrown></FaCrown>VIP
+                  </Badge>
+                )}
+              </TableCell>
+              <TableCell className="flex gap-2 justify-center items-center">
+                <Sheet>
+                  <Tooltip>
+                    <TooltipContent side="top">Edit this user</TooltipContent>
+                    <SheetTrigger asChild>
+                      <TooltipTrigger>
+                        <Button className="p-2 bg-transparent hover:bg-[#333] text-[#165DFB] cursor-pointer">
+                          <EditOutlined />
+                        </Button>
+                      </TooltipTrigger>
+                    </SheetTrigger>
+                  </Tooltip>
+                  <SheetContent className="z-1001">
+                    <EditUser user={user} />
+                  </SheetContent>
+                </Sheet>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Popconfirm
+                      title="Delete User"
+                      onConfirm={() => handleDeleteUser(user._id)}
+                      description="Are you sure to delete this user?"
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <Button className="p-2 bg-transparent hover:bg-[#333] text-[#9d4042] cursor-pointer">
+                        <DeleteOutlined />
+                      </Button>
+                    </Popconfirm>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Delete this user</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

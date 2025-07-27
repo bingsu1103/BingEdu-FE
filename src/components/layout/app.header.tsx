@@ -8,7 +8,6 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Link, useNavigate } from "react-router";
-import { GoBell } from "react-icons/go";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RiVipDiamondLine } from "react-icons/ri";
 import { RiAccountCircle2Fill } from "react-icons/ri";
@@ -19,6 +18,8 @@ import authService from "@/services/auth.service";
 import { MdDashboard } from "react-icons/md";
 import logo from "@/assets/bingedulogo.jpg";
 import { MenuOutlined } from "@ant-design/icons";
+import { Moon, Sun, Bell } from "lucide-react";
+import { UseTheme } from "../context/theme.context";
 
 const components: { title: string; to: string; description: string }[] = [
   {
@@ -60,6 +61,7 @@ const components: { title: string; to: string; description: string }[] = [
 ];
 
 const AppHeader = () => {
+  const { setTheme, theme } = UseTheme();
   const navigate = useNavigate();
   const { setIsAuthenticated, user, isAuthenticated, setUser } =
     UseCurrentApp();
@@ -73,7 +75,7 @@ const AppHeader = () => {
   };
   return (
     <>
-      <div className="w-full p-5 flex justify-between sm:justify-around items-center sticky z-1000 top-0 bg-[#000]">
+      <div className="w-full p-5 flex justify-between sm:justify-around items-center sticky z-50 top-0 bg-background">
         <Button className="sm:hidden">
           <MenuOutlined className="text-2xl" />
         </Button>
@@ -187,9 +189,8 @@ const AppHeader = () => {
           </NavigationMenuList>
         </NavigationMenu>
         {isAuthenticated ? (
-          <div className="flex items-center gap-3">
-            <GoBell className="text-xl" />
-            <NavigationMenu viewport={false}>
+          <div className="flex gap-3">
+            <NavigationMenu viewport={true}>
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>
@@ -199,12 +200,18 @@ const AppHeader = () => {
                     </Avatar>
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-[200px] gap-4">
+                    <ul className="grid max-sm:w-[140px] w-[200px] gap-4">
                       <li>
                         <NavigationMenuLink asChild>
-                          <Link to="#" className="flex-row items-center gap-2">
+                          <Link
+                            to="/account"
+                            className="flex-row items-center gap-2"
+                          >
                             <RiAccountCircle2Fill />
-                            Account Setting
+                            <span className="max-sm:hidden">
+                              Account Setting
+                            </span>
+                            <span className="sm:hidden">Account</span>
                           </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
@@ -220,7 +227,10 @@ const AppHeader = () => {
                               className="flex-row items-center gap-2"
                             >
                               <MdDashboard />
-                              Admin Dashboard
+                              <span className="max-sm:hidden">
+                                Admin Dashboard
+                              </span>
+                              <span className="sm:hidden">Dashboard</span>
                             </Link>
                           </NavigationMenuLink>
                         )}
@@ -241,6 +251,28 @@ const AppHeader = () => {
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
+            <Button
+              variant="outline"
+              className="max-sm:hidden bg-transparent text-foreground border-none"
+            >
+              <Bell className="text-xl text-foreground " />
+            </Button>
+            {theme === "light" && (
+              <Button
+                className="cursor-pointer"
+                onClick={() => setTheme("dark")}
+              >
+                <Moon></Moon>
+              </Button>
+            )}
+            {theme === "dark" && (
+              <Button
+                className="cursor-pointer"
+                onClick={() => setTheme("light")}
+              >
+                <Sun></Sun>
+              </Button>
+            )}
           </div>
         ) : (
           <div className="flex gap-3">
@@ -257,6 +289,22 @@ const AppHeader = () => {
             >
               Log in
             </Button>
+            {theme === "light" && (
+              <Button
+                className="cursor-pointer"
+                onClick={() => setTheme("dark")}
+              >
+                <Moon></Moon>
+              </Button>
+            )}
+            {theme === "dark" && (
+              <Button
+                className="cursor-pointer"
+                onClick={() => setTheme("light")}
+              >
+                <Sun></Sun>
+              </Button>
+            )}
           </div>
         )}
       </div>

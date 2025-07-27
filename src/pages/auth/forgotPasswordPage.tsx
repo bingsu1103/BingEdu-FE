@@ -18,6 +18,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Progress } from "@/components/ui/progress";
+import validate from "@/utils/validate";
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
@@ -30,13 +31,6 @@ const ForgotPasswordPage = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const [progress, setProgress] = useState<number>(0);
 
-  const validateEmail = (value: string) => {
-    if (!value.endsWith("@gmail.com")) {
-      setEmailError("Email must be end with - @gmail.com");
-    } else {
-      setEmailError("");
-    }
-  };
   const startRandomProgress = (duration: number) => {
     return new Promise<void>((resolve) => {
       let currentProgress = 0;
@@ -136,7 +130,7 @@ const ForgotPasswordPage = () => {
                     onChange={(e) => {
                       const value = e.target.value;
                       setEmail(value);
-                      validateEmail(value);
+                      validate.validateEmail(value, setEmailError);
                     }}
                     required
                   />
