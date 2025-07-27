@@ -248,12 +248,6 @@ const SignupPage = () => {
             </CardFooter>
           </form>
         </Card>
-        <div className="flex flex-col items-center justify-center absolute bottom-0 p-1">
-          <span className="text-xs">
-            This site is protected by Google Privacy Policy and Terms of Service
-            apply.
-          </span>
-        </div>
       </div>
     </>
   );
