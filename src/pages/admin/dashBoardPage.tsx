@@ -7,7 +7,7 @@ import {
   BookOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu } from "antd";
-import UserDashBoard from "./userDashBoard";
+import UserDashBoard from "./userDashBoard.tsx";
 import { ConfigProvider, theme } from "antd";
 const { Header, Sider, Content } = Layout;
 

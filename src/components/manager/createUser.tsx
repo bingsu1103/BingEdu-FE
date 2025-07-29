@@ -87,6 +87,7 @@ const CreateUser = () => {
                   <SelectLabel>Roles</SelectLabel>
                   <SelectItem value="admin">Admin</SelectItem>
                   <SelectItem value="user">User</SelectItem>
+                  <SelectItem value="teacher">Teacher</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>

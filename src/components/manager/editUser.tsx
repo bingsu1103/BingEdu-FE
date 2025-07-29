@@ -24,7 +24,7 @@ import { message } from "antd";
 interface EditUserProps {
   user: IUser;
 }
-const EditUser = ({ user }: EditUserProps) => {
+const EditUser: React.FC<EditUserProps> = ({ user }) => {
   const [role, setRole] = useState<string>(user.role);
   const [type, setType] = useState<string>(user.type);
   const closeRef = useRef<HTMLButtonElement>(null);

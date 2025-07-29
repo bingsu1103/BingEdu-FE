@@ -14,7 +14,7 @@ import ResetPasswordPage from "./pages/auth/resetPassword.tsx";
 import NotFoundPage from "./pages/auth/notfoundPage.tsx";
 import AdminDashBoardPage from "./pages/admin/dashBoardPage.tsx";
 import ProtectedRoute from "./components/auth/auth.tsx";
-import ProfilePage from "./pages/profilePage.tsx";
+import OverallUser from "./pages/overallUser.tsx";
 
 const router = createBrowserRouter([
   {
@@ -30,8 +30,12 @@ const router = createBrowserRouter([
         element: <AboutPage />,
       },
       {
-        path: "/profile",
-        element: <ProfilePage />,
+        path: "/overall",
+        element: (
+          <ProtectedRoute>
+            <OverallUser />,
+          </ProtectedRoute>
+        ),
       },
       {
         path: "admin/dashboard",

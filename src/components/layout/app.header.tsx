@@ -16,49 +16,11 @@ import { UseCurrentApp } from "../context/app.context";
 import { Button } from "../ui/button";
 import authService from "@/services/auth.service";
 import { MdDashboard } from "react-icons/md";
-import logo from "@/assets/bingedulogo.jpg";
+import logo from "@/assets/binglogo.jpg";
 import { MenuOutlined } from "@ant-design/icons";
 import { Moon, Sun, Bell } from "lucide-react";
 import { UseTheme } from "../context/theme.context";
-
-const components: { title: string; to: string; description: string }[] = [
-  {
-    title: "Reading exam",
-    to: "/exams/reading",
-    description:
-      "Practice reading comprehension with timed exercises and instant feedback.",
-  },
-  {
-    title: "Grammar practice",
-    to: "/practice/grammar",
-    description:
-      "Improve your understanding of sentence structure, tenses, and grammar rules through interactive quizzes.",
-  },
-  {
-    title: "Writing exam",
-    to: "/exams/writing",
-    description:
-      "Complete essay-based writing tasks with progress tracking and auto-save features.",
-  },
-  {
-    title: "Listening exam",
-    to: "/exams/listening",
-    description:
-      "Listen to audio clips and answer questions to test comprehension and attention.",
-  },
-  {
-    title: "General exam",
-    to: "/exams/general",
-    description:
-      "Mixed-format test covering reading, writing, grammar, and listening skills.",
-  },
-  {
-    title: "Vocabulary practice",
-    to: "/practice/vocabulary",
-    description:
-      "Interactive quizzes to reinforce vocabulary retention and usage in context.",
-  },
-];
+import data from "@/components/data/data";
 
 const AppHeader = () => {
   const { setTheme, theme } = UseTheme();
@@ -73,6 +35,7 @@ const AppHeader = () => {
       localStorage.removeItem("access_token");
     }
   };
+  const avatar = user?.avatar || "https://github.com/shadcn.png";
   return (
     <>
       <div className="w-full p-5 flex justify-between sm:justify-around items-center sticky z-50 top-0 bg-background">
@@ -112,7 +75,7 @@ const AppHeader = () => {
               <NavigationMenuTrigger>Exam library</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                  {components.map((component) => (
+                  {data.components.map((component) => (
                     <ListItem
                       key={component.title}
                       title={component.title}
@@ -174,13 +137,13 @@ const AppHeader = () => {
                 <ul className="grid w-[200px] gap-4">
                   <li>
                     <NavigationMenuLink asChild>
-                      <Link to="#">Components</Link>
+                      <Link to="#">Free Courses</Link>
                     </NavigationMenuLink>
                     <NavigationMenuLink asChild>
-                      <Link to="#">Documentation</Link>
+                      <Link to="#">Plus Courses</Link>
                     </NavigationMenuLink>
                     <NavigationMenuLink asChild>
-                      <Link to="#">Blocks</Link>
+                      <Link to="#">Pro Courses</Link>
                     </NavigationMenuLink>
                   </li>
                 </ul>
@@ -195,7 +158,7 @@ const AppHeader = () => {
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>
                     <Avatar>
-                      <AvatarImage src="https://github.com/shadcn.png" />
+                      <AvatarImage src={avatar} />
                       <AvatarFallback></AvatarFallback>
                     </Avatar>
                   </NavigationMenuTrigger>
@@ -204,12 +167,12 @@ const AppHeader = () => {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            to="/account"
+                            to="/overall"
                             className="flex-row items-center gap-2"
                           >
                             <RiAccountCircle2Fill />
                             <span className="max-sm:hidden">
-                              Account Setting
+                              Account Overall
                             </span>
                             <span className="sm:hidden">Account</span>
                           </Link>

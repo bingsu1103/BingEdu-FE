@@ -17,6 +17,9 @@ declare global {
     type: string;
     is_active?: boolean;
     avatar?: string;
+    location?: string;
+    createdAt: string;
+    updatedAt: string;
   }
 
   interface IUpdate {

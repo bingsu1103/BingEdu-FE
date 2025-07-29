@@ -1,0 +1,542 @@
+import React, { useState } from "react";
+import {
+  BookOpen,
+  Award,
+  Clock,
+  Target,
+  Camera,
+  Play,
+  CheckCircle,
+  Crown,
+  Mail,
+  MapPin,
+} from "lucide-react";
+import uploadFile from "@/services/upload.service";
+import userService from "@/services/user.service";
+import { message } from "antd";
+
+interface Course {
+  id: string;
+  title: string;
+  instructor: string;
+  progress: number;
+  thumbnail: string;
+  category: string;
+  duration: string;
+  completed?: boolean;
+  certificate?: boolean;
+}
+
+interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  earned: boolean;
+  date?: string;
+}
+interface IUserProfile {
+  user: IUser | null;
+}
+
+const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [avatar, setAvatar] = useState<string>(
+    user?.avatar || "https://github.com/shadcn.png"
+  );
+  const dateString = user?.createdAt
+    ? new Date(user.createdAt).toISOString().split("T")[0]
+    : "";
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    console.log(file);
+    if (file) {
+      setUploading(true);
+      try {
+        const img = new Image();
+        const reader = new FileReader();
+        reader.onload = () => {
+          img.src = reader.result as string;
+
+          img.onload = async () => {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const size = 140;
+
+            canvas.width = size;
+            canvas.height = size;
+
+            const imgSize = Math.min(img.width, img.height);
+            const offsetX = (img.width - imgSize) / 2;
+            const offsetY = (img.height - imgSize) / 2;
+
+            if (ctx) {
+              ctx.drawImage(
+                img,
+                offsetX,
+                offsetY,
+                imgSize,
+                imgSize,
+                0,
+                0,
+                size,
+                size
+              );
+              canvas.toBlob(async (blob) => {
+                if (blob) {
+                  const fileToUpload = new File([blob], "avatar.png", {
+                    type: "image/png",
+                  });
+                  const response = await uploadFile(fileToUpload);
+                  const uploadedUrl = response.data.url;
+                  const data = { id: user?._id, avatar: uploadedUrl };
+                  const avatarRes = await userService.updateUserAPI(data);
+                  if (!avatarRes.status) {
+                    message.error("Failed to update avatar");
+                    return;
+                  }
+                  setAvatar(uploadedUrl);
+                }
+              }, "image/png");
+            }
+          };
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        alert("Failed to upload image. Please try again.");
+      } finally {
+        setUploading(false);
+      }
+    }
+  };
+
+  const userStats = {
+    coursesCompleted: 12,
+    currentCourses: 3,
+    totalHours: 145,
+    certificates: 8,
+    currentStreak: 7,
+  };
+
+  const currentCourses: Course[] = [
+    {
+      id: "1",
+      title: "IELTS Speaking Mastery",
+      instructor: "Emma Thompson",
+      progress: 75,
+      thumbnail:
+        "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=400",
+      category: "English",
+      duration: "8h 30m",
+    },
+    {
+      id: "2",
+      title: "Business English Communication",
+      instructor: "Michael Davis",
+      progress: 45,
+      thumbnail:
+        "https://images.pexels.com/photos/5428836/pexels-photo-5428836.jpeg?auto=compress&cs=tinysrgb&w=400",
+      category: "English",
+      duration: "6h 15m",
+    },
+    {
+      id: "3",
+      title: "TOEFL Preparation Course",
+      instructor: "Sarah Wilson",
+      progress: 20,
+      thumbnail:
+        "https://images.pexels.com/photos/5427674/pexels-photo-5427674.jpeg?auto=compress&cs=tinysrgb&w=400",
+      category: "English",
+      duration: "5h 45m",
+    },
+  ];
+
+  const completedCourses: Course[] = [
+    {
+      id: "4",
+      title: "English Grammar Fundamentals",
+      instructor: "Jennifer Brown",
+      progress: 100,
+      thumbnail:
+        "https://images.pexels.com/photos/5212320/pexels-photo-5212320.jpeg?auto=compress&cs=tinysrgb&w=400",
+      category: "English",
+      duration: "10h 20m",
+      completed: true,
+      certificate: true,
+    },
+    {
+      id: "5",
+      title: "Advanced English Vocabulary",
+      instructor: "David Miller",
+      progress: 100,
+      thumbnail:
+        "https://images.pexels.com/photos/5427829/pexels-photo-5427829.jpeg?auto=compress&cs=tinysrgb&w=400",
+      category: "English",
+      duration: "7h 30m",
+      completed: true,
+      certificate: true,
+    },
+  ];
+
+  const achievements: Achievement[] = [
+    {
+      id: "1",
+      title: "First Course",
+      description: "Hoàn thành khóa học đầu tiên",
+      icon: "🎯",
+      earned: true,
+      date: "2024-01-15",
+    },
+    {
+      id: "2",
+      title: "Speed Learner",
+      description: "Hoàn thành 5 khóa học trong 1 tháng",
+      icon: "⚡",
+      earned: true,
+      date: "2024-02-20",
+    },
+    {
+      id: "3",
+      title: "English Master",
+      description: "Hoàn thành 10 khóa học tiếng Anh",
+      icon: "📚",
+      earned: true,
+      date: "2024-03-10",
+    },
+    {
+      id: "4",
+      title: "Streak Champion",
+      description: "Học liên tục 30 ngày",
+      icon: "🔥",
+      earned: false,
+    },
+  ];
+
+  type StatCardColor = "blue" | "green" | "orange" | "purple";
+  interface StatCardProps {
+    icon: React.ElementType;
+    label: string;
+    value: React.ReactNode;
+    color?: StatCardColor;
+  }
+  const StatCard: React.FC<StatCardProps> = ({
+    icon: Icon,
+    label,
+    value,
+    color = "blue",
+  }) => {
+    const colorClasses: Record<StatCardColor, string> = {
+      blue: "bg-blue-50 text-blue-600 border-blue-200",
+      green: "bg-green-50 text-green-600 border-green-200",
+      orange: "bg-orange-50 text-orange-600 border-orange-200",
+      purple: "bg-purple-50 text-purple-600 border-purple-200",
+    };
+
+    return (
+      <div className="bg-background rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 group">
+        <div
+          className={`w-12 h-12 rounded-lg ${colorClasses[color]} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200`}
+        >
+          <Icon size={24} />
+        </div>
+        <div className="text-foreground font-bold mb-1">{value}</div>
+        <div className="text-foreground text-sm">{label}</div>
+      </div>
+    );
+  };
+
+  const CourseCard = ({
+    course,
+    showProgress = true,
+  }: {
+    course: Course;
+    showProgress?: boolean;
+  }) => (
+    <div className="bg-background rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 group">
+      <div className="relative overflow-hidden">
+        <img
+          src={course.thumbnail}
+          alt={course.title}
+          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+        <div className="absolute top-3 left-3">
+          <span className="bg-background backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-gray-700">
+            {course.category}
+          </span>
+        </div>
+        {course.certificate && (
+          <div className="absolute top-3 right-3">
+            <div className="bg-yellow-400 p-1.5 rounded-full">
+              <Award size={14} className="text-white" />
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="p-5">
+        <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+          {course.title}
+        </h3>
+        <p className="text-gray-600 text-sm mb-3">
+          Giảng viên: {course.instructor}
+        </p>
+
+        <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+          <div className="flex items-center gap-1">
+            <Clock size={14} />
+            {course.duration}
+          </div>
+          {course.completed && (
+            <div className="flex items-center gap-1 text-green-600">
+              <CheckCircle size={14} />
+              Hoàn thành
+            </div>
+          )}
+        </div>
+
+        {showProgress && (
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">Tiến độ</span>
+              <span className="font-medium text-gray-900">
+                {course.progress}%
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500"
+                style={{ width: `${course.progress}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        <button className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
+          {course.completed ? (
+            <>
+              <Award size={16} />
+              Xem chứng chỉ
+            </>
+          ) : (
+            <>
+              <Play size={16} />
+              Tiếp tục học
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+
+  const AchievementBadge = ({ achievement }: { achievement: Achievement }) => (
+    <div
+      className={`bg-background rounded-xl p-4 border-2 transition-all duration-300 ${
+        achievement.earned
+          ? "border-yellow-200 shadow-sm hover:shadow-md"
+          : "border-gray-200 opacity-60"
+      }`}
+    >
+      <div className="text-center">
+        <div className={`text-3xl mb-2 ${!achievement.earned && "grayscale"}`}>
+          {achievement.icon}
+        </div>
+        <h3 className="font-semibold text-gray-900 mb-1">
+          {achievement.title}
+        </h3>
+        <p className="text-sm text-gray-600 mb-2">{achievement.description}</p>
+        {achievement.earned && achievement.date && (
+          <p className="text-xs text-gray-500">
+            Đạt được: {new Date(achievement.date).toLocaleDateString("vi-VN")}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-background rounded-2xl">
+      {/* Header */}
+      <div className="bg-background shadow-sm border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="flex items-center gap-6">
+              <div className="relative group">
+                <img
+                  className="rounded-full border-4 border-white shadow-lg object-cover"
+                  width={140}
+                  height={140}
+                  src={avatar}
+                  alt="User Avatar"
+                />
+                <label
+                  htmlFor="avatar-upload"
+                  className="absolute -bottom-1 right-2 bg-background p-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 group-hover:scale-110 cursor-pointer"
+                >
+                  <Camera size={19} className="text-foreground" />
+                </label>
+                <input
+                  id="avatar-upload"
+                  type="file"
+                  accept=".png,.jpg"
+                  onChange={handleAvatarChange}
+                  className="hidden"
+                  disabled={uploading}
+                />
+              </div>
+
+              <div>
+                <h1 className="text-2xl font-bold text-foreground mb-2">
+                  {user?.name}
+                </h1>
+                <p className="text-gray-600 mb-2">
+                  Học viên {user?.type} • Tham gia từ {dateString}
+                </p>
+                <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <div className="flex items-center gap-1">
+                    <Mail size={16} />
+                    {user?.email}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MapPin size={16} />
+                    Hà Nội, Việt Nam
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-r from-orange-400 to-red-500 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2">
+                <div className="w-2 h-2 bg-background rounded-full animate-pulse"></div>
+                Streak: {userStats.currentStreak} ngày
+              </div>
+              <button className="bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl">
+                <Crown size={16} />
+                Upgrade to VIP
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-8">
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            <StatCard
+              icon={BookOpen}
+              label="Khóa học đã hoàn thành"
+              value={userStats.coursesCompleted}
+              color="blue"
+            />
+            <StatCard
+              icon={Play}
+              label="Khóa học hiện tại"
+              value={userStats.currentCourses}
+              color="green"
+            />
+            <StatCard
+              icon={Clock}
+              label="Tổng thời gian học"
+              value={`${userStats.totalHours}h`}
+              color="orange"
+            />
+            <StatCard
+              icon={Award}
+              label="Chứng chỉ"
+              value={userStats.certificates}
+              color="purple"
+            />
+            <StatCard
+              icon={Target}
+              label="Mục tiêu tháng"
+              value="85%"
+              color="blue"
+            />
+          </div>
+
+          {/* Current Courses */}
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-foreground">
+                Khóa học hiện tại
+              </h2>
+              <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                Xem tất cả
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {currentCourses.map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
+            </div>
+          </div>
+
+          {/* Recent Achievements */}
+          <div>
+            <h2 className="text-xl font-bold text-foreground mb-6">
+              Thành tích gần đây
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {achievements
+                .filter((a) => a.earned)
+                .slice(0, 4)
+                .map((achievement) => (
+                  <AchievementBadge
+                    key={achievement.id}
+                    achievement={achievement}
+                  />
+                ))}
+            </div>
+          </div>
+
+          {/* Completed Courses */}
+          <div>
+            <h2 className="text-xl font-bold text-foreground mb-6">
+              Khóa học đã hoàn thành ({completedCourses.length})
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {completedCourses.map((course) => (
+                <CourseCard
+                  key={course.id}
+                  course={course}
+                  showProgress={false}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Progress toward next achievement */}
+          <div className="bg-background rounded-xl p-6 shadow-sm border border-gray-100">
+            <h3 className="text-lg font-semibold text-foreground mb-4">
+              Thành tích tiếp theo
+            </h3>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="text-2xl">🔥</div>
+                <div className="flex-1">
+                  <div className="flex justify-between mb-1">
+                    <span className="font-medium text-foreground">
+                      Streak Champion
+                    </span>
+                    <span className="text-sm text-gray-600">7/30 ngày</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      className="bg-gradient-to-r from-orange-400 to-red-500 h-2 rounded-full transition-all duration-500"
+                      style={{ width: "23%" }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProfilePage;
