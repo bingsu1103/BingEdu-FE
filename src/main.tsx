@@ -15,6 +15,7 @@ import NotFoundPage from "./pages/auth/notfoundPage.tsx";
 import AdminDashBoardPage from "./pages/admin/dashBoardPage.tsx";
 import ProtectedRoute from "./components/auth/auth.tsx";
 import OverallUser from "./pages/overallUser.tsx";
+import TestPage from "./pages/testPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: "/test",
+        element: <TestPage />,
       },
       {
         path: "/about",

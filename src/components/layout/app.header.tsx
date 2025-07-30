@@ -14,12 +14,12 @@ import { RiAccountCircle2Fill } from "react-icons/ri";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { UseCurrentApp } from "../context/app.context";
 import { Button } from "../ui/button";
-import authService from "@/services/auth.service";
+import authService from "services/auth.service";
 import { MdDashboard } from "react-icons/md";
 import logo from "@/assets/binglogo.jpg";
 import { MenuOutlined } from "@ant-design/icons";
 import { Moon, Sun, Bell } from "lucide-react";
-import { UseTheme } from "../context/theme.context";
+import { UseTheme } from "@/components/context/theme.context";
 import data from "@/components/data/data";
 
 const AppHeader = () => {

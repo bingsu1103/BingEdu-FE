@@ -2,7 +2,7 @@ import AppFooter from "./components/layout/app.footer";
 import AppHeader from "./components/layout/app.header";
 import { Outlet } from "react-router";
 
-const App = () => {
+const App: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <AppHeader />

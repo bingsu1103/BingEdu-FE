@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BookOpen,
   Award,
@@ -14,6 +14,7 @@ import {
 import uploadFile from "@/services/upload.service";
 import userService from "@/services/user.service";
 import { message } from "antd";
+import coursesService from "@/services/courses.service";
 
 interface Course {
   id: string;
@@ -41,12 +42,25 @@ interface IUserProfile {
 
 const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
   const [uploading, setUploading] = useState<boolean>(false);
+  const [courses, setCourses] = useState<ICourses[]>([]);
   const [avatar, setAvatar] = useState<string>(
     user?.avatar || "https://github.com/shadcn.png"
   );
   const dateString = user?.createdAt
     ? new Date(user.createdAt).toISOString().split("T")[0]
     : "";
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      const coursesRes = await coursesService.getAllCoursesAPI();
+      const listCourses = coursesRes.data;
+      // if(!Array.isArray(listCourses) || listCourses.length === 0){
+
+      // }
+      setCourses(listCourses);
+    };
+    fetchCourses();
+  }, []);
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

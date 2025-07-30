@@ -47,6 +47,9 @@ declare global {
       phone: string;
       type: string;
       avatar?: string;
+      location?: string;
+      createdAt: string;
+      updatedAt: string;
     };
   }
 
@@ -61,6 +64,9 @@ declare global {
     deleted: boolean;
     createAt: Date;
     updateAt: Date;
+    location?: string;
+    createdAt: string;
+    updatedAt: string;
   }
 
   interface ILogout {
@@ -135,5 +141,12 @@ declare global {
     rating: string;
     comment?: string;
     userName: string;
+  }
+
+  interface ICourses {
+    _id: string;
+    title: string;
+    thumbnail: string;
+    type: string;
   }
 }
