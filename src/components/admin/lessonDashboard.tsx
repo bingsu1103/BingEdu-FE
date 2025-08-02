@@ -26,6 +26,7 @@ import coursesService from "@/services/courses.service";
 import { Button } from "../ui/button";
 import CreateLesson from "../manager/createLesson";
 import { Popconfirm } from "antd";
+import { Badge } from "../ui/badge";
 
 // Sample data - replace with actual API calls
 
@@ -42,24 +43,42 @@ const LessonDashboard = () => {
   const [selectedLesson, setSelectedLesson] = useState<ILesson | null>(null);
   const [listQuestion, setListQuestion] = useState<IQuestion[]>([]);
 
+  const type = selectedLesson?.type;
+
+  const actualType =
+    type === "mixed"
+      ? Math.random() > 0.5
+        ? "multiple_choice"
+        : "essay"
+      : type;
+
   const jsonInstructionFormat = `[
-    {
-         "lesson": {
-             "id": "${selectedLesson?._id}",
-             "level": "${selectedLesson?.level}"
-         },
-         "question_type": "multiple_choice",
-         "question_text": "xxxxx",
-         "options": {
-             "A": "xxxx",
-             "B": "xxxx",
-             "C": "xxxx",
-             "D": "xxxx"
-         },
-         "correct_answer_key": "A", // A || B || C || D
-         "explanation": "xxxx"
-     },
- ]`;
+  {
+    "lesson": {
+      "id": "${selectedLesson?._id}",
+      "level": "${selectedLesson?.level}"
+    },
+    "question_type": "${actualType}",
+    "question_text": "xxxxx",
+    ${
+      actualType === "multiple_choice"
+        ? `"options": {
+      "A": "xxxx",
+      "B": "xxxx",
+      "C": "xxxx",
+      "D": "xxxx"
+    },
+    "correct_answer_key": "X",`
+        : `"correct_answer_text": "xxxx",`
+    }
+    "explanation": "xxxx"
+  }
+]`;
+
+  const note = `
+- If "question_type" = "mixed":
+    + Allow either "multiple_choice" or "essay" format
+`;
 
   useEffect(() => {
     const getAllCourse = async () => {
@@ -234,9 +253,7 @@ const LessonDashboard = () => {
                         <h3 className="font-medium text-foreground mb-1 text-base sm:text-lg">
                           {lesson.title}
                         </h3>
-                        <p className="text-sm text-foreground mb-2">
-                          {lesson.level}
-                        </p>
+                        <Badge>{lesson.level}</Badge>
                       </div>
                       <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
                         <button
@@ -416,10 +433,18 @@ const LessonDashboard = () => {
                   <h4 className="text-sm font-medium text-gray-900 mb-3">
                     JSON Format Instructions
                   </h4>
+                  {selectedLesson?.type === "mixed" && (
+                    <Badge variant="destructive" className="mb-4">
+                      Mixed type
+                    </Badge>
+                  )}
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                     <pre className="text-xs text-gray-700 whitespace-pre-wrap font-mono leading-relaxed">
                       {jsonInstructionFormat}
                     </pre>
+                  </div>
+                  <div className="text-xs text-gray-700 whitespace-pre-wrap font-mono leading-relaxed">
+                    <pre>{note}</pre>
                   </div>
                 </div>
 

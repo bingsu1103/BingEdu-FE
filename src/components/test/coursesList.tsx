@@ -1,3 +1,4 @@
+import coursesService from "@/services/courses.service";
 import {
   BookOpen,
   Headphones,
@@ -6,34 +7,8 @@ import {
   Star,
   Clock,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-
-const mockCourses: ICourses[] = [
-  {
-    _id: "6875f0947912353f1cd0edf1",
-    title: "IELTS LEVEL A",
-    thumbnail: "listening-course",
-    type: "listening",
-  },
-  {
-    _id: "6875f0947912353f1cd0edf1",
-    title: "Advanced Reading Skills",
-    thumbnail: "reading-course",
-    type: "reading",
-  },
-  {
-    _id: "6875f0947912353f1cd0edf1",
-    title: "Business English Communication",
-    thumbnail: "speaking-course",
-    type: "speaking",
-  },
-  {
-    _id: "6875f0947912353f1cd0edf1",
-    title: "Grammar Fundamentals",
-    thumbnail: "writing-course",
-    type: "writing",
-  },
-];
 
 const getTypeIcon = (type: string) => {
   switch (type) {
@@ -66,6 +41,14 @@ const getTypeColor = (type: string) => {
 };
 
 const CourseList: React.FC = () => {
+  const [listCourse, setListCourses] = useState<ICourses[]>([]);
+  useEffect(() => {
+    const fetchCourse = async () => {
+      const listCourse = await coursesService.getAllCoursesAPI();
+      setListCourses(listCourse.data);
+    };
+    fetchCourse();
+  }, []);
   const navigate = useNavigate();
   return (
     <div className="container mx-auto px-4 py-8">
@@ -85,7 +68,7 @@ const CourseList: React.FC = () => {
 
       {/* Course Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
-        {mockCourses.map((course) => (
+        {listCourse.map((course) => (
           <div
             key={course._id}
             // onClick={() => onCourseSelect(course)}

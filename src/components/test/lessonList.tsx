@@ -14,50 +14,9 @@ import { UseTheme } from "../context/theme.context";
 import { useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import coursesService from "@/services/courses.service";
+import lessonService from "@/services/lesson.service";
 
-const mockLessons: ILesson[] = [
-  {
-    courses: {
-      id: "687894b840ca534aca183c13",
-      type: "reading",
-    },
-    _id: "687894cbafe51425c209675f",
-    title: "Lesson 10: Advanced Reading Techniques",
-    type: "multiple_choice",
-    level: "beginner",
-  },
-  {
-    courses: {
-      id: "687894b840ca534aca183c13",
-      type: "reading",
-    },
-    _id: "687923efa0d422e681158773",
-    title: "Lesson 11: Critical Analysis Skills",
-    type: "multiple_choice",
-    level: "intermediate",
-  },
-  {
-    courses: {
-      id: "687f320cd4e2347c3bd88dc7",
-      type: "reading",
-    },
-    _id: "687f32866a667e629f1702b8",
-    title: "Lesson 12: Speed Reading Mastery",
-    type: "fill_in_blank",
-    level: "advanced",
-  },
-  {
-    courses: {
-      id: "6875f0947912353f1cd0edf1",
-      type: "listening",
-    },
-    _id: "688a359d9dd2afde47393549",
-    title: "Lesson Test: Listening Comprehension",
-    type: "audio_exercise",
-    level: "beginner",
-  },
-];
-
+// Define ICourse interface for course data
 const getLevelColor = (level: string) => {
   switch (level) {
     case "beginner":
@@ -99,32 +58,51 @@ const getCourseTypeIcon = (type: string) => {
   }
 };
 
+const getCourseTypeColor = (type: string) => {
+  switch (type) {
+    case "listening":
+      return "bg-blue-100 text-blue-800";
+    case "reading":
+      return "bg-green-100 text-green-800";
+    case "speaking":
+      return "bg-purple-100 text-purple-800";
+    case "writing":
+      return "bg-yellow-100 text-yellow-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+};
+
 const LessonList: React.FC = () => {
-  // Filter lessons by course ID
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
+  const [selectedListLesson, setSelectedListLesson] = useState<ILesson[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<ICourses | null>(null);
   const { theme } = UseTheme();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      const coursesRes = await coursesService.getCourseAPI(id!);
-      setSelectedCourse(coursesRes.data);
-      console.log("cdcd", coursesRes.data);
-    };
-    fetchCourses();
-  }, [id]);
+    const fetchData = async () => {
+      try {
+        // Fetch lessons
+        const lessonsRes = await lessonService.getLessonByCourseIdAPI(id!);
+        setSelectedListLesson(lessonsRes.data);
 
-  const courseLessons = mockLessons.filter(
-    (lesson) => lesson.courses.id === selectedCourse?._id
-  );
+        // Fetch course details (assuming coursesService has a method to get course by ID)
+        const courseRes = await coursesService.getCourseAPI(id!);
+        setSelectedCourse(courseRes.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [id]);
 
   return (
     <div className="container mx-auto px-4 py-8 bg-background">
       {/* Header */}
       <div className="mb-8">
         <button
-          //   onClick={onBack}
+          onClick={() => navigate("/courses")}
           className="inline-flex items-center text-indigo-600 hover:text-indigo-800 mb-6 group transition-colors"
         >
           <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
@@ -143,12 +121,12 @@ const LessonList: React.FC = () => {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-foreground mb-2">
-                  {selectedCourse?.title || ""}
+                  {selectedCourse?.title || "Loading Course..."}
                 </h1>
                 <div className="flex items-center space-x-4 text-foreground">
                   <span className="flex items-center">
                     <BookOpen className="w-4 h-4 mr-1" />
-                    {courseLessons.length} Lessons
+                    {selectedListLesson.length} Lessons
                   </span>
                   <span className="flex items-center">
                     <Clock className="w-4 h-4 mr-1" />
@@ -162,15 +140,11 @@ const LessonList: React.FC = () => {
               </div>
             </div>
             <span
-              className={`px-4 py-2 rounded-full text-sm font-semibold ${
-                selectedCourse?.type === "listening"
-                  ? "bg-blue-100 text-blue-800"
-                  : selectedCourse?.type === "reading"
-                  ? "bg-green-100 text-green-800"
-                  : "bg-purple-100 text-purple-800"
-              }`}
+              className={`px-4 py-2 rounded-full text-sm font-semibold ${getCourseTypeColor(
+                selectedCourse?.type || ""
+              )}`}
             >
-              {selectedCourse?.type.toUpperCase()}
+              {selectedCourse?.type.toUpperCase() || "UNKNOWN"}
             </span>
           </div>
         </div>
@@ -183,20 +157,26 @@ const LessonList: React.FC = () => {
             Course Progress
           </h2>
           <span className="text-sm text-foreground">
-            1 of {courseLessons.length} completed
+            1 of {selectedListLesson.length} completed
           </span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-3">
           <div
             className="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full"
-            style={{ width: `${(1 / courseLessons.length) * 100}%` }}
+            style={{
+              width: `${
+                selectedListLesson.length > 0
+                  ? (1 / selectedListLesson.length) * 100
+                  : 0
+              }%`,
+            }}
           ></div>
         </div>
       </div>
 
       {/* Lessons List */}
       <div className="space-y-4">
-        {courseLessons.length === 0 ? (
+        {selectedListLesson.length === 0 ? (
           <div className="bg-background rounded-2xl shadow-lg p-12 text-center">
             <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-foreground mb-2">
@@ -207,7 +187,7 @@ const LessonList: React.FC = () => {
             </p>
           </div>
         ) : (
-          courseLessons.map((lesson, index) => {
+          selectedListLesson.map((lesson, index) => {
             const isCompleted = index < 3; // Mock completion status
             const isLocked = index > 4; // Mock locked status
             const isCurrent = index === 3; // Mock current lesson
@@ -259,7 +239,7 @@ const LessonList: React.FC = () => {
                           </span>
                           <span className="flex items-center">
                             <Clock className="w-4 h-4 mr-1" />
-                            15 min
+                            {lesson.time} min
                           </span>
                         </div>
                       </div>
@@ -306,7 +286,10 @@ const LessonList: React.FC = () => {
                         <span>75%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full w-3/4"></div>
+                        <div
+                          className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full"
+                          style={{ width: "75%" }}
+                        ></div>
                       </div>
                     </div>
                   )}
@@ -318,7 +301,7 @@ const LessonList: React.FC = () => {
       </div>
 
       {/* Course Completion Card */}
-      {courseLessons.length > 0 && (
+      {selectedListLesson.length > 0 && (
         <div className="mt-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl shadow-lg p-8 text-foreground">
           <div className="flex items-center justify-between">
             <div>
@@ -338,4 +321,5 @@ const LessonList: React.FC = () => {
     </div>
   );
 };
+
 export default LessonList;

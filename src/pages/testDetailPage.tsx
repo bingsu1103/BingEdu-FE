@@ -4,9 +4,13 @@ import {
   FileText,
   MessageCircleQuestionMark,
   CheckCircle,
+  Crown,
 } from "lucide-react";
 import questionService from "@/services/question.service";
 import { UseTheme } from "@/components/context/theme.context";
+import { useParams } from "react-router";
+import { Button } from "@/components/ui/button";
+import { UseCurrentApp } from "@/components/context/app.context";
 
 const formatTime = (seconds: number): string => {
   const minutes = Math.floor(seconds / 60);
@@ -22,9 +26,10 @@ const TestDetailPage: React.FC = () => {
   }>({});
   const [timeLeft, setTimeLeft] = useState(1800);
   const [isFinished, setIsFinished] = useState(false);
-  const [listQuestion, setListQuestion] = useState([]);
-  const lessonId = "687894cbafe51425c209675f";
+  const [listQuestion, setListQuestion] = useState<IQuestion[]>([]);
+  const { lessonId } = useParams<{ lessonId: string }>();
   const { theme } = UseTheme();
+  const { user } = UseCurrentApp();
 
   useEffect(() => {
     if (timeLeft > 0 && !isFinished) {
@@ -37,19 +42,37 @@ const TestDetailPage: React.FC = () => {
 
   useEffect(() => {
     const getQuestion = async () => {
-      const questionRes = await questionService.getQuestionByLessonIdAPI(
-        lessonId
-      );
-      const listQuestionRes = questionRes.data;
-      setListQuestion(listQuestionRes);
+      try {
+        const questionRes = await questionService.getQuestionByLessonIdAPI(
+          lessonId!
+        );
+        const listQuestionRes = questionRes.data || [];
+        const validatedQuestions = Array.isArray(listQuestionRes)
+          ? listQuestionRes.map((q) => ({
+              ...q,
+              options: q.options || {},
+            }))
+          : [];
+        setListQuestion(validatedQuestions);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+        setListQuestion([]);
+      }
     };
     getQuestion();
-  }, []);
+  }, [lessonId]);
 
   const handleAnswerSelect = (questionId: string, answer: string) => {
     setSelectedAnswers({
       ...selectedAnswers,
       [questionId]: answer,
+    });
+  };
+
+  const handleEssayAnswer = (questionId: string, value: string) => {
+    setSelectedAnswers({
+      ...selectedAnswers,
+      [questionId]: value,
     });
   };
 
@@ -68,7 +91,7 @@ const TestDetailPage: React.FC = () => {
 
   if (isFinished) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="flex-1 bg-background flex items-center justify-center p-4">
         <div className="bg-background rounded-xl shadow-lg p-8 max-w-md w-full text-center">
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-foreground mb-2">
@@ -83,6 +106,17 @@ const TestDetailPage: React.FC = () => {
               Time used: {formatTime(1800 - timeLeft)}
             </p>
           </div>
+          {user?.type === "vip" ? (
+            <div className="mt-10">
+              <Button>Viewing Corrections</Button>
+            </div>
+          ) : (
+            <div className="mt-10">
+              <Button className="cursor-pointer">
+                <Crown></Crown>Upgrade to VIP to view corrections
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -92,8 +126,8 @@ const TestDetailPage: React.FC = () => {
     <div className="min-h-screen bg-background">
       <div className="sticky top-0 z-10 bg-background shadow-sm border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 ">
-            <div className="flex items-center space-x-3 ">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="flex items-center space-x-3">
               <FileText className="w-6 h-6 text-blue-500" />
               <div>
                 <h1 className="text-xl font-bold text-foreground">
@@ -127,7 +161,7 @@ const TestDetailPage: React.FC = () => {
               Question List
             </div>
             <div className="max-lg:w-[50%] max-sm:w-full max-lg:m-auto grid max-sm:grid-cols-10 sm:grid-cols-5 gap-2 p-2 rounded-lg border border-gray-200">
-              {listQuestion.map((question: any, index: number) => (
+              {listQuestion.map((question: IQuestion, index: number) => (
                 <button
                   key={question._id}
                   onClick={() => scrollToQuestion(question._id)}
@@ -135,7 +169,7 @@ const TestDetailPage: React.FC = () => {
                     selectedAnswers[question._id]
                       ? "bg-green-100 text-green-600 hover:bg-green-200"
                       : "bg-background text-foreground hover:bg-gray-400"
-                  } ${theme === "dark" && "border-1 border-white"}`}
+                  } ${theme === "dark" && "border border-white"}`}
                 >
                   {index + 1}
                 </button>
@@ -147,7 +181,7 @@ const TestDetailPage: React.FC = () => {
 
       <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="space-y-6">
-          {listQuestion.map((question: any, index: number) => (
+          {listQuestion.map((question: IQuestion, index: number) => (
             <div
               id={`question-${question._id}`}
               key={question._id}
@@ -169,40 +203,53 @@ const TestDetailPage: React.FC = () => {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 ml-11">
-                {Object.entries(question.options).map(([key, value]) => (
-                  <button
-                    key={key}
-                    onClick={() => handleAnswerSelect(question._id, key)}
-                    className={`text-left p-4 rounded-lg border-2 transition-all duration-200 hover:shadow-sm ${
-                      selectedAnswers[question._id] === key
-                        ? "border-blue-500 bg-blue-50 shadow-sm"
-                        : "border-gray-200 hover:border-gray-300 bg-background hover:bg-gray-500"
-                    }`}
-                  >
-                    <div className="flex items-start space-x-3">
-                      <span
-                        className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-sm font-medium flex-shrink-0 ${
+              {question.question_type === "essay" ? (
+                <textarea
+                  value={selectedAnswers[question._id] || ""}
+                  onChange={(e) =>
+                    handleEssayAnswer(question._id, e.target.value)
+                  }
+                  className="resize-none w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-foreground bg-background"
+                  placeholder="Write your answer here..."
+                  rows={5}
+                />
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 ml-11">
+                  {question.options &&
+                    Object.entries(question.options).map(([key, value]) => (
+                      <button
+                        key={key}
+                        onClick={() => handleAnswerSelect(question._id, key)}
+                        className={`text-left p-4 rounded-lg border-2 transition-all duration-200 hover:shadow-sm ${
                           selectedAnswers[question._id] === key
-                            ? "bg-blue-500 text-white"
-                            : "bg-gray-100 text-black"
+                            ? "border-blue-500 bg-blue-50 shadow-sm"
+                            : "border-gray-200 hover:border-gray-300 bg-background hover:bg-gray-50"
                         }`}
                       >
-                        {key}
-                      </span>
-                      <span
-                        className={`text-sm leading-relaxed ${
-                          selectedAnswers[question._id] === key
-                            ? "text-blue-500"
-                            : "text-foreground"
-                        }`}
-                      >
-                        {String(value)}
-                      </span>
-                    </div>
-                  </button>
-                ))}
-              </div>
+                        <div className="flex items-start space-x-3">
+                          <span
+                            className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-sm font-medium flex-shrink-0 ${
+                              selectedAnswers[question._id] === key
+                                ? "bg-blue-500 text-white"
+                                : "bg-gray-100 text-black"
+                            }`}
+                          >
+                            {key}
+                          </span>
+                          <span
+                            className={`text-sm leading-relaxed ${
+                              selectedAnswers[question._id] === key
+                                ? "text-blue-500"
+                                : "text-foreground"
+                            }`}
+                          >
+                            {String(value)}
+                          </span>
+                        </div>
+                      </button>
+                    ))}
+                </div>
+              )}
             </div>
           ))}
         </div>

@@ -110,6 +110,7 @@ declare global {
       id: string;
       type: string;
     };
+    time: number;
     _id: string;
   }
 
@@ -120,7 +121,7 @@ declare global {
     };
     question_type: string;
     question_text: string;
-    option?: {
+    options?: {
       [key: string]: string;
     };
     correct_answer_key?: string;
