@@ -6,7 +6,7 @@ const createLessonAPI = async (data: object) => {
 };
 
 const deleteLessonAPI = async (id: string) => {
-  const urlBackend = `/v1/api/lesson/id/${id};`;
+  const urlBackend = `/v1/api/lesson/id/${id}`;
   return axios.delete<IBackendRes<IDelete>>(urlBackend);
 };
 

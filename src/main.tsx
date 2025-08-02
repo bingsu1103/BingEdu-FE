@@ -18,6 +18,10 @@ import OverallUser from "./pages/overallUser.tsx";
 import TestDetailPage from "./pages/testDetailPage.tsx";
 import CoursesPage from "./pages/coursesPage.tsx";
 import LessonPage from "./pages/lessonPage.tsx";
+import ReadingTips from "./components/docs/readingTips.tsx";
+import SpeakingTips from "./components/docs/speakingTips.tsx";
+import WritingTips from "./components/docs/writingTips.tsx";
+import BlogPost from "./components/docs/blogPost.tsx";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +47,30 @@ const router = createBrowserRouter([
       {
         path: "/about",
         element: <AboutPage />,
+      },
+      {
+        path: "/reading/tips",
+        element: <ReadingTips />,
+      },
+      {
+        path: "/reading/tips/:id",
+        element: <BlogPost type="reading" />,
+      },
+      {
+        path: "/speaking/tips",
+        element: <SpeakingTips />,
+      },
+      {
+        path: "/speaking/tips/:id",
+        element: <BlogPost type="speaking" />,
+      },
+      {
+        path: "/writing/tips",
+        element: <WritingTips />,
+      },
+      {
+        path: "/writing/tips/:id",
+        element: <BlogPost type="writing" />,
       },
       {
         path: "/overall",

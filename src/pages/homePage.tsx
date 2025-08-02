@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Heart,
   MessageCircle,
@@ -14,17 +14,12 @@ import {
   Award,
   Search,
   Filter,
-  Bell,
-  User,
   MoreHorizontal,
   Send,
   PenTool,
   BookMarked,
 } from "lucide-react";
 
-interface HomePageProps {
-  onCourseSelect: (course: ICourses) => void;
-}
 const reviewsFromApi: IReview[] = [
   {
     _id: "688b7e993061eaf427b7ed26",
@@ -226,7 +221,7 @@ const renderStars = (rating: number) => {
   ));
 };
 
-export default function HomePage({ onCourseSelect }: HomePageProps) {
+export default function HomePage() {
   const [selectedFeed, setSelectedFeed] = useState<string | null>(null);
   const [newComment, setNewComment] = useState("");
   const [newRating, setNewRating] = useState<number>(5);
@@ -456,10 +451,7 @@ export default function HomePage({ onCourseSelect }: HomePageProps) {
                       </div>
 
                       {/* Action Button */}
-                      <button
-                        onClick={() => onCourseSelect(feed.course)}
-                        className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-2 rounded-xl font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-300"
-                      >
+                      <button className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-2 rounded-xl font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-300">
                         Start Learning
                       </button>
                     </div>

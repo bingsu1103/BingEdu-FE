@@ -41,7 +41,7 @@ function Button({
   size,
   asChild = false,
   ...props
-}: React.ComponentProps<"button"> &
+}: React.ComponentPropsWithoutRef<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
   }) {
@@ -55,5 +55,8 @@ function Button({
     />
   );
 }
+
+// Ensure that the Button component is used correctly in the parent components
+// Avoid nesting <button> elements within other <button> elements in the parent code
 
 export { Button, buttonVariants };

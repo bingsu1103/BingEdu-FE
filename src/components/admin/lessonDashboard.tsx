@@ -25,6 +25,7 @@ import { message } from "antd";
 import coursesService from "@/services/courses.service";
 import { Button } from "../ui/button";
 import CreateLesson from "../manager/createLesson";
+import { Popconfirm } from "antd";
 
 // Sample data - replace with actual API calls
 
@@ -38,7 +39,7 @@ const LessonDashboard = () => {
   );
   const [uploading, setUploading] = useState(false);
   const [listLesson, setListLesson] = useState<ILesson[]>([]);
-  const [selectedLesson, setSelectedLesson] = useState<ILesson>();
+  const [selectedLesson, setSelectedLesson] = useState<ILesson | null>(null);
   const [listQuestion, setListQuestion] = useState<IQuestion[]>([]);
 
   const jsonInstructionFormat = `[
@@ -66,7 +67,7 @@ const LessonDashboard = () => {
       setListCourses(res.data);
     };
     getAllCourse();
-  });
+  }, []);
 
   const handleCourseSelect = async (courseId: string) => {
     const courses = await coursesService.getCourseAPI(courseId);
@@ -138,18 +139,19 @@ const LessonDashboard = () => {
   //     alert("Delete functionality will be implemented");
   //   }
   // };
-  const handleDeleteLesson = async (id: string) => {
+  const handleDeleteLesson = async (lesson: ILesson) => {
     try {
-      console.log(id);
+      const deleteRes = await lessonService.deleteLessonAPI(lesson._id);
 
-      const deleteRes = await lessonService.deleteLessonAPI(id);
-      if (deleteRes.data.acknowledged) {
+      if (deleteRes.data && deleteRes.data.acknowledged) {
         message.success("Delete lesson successfully!");
         return;
       }
-      message.error("Delete lesson failed!");
+      message.error(
+        "Delete lesson failed! " + (deleteRes.message || "Unknown error")
+      );
     } catch (error) {
-      console.log(error);
+      console.log("Error details:", error);
       message.error("Delete lesson failed! ERROR SERVER!");
     }
   };
@@ -239,25 +241,30 @@ const LessonDashboard = () => {
                       <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
                         <button
                           onClick={() => handleViewDetail(lesson)}
-                          className="inline-flex items-center justify-center px-3 py-2 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors w-full sm:w-auto"
+                          className="inline-flex items-center cursor-pointer justify-center px-3 py-2 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors w-full sm:w-auto"
                         >
                           <Eye className="h-4 w-4 mr-2" />
                           View Detail
                         </button>
                         <button
                           onClick={() => handleAddQuestion(lesson)}
-                          className="inline-flex items-center justify-center px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors w-full sm:w-auto"
+                          className="inline-flex items-center cursor-pointer justify-center px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors w-full sm:w-auto"
                         >
                           <Plus className="h-4 w-4 mr-2" />
                           Add Question
                         </button>
-                        <button
-                          onClick={() => handleDeleteLesson(lesson._id)}
-                          className="inline-flex items-center justify-center px-3 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors w-full sm:w-auto"
+                        <Popconfirm
+                          title="Delete User"
+                          onConfirm={() => handleDeleteLesson(lesson)}
+                          description="Are you sure to delete this user?"
+                          okText="Yes"
+                          cancelText="No"
                         >
-                          <DeleteOutlined className="h-4 w-4 mr-2" />
-                          Delete
-                        </button>
+                          <button className="inline-flex items-center justify-center px-3 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors w-full sm:w-auto">
+                            <DeleteOutlined className="h-4 w-4 mr-2" />
+                            Delete
+                          </button>
+                        </Popconfirm>
                       </div>
                     </div>
                   ))}
@@ -397,7 +404,7 @@ const LessonDashboard = () => {
                   </h3>
                   <button
                     onClick={() => setIsModalOpen(false)}
-                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                    className="text-gray-400 cursor-pointer hover:text-gray-600 transition-colors"
                   >
                     <X className="h-6 w-6" />
                   </button>
@@ -451,13 +458,13 @@ const LessonDashboard = () => {
                 <div className="flex justify-end space-x-3">
                   <button
                     onClick={() => setIsModalOpen(false)}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+                    className="px-4 py-2 text-sm cursor-pointer font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleUploadSubmit}
-                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                    className="px-4 py-2 text-sm cursor-pointer font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
                     disabled={uploading}
                   >
                     {uploading ? "Uploading..." : "Upload Questions"}

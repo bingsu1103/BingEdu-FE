@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   BookOpen,
   Clock,
@@ -14,7 +14,6 @@ import {
   Users,
   Calendar,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 interface Course {
   id: string;

@@ -72,6 +72,24 @@ const AppHeader = () => {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
+                <Link to="/about">About</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
+                <Link to="/courses">Courses</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
               <NavigationMenuTrigger>Exam library</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
@@ -89,21 +107,12 @@ const AppHeader = () => {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuLink
-                asChild
-                className={navigationMenuTriggerStyle()}
-              >
-                <Link to="/docs">Docs</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
               <NavigationMenuTrigger>Tips</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid w-[300px] gap-4">
                   <li>
                     <NavigationMenuLink asChild>
-                      <Link to="#">
+                      <Link to="/reading/tips">
                         <div className="font-medium">Reading tips</div>
                         <div className="text-muted-foreground">
                           Read Faster, Comprehend Deeper
@@ -111,7 +120,7 @@ const AppHeader = () => {
                       </Link>
                     </NavigationMenuLink>
                     <NavigationMenuLink asChild>
-                      <Link to="#">
+                      <Link to="/speaking/tips">
                         <div className="font-medium">Speaking tips</div>
                         <div className="text-muted-foreground">
                           Speak Clearly, Connect Confidently
@@ -119,31 +128,12 @@ const AppHeader = () => {
                       </Link>
                     </NavigationMenuLink>
                     <NavigationMenuLink asChild>
-                      <Link to="#">
+                      <Link to="/writing/tips">
                         <div className="font-medium">Writing tips</div>
                         <div className="text-muted-foreground">
                           Write Clearly, Write Better
                         </div>
                       </Link>
-                    </NavigationMenuLink>
-                  </li>
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <NavigationMenuTrigger>Courses</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-[200px] gap-4">
-                  <li>
-                    <NavigationMenuLink asChild>
-                      <Link to="#">Free Courses</Link>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink asChild>
-                      <Link to="#">Plus Courses</Link>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink asChild>
-                      <Link to="#">Pro Courses</Link>
                     </NavigationMenuLink>
                   </li>
                 </ul>
