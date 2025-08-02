@@ -30,6 +30,11 @@ declare global {
     matchedCount: number;
   }
 
+  interface IDelete {
+    acknowledged: true;
+    deletedCount: 0;
+  }
+
   interface IPaginate {
     users: IUser[];
     total: number;
@@ -135,18 +140,33 @@ declare global {
     is_correct: boolean;
   }
 
-  interface IReview {
-    userID: string;
-    lessonID: string;
-    rating: string;
-    comment?: string;
-    userName: string;
-  }
-
   interface ICourses {
     _id: string;
     title: string;
     thumbnail: string;
     type: string;
+    description?: string;
+  }
+
+  interface ILesson {
+    courses: {
+      id: string;
+      type: string;
+    };
+    _id: string;
+    title: string;
+    type: string;
+    level: string;
+  }
+
+  interface IReview {
+    _id: string;
+    userID: string;
+    userName: string;
+    lessonID: string;
+    rating: number;
+    comment: string;
+    createdAt?: string;
+    updatedAt?: string;
   }
 }

@@ -1,0 +1,341 @@
+import {
+  ArrowLeft,
+  Play,
+  Clock,
+  Award,
+  CheckCircle,
+  Lock,
+  BookOpen,
+  FileText,
+  Headphones,
+  Users,
+} from "lucide-react";
+import { UseTheme } from "../context/theme.context";
+import { useNavigate, useParams } from "react-router";
+import { useEffect, useState } from "react";
+import coursesService from "@/services/courses.service";
+
+const mockLessons: ILesson[] = [
+  {
+    courses: {
+      id: "687894b840ca534aca183c13",
+      type: "reading",
+    },
+    _id: "687894cbafe51425c209675f",
+    title: "Lesson 10: Advanced Reading Techniques",
+    type: "multiple_choice",
+    level: "beginner",
+  },
+  {
+    courses: {
+      id: "687894b840ca534aca183c13",
+      type: "reading",
+    },
+    _id: "687923efa0d422e681158773",
+    title: "Lesson 11: Critical Analysis Skills",
+    type: "multiple_choice",
+    level: "intermediate",
+  },
+  {
+    courses: {
+      id: "687f320cd4e2347c3bd88dc7",
+      type: "reading",
+    },
+    _id: "687f32866a667e629f1702b8",
+    title: "Lesson 12: Speed Reading Mastery",
+    type: "fill_in_blank",
+    level: "advanced",
+  },
+  {
+    courses: {
+      id: "6875f0947912353f1cd0edf1",
+      type: "listening",
+    },
+    _id: "688a359d9dd2afde47393549",
+    title: "Lesson Test: Listening Comprehension",
+    type: "audio_exercise",
+    level: "beginner",
+  },
+];
+
+const getLevelColor = (level: string) => {
+  switch (level) {
+    case "beginner":
+      return "bg-green-100 text-green-800";
+    case "intermediate":
+      return "bg-yellow-100 text-yellow-800";
+    case "advanced":
+      return "bg-red-100 text-red-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+};
+
+const getTypeIcon = (type: string) => {
+  switch (type) {
+    case "multiple_choice":
+      return <FileText className="w-5 h-5" />;
+    case "fill_in_blank":
+      return <BookOpen className="w-5 h-5" />;
+    case "audio_exercise":
+      return <Headphones className="w-5 h-5" />;
+    default:
+      return <FileText className="w-5 h-5" />;
+  }
+};
+
+const getCourseTypeIcon = (type: string) => {
+  switch (type) {
+    case "listening":
+      return <Headphones className="w-6 h-6" />;
+    case "reading":
+      return <BookOpen className="w-6 h-6" />;
+    case "speaking":
+      return <Users className="w-6 h-6" />;
+    case "writing":
+      return <FileText className="w-6 h-6" />;
+    default:
+      return <BookOpen className="w-6 h-6" />;
+  }
+};
+
+const LessonList: React.FC = () => {
+  // Filter lessons by course ID
+  const { id } = useParams();
+  const [selectedCourse, setSelectedCourse] = useState<ICourses | null>(null);
+  const { theme } = UseTheme();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      const coursesRes = await coursesService.getCourseAPI(id!);
+      setSelectedCourse(coursesRes.data);
+      console.log("cdcd", coursesRes.data);
+    };
+    fetchCourses();
+  }, [id]);
+
+  const courseLessons = mockLessons.filter(
+    (lesson) => lesson.courses.id === selectedCourse?._id
+  );
+
+  return (
+    <div className="container mx-auto px-4 py-8 bg-background">
+      {/* Header */}
+      <div className="mb-8">
+        <button
+          //   onClick={onBack}
+          className="inline-flex items-center text-indigo-600 hover:text-indigo-800 mb-6 group transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
+          Back to Courses
+        </button>
+
+        <div
+          className={`${
+            theme === "dark" ? "bg-blue-400" : "bg-background"
+          } rounded-2xl shadow-lg p-8`}
+        >
+          <div className="flex items-start justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-16 h-16 bg-background rounded-2xl flex items-center justify-center text-foreground">
+                {getCourseTypeIcon(selectedCourse?.type || "")}
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-foreground mb-2">
+                  {selectedCourse?.title || ""}
+                </h1>
+                <div className="flex items-center space-x-4 text-foreground">
+                  <span className="flex items-center">
+                    <BookOpen className="w-4 h-4 mr-1" />
+                    {courseLessons.length} Lessons
+                  </span>
+                  <span className="flex items-center">
+                    <Clock className="w-4 h-4 mr-1" />
+                    ~2h 30min
+                  </span>
+                  <span className="flex items-center">
+                    <Award className="w-4 h-4 mr-1" />
+                    Certificate
+                  </span>
+                </div>
+              </div>
+            </div>
+            <span
+              className={`px-4 py-2 rounded-full text-sm font-semibold ${
+                selectedCourse?.type === "listening"
+                  ? "bg-blue-100 text-blue-800"
+                  : selectedCourse?.type === "reading"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-purple-100 text-purple-800"
+              }`}
+            >
+              {selectedCourse?.type.toUpperCase()}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Progress Overview */}
+      <div className="bg-background rounded-2xl shadow-lg p-6 mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-foreground">
+            Course Progress
+          </h2>
+          <span className="text-sm text-foreground">
+            1 of {courseLessons.length} completed
+          </span>
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-3">
+          <div
+            className="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full"
+            style={{ width: `${(1 / courseLessons.length) * 100}%` }}
+          ></div>
+        </div>
+      </div>
+
+      {/* Lessons List */}
+      <div className="space-y-4">
+        {courseLessons.length === 0 ? (
+          <div className="bg-background rounded-2xl shadow-lg p-12 text-center">
+            <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              No lessons available
+            </h3>
+            <p className="text-foreground">
+              Lessons for this course will be available soon.
+            </p>
+          </div>
+        ) : (
+          courseLessons.map((lesson, index) => {
+            const isCompleted = index < 3; // Mock completion status
+            const isLocked = index > 4; // Mock locked status
+            const isCurrent = index === 3; // Mock current lesson
+
+            return (
+              <div
+                key={lesson._id}
+                className={`bg-background rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 ${
+                  !isLocked
+                    ? "cursor-pointer hover:-translate-y-1"
+                    : "opacity-60"
+                } ${isCurrent ? "ring-2 ring-indigo-500" : ""}`}
+              >
+                <div className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      {/* Lesson Status Icon */}
+                      <div
+                        className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                          isCompleted
+                            ? "bg-green-100 text-green-600"
+                            : isCurrent
+                            ? "bg-indigo-100 text-indigo-600"
+                            : isLocked
+                            ? "bg-gray-100 text-gray-400"
+                            : "bg-blue-100 text-blue-600"
+                        }`}
+                      >
+                        {isCompleted ? (
+                          <CheckCircle className="w-6 h-6" />
+                        ) : isLocked ? (
+                          <Lock className="w-6 h-6" />
+                        ) : (
+                          <Play className="w-6 h-6" />
+                        )}
+                      </div>
+
+                      {/* Lesson Info */}
+                      <div>
+                        <h3 className="text-xl font-semibold text-foreground mb-1">
+                          {lesson.title}
+                        </h3>
+                        <div className="flex items-center space-x-4 text-sm text-foreground">
+                          <span className="flex items-center">
+                            {getTypeIcon(lesson.type)}
+                            <span className="ml-1 capitalize">
+                              {lesson.type.replace("_", " ")}
+                            </span>
+                          </span>
+                          <span className="flex items-center">
+                            <Clock className="w-4 h-4 mr-1" />
+                            15 min
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Lesson Level and Action */}
+                    <div className="flex items-center space-x-3">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-semibold ${getLevelColor(
+                          lesson.level
+                        )}`}
+                      >
+                        {lesson.level.toUpperCase()}
+                      </span>
+
+                      {!isLocked && (
+                        <button
+                          onClick={() =>
+                            navigate(`/courses/${id}/lesson/${lesson._id}`)
+                          }
+                          className={`px-6 py-2 rounded-xl font-semibold transition-all cursor-pointer ${
+                            isCompleted
+                              ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                              : isCurrent
+                              ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700"
+                              : "bg-blue-500 text-white hover:bg-blue-600"
+                          }`}
+                        >
+                          {isCompleted
+                            ? "Review"
+                            : isCurrent
+                            ? "Continue"
+                            : "Start"}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Progress bar for current lesson */}
+                  {isCurrent && (
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <div className="flex items-center justify-between text-sm text-foreground mb-2">
+                        <span>Lesson Progress</span>
+                        <span>75%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full w-3/4"></div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Course Completion Card */}
+      {courseLessons.length > 0 && (
+        <div className="mt-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl shadow-lg p-8 text-foreground">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-2xl font-bold mb-2">Complete the Course</h3>
+              <p className="text-foreground">
+                Finish all lessons to earn your certificate and unlock advanced
+                courses
+              </p>
+            </div>
+            <div className="text-right">
+              <div className="text-3xl font-bold mb-1">75%</div>
+              <div className="text-foreground text-sm">Completed</div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+export default LessonList;

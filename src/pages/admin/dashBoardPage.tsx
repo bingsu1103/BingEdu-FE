@@ -7,8 +7,10 @@ import {
   BookOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu } from "antd";
-import UserDashBoard from "./userDashBoard.tsx";
+import UserDashBoard from "../../components/admin/userDashBoard.tsx";
 import { ConfigProvider, theme } from "antd";
+import CoursesDashboard from "@/components/admin/coursesDashboard.tsx";
+import LessonDashboard from "@/components/admin/lessonDashboard.tsx";
 const { Header, Sider, Content } = Layout;
 
 const AdminDashBoardPage = () => {
@@ -22,10 +24,13 @@ const AdminDashBoardPage = () => {
     switch (selectedKey) {
       case "1":
         return <UserDashBoard />;
-      // case "2":
-      //   return <LessonDashBoard />;
-      // case "3":
+      case "2":
+        return <CoursesDashboard />;
+      case "3":
+        return <LessonDashboard />;
+      // case "4":
       //   return <QBankingDashBoard />;
+
       default:
         return <div>Select a menu item</div>;
     }
@@ -59,11 +64,16 @@ const AdminDashBoardPage = () => {
                 },
                 {
                   key: "2",
+                  icon: <QuestionCircleOutlined />,
+                  label: "Courses",
+                },
+                {
+                  key: "3",
                   icon: <BookOutlined />,
                   label: "Lesson",
                 },
                 {
-                  key: "3",
+                  key: "4",
                   icon: <QuestionCircleOutlined />,
                   label: "Q Banking",
                 },

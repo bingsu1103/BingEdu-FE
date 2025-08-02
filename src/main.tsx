@@ -15,7 +15,9 @@ import NotFoundPage from "./pages/auth/notfoundPage.tsx";
 import AdminDashBoardPage from "./pages/admin/dashBoardPage.tsx";
 import ProtectedRoute from "./components/auth/auth.tsx";
 import OverallUser from "./pages/overallUser.tsx";
-import TestPage from "./pages/testPage.tsx";
+import TestDetailPage from "./pages/testDetailPage.tsx";
+import CoursesPage from "./pages/coursesPage.tsx";
+import LessonPage from "./pages/lessonPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -27,8 +29,16 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: "/test",
-        element: <TestPage />,
+        path: "/courses",
+        element: <CoursesPage />,
+      },
+      {
+        path: "/courses/:id/lesson",
+        element: <LessonPage />,
+      },
+      {
+        path: "/courses/:id/lesson/:lessonId",
+        element: <TestDetailPage />,
       },
       {
         path: "/about",

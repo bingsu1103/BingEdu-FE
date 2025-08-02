@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
-import { Clock, FileText, User, CheckCircle } from "lucide-react";
+import {
+  Clock,
+  FileText,
+  MessageCircleQuestionMark,
+  CheckCircle,
+} from "lucide-react";
 import questionService from "@/services/question.service";
+import { UseTheme } from "@/components/context/theme.context";
 
 const formatTime = (seconds: number): string => {
   const minutes = Math.floor(seconds / 60);
@@ -10,7 +16,7 @@ const formatTime = (seconds: number): string => {
     .padStart(2, "0")}`;
 };
 
-const TestPage: React.FC = () => {
+const TestDetailPage: React.FC = () => {
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: string]: string;
   }>({});
@@ -18,6 +24,7 @@ const TestPage: React.FC = () => {
   const [isFinished, setIsFinished] = useState(false);
   const [listQuestion, setListQuestion] = useState([]);
   const lessonId = "687894cbafe51425c209675f";
+  const { theme } = UseTheme();
 
   useEffect(() => {
     if (timeLeft > 0 && !isFinished) {
@@ -51,7 +58,13 @@ const TestPage: React.FC = () => {
   };
 
   const answeredQuestions = Object.keys(selectedAnswers).length;
-  const progressPercentage = (answeredQuestions / listQuestion.length) * 100;
+
+  const scrollToQuestion = (questionId: string) => {
+    const element = document.getElementById(`question-${questionId}`);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   if (isFinished) {
     return (
@@ -79,8 +92,8 @@ const TestPage: React.FC = () => {
     <div className="min-h-screen bg-background">
       <div className="sticky top-0 z-10 bg-background shadow-sm border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="flex items-center space-x-3">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 ">
+            <div className="flex items-center space-x-3 ">
               <FileText className="w-6 h-6 text-blue-500" />
               <div>
                 <h1 className="text-xl font-bold text-foreground">
@@ -94,7 +107,7 @@ const TestPage: React.FC = () => {
 
             <div className="flex items-center space-x-4">
               <div className="hidden sm:flex items-center space-x-2">
-                <User className="w-4 h-4 text-gray-500" />
+                <MessageCircleQuestionMark className="w-4 h-4 text-gray-500" />
                 <span className="text-sm text-foreground">
                   {answeredQuestions}/{listQuestion.length}
                 </span>
@@ -109,16 +122,24 @@ const TestPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-4">
-            <div className="flex justify-between text-xs text-foreground mb-1">
-              <span>Progress</span>
-              <span>{Math.round(progressPercentage)}%</span>
+          <div className="mt-4 bg-background lg:absolute md:top-20 md:left-10">
+            <div className="text-sm font-bold text-foreground mb-2">
+              Question List
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div
-                className="bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out"
-                style={{ width: `${progressPercentage}%` }}
-              ></div>
+            <div className="max-lg:w-[50%] max-sm:w-full max-lg:m-auto grid max-sm:grid-cols-10 sm:grid-cols-5 gap-2 p-2 rounded-lg border border-gray-200">
+              {listQuestion.map((question: any, index: number) => (
+                <button
+                  key={question._id}
+                  onClick={() => scrollToQuestion(question._id)}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 ${
+                    selectedAnswers[question._id]
+                      ? "bg-green-100 text-green-600 hover:bg-green-200"
+                      : "bg-background text-foreground hover:bg-gray-400"
+                  } ${theme === "dark" && "border-1 border-white"}`}
+                >
+                  {index + 1}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -128,6 +149,7 @@ const TestPage: React.FC = () => {
         <div className="space-y-6">
           {listQuestion.map((question: any, index: number) => (
             <div
+              id={`question-${question._id}`}
               key={question._id}
               className="bg-background rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200"
             >
@@ -230,4 +252,4 @@ const TestPage: React.FC = () => {
   );
 };
 
-export default TestPage;
+export default TestDetailPage;
