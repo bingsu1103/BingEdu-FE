@@ -27,8 +27,7 @@ import { Button } from "../ui/button";
 import CreateLesson from "../manager/createLesson";
 import { Popconfirm } from "antd";
 import { Badge } from "../ui/badge";
-
-// Sample data - replace with actual API calls
+import EditQuestion from "../manager/editQuestion";
 
 const LessonDashboard = () => {
   const [selectedCourse, setSelectedCourse] = useState<ICourses | null>(null);
@@ -83,17 +82,17 @@ const LessonDashboard = () => {
   useEffect(() => {
     const getAllCourse = async () => {
       const res = await coursesService.getAllCoursesAPI();
-      setListCourses(res.data);
+      setListCourses(res.data || []);
     };
     getAllCourse();
   }, []);
 
   const handleCourseSelect = async (courseId: string) => {
     const courses = await coursesService.getCourseAPI(courseId);
-    setSelectedCourse(courses.data);
+    setSelectedCourse(courses.data || null);
     setViewingLessonDetail(null);
     const res = await lessonService.getLessonByCourseIdAPI(courseId);
-    setListLesson(res.data);
+    setListLesson(res.data || []);
   };
 
   const handleAddQuestion = (lesson: ILesson) => {
@@ -137,27 +136,13 @@ const LessonDashboard = () => {
     const questionRes = await questionService.getQuestionByLessonIdAPI(
       lesson._id
     );
-    setListQuestion(questionRes.data);
+    setListQuestion(questionRes.data || []);
   };
 
   const handleBackToLessons = () => {
     setViewingLessonDetail(null);
   };
 
-  // const handleAddLesson = () => {};
-
-  // const handleUpdateQuestion = (questionId: number) => {
-  //   // Implement update logic
-  //   console.log("Update question:", questionId);
-  //   alert("Update functionality will be implemented");
-  // };
-
-  // const handleDeleteQuestion = (questionId: number) => {
-  //   console.log("Delete question:", questionId);
-  //   if (confirm("Are you sure you want to delete this question?")) {
-  //     alert("Delete functionality will be implemented");
-  //   }
-  // };
   const handleDeleteLesson = async (lesson: ILesson) => {
     try {
       const deleteRes = await lessonService.deleteLessonAPI(lesson._id);
@@ -383,13 +368,23 @@ const LessonDashboard = () => {
                       </div>
 
                       <div className="mt-4 sm:mt-0 sm:ml-4 flex space-x-2 flex-col sm:flex-row">
-                        <button
-                          // onClick={() => handleUpdateQuestion(question.id)}
-                          className="inline-flex items-center justify-center px-3 py-2 bg-yellow-600 text-white text-sm font-medium rounded-lg hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors mb-2 sm:mb-0 w-full sm:w-auto"
-                        >
-                          <Edit className="h-4 w-4 mr-1" />
-                          Update
-                        </button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <button className="inline-flex items-center justify-center px-3 py-2 bg-yellow-600 text-white text-sm font-medium rounded-lg hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors mb-2 sm:mb-0 w-full sm:w-auto">
+                              <Edit className="h-4 w-4 mr-1" />
+                              Update
+                            </button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                              <DialogTitle>Update Question</DialogTitle>
+                              <DialogDescription>
+                                Select correct answer
+                              </DialogDescription>
+                            </DialogHeader>
+                            <EditQuestion id={question._id} />
+                          </DialogContent>
+                        </Dialog>
                         <button
                           // onClick={() => handleDeleteQuestion(question.id)}
                           className="inline-flex items-center justify-center px-3 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors w-full sm:w-auto"

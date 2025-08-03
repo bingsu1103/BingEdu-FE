@@ -93,9 +93,9 @@ const LessonList: React.FC = () => {
     const fetchData = async () => {
       try {
         const lessonsRes = await lessonService.getLessonByCourseIdAPI(id!);
-        setSelectedListLesson(lessonsRes.data);
+        setSelectedListLesson(lessonsRes.data || []);
         const courseRes = await coursesService.getCourseAPI(id!);
-        setSelectedCourse(courseRes.data);
+        setSelectedCourse(courseRes.data || null);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

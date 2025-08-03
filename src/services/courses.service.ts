@@ -2,12 +2,12 @@ import axios from "@/configs/axios.config";
 
 const createCourseAPI = async (data: object) => {
   const urlBackend = "/v1/api/course";
-  return axios.post<ICourses>(urlBackend, data);
+  return axios.post<IBackendRes<ICourses>>(urlBackend, data);
 };
 
 const getCourseAPI = async (id: string) => {
   const urlBackend = `/v1/api/course/id/${id}`;
-  return axios.get<ICourses>(urlBackend);
+  return axios.get<IBackendRes<ICourses>>(urlBackend);
 };
 const getAllCoursesAPI = async () => {
   const urlBackend = "/v1/api/course/multiple";

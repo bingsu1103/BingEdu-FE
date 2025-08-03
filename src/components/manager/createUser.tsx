@@ -109,10 +109,8 @@ const CreateUser = () => {
           </div>
         </div>
         <DialogFooter className="mt-5">
-          <DialogClose asChild>
-            <Button ref={closeRef} variant="outline">
-              Cancel
-            </Button>
+          <DialogClose ref={closeRef} asChild>
+            <Button variant="outline">Cancel</Button>
           </DialogClose>
           <Button type="submit">Submit</Button>
         </DialogFooter>

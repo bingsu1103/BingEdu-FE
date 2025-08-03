@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { useRef, useState } from "react";
 import userService from "@/services/user.service";
 import { message } from "antd";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 interface EditUserProps {
   user: IUser;
@@ -117,7 +118,8 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
             Save changes
           </Button>
           <SheetClose asChild>
-            <Button ref={closeRef} className="cursor-pointer" variant="outline">
+            <DialogClose ref={closeRef}></DialogClose>
+            <Button className="cursor-pointer" variant="outline">
               Close
             </Button>
           </SheetClose>

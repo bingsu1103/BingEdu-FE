@@ -78,6 +78,10 @@ declare global {
     userID: string;
   }
 
+  interface IRefresh {
+    access_token: string;
+  }
+
   interface IFetchAccount {
     _id: string;
     user_id: string;

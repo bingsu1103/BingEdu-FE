@@ -1,7 +1,7 @@
 import axios from "@/configs/axios.config";
 const getQuestionByLessonIdAPI = async (lessonId: string) => {
   const urlBackend = `/v1/api/question/lesson/${lessonId}`;
-  return axios.get(urlBackend);
+  return axios.get<IBackendRes<IQuestion[]>>(urlBackend);
 };
 const createListQuestionAPI = async (file: File) => {
   const urlBackend = "/v1/api/question/multiple";
@@ -12,10 +12,20 @@ const createListQuestionAPI = async (file: File) => {
   } catch {
     throw new Error("File is not valid JSON");
   }
-  return axios.post(urlBackend, data, {
+  return axios.post<IBackendRes<IQuestion[]>>(urlBackend, data, {
     headers: {
       "Content-Type": "application/json",
     },
   });
 };
-export default { getQuestionByLessonIdAPI, createListQuestionAPI };
+
+const updateQuestionAPI = async (id: string, correct_answer_key: string) => {
+  const data = { id, correct_answer_key };
+  const urlBackend = "/v1/api/question";
+  return axios.put<IBackendRes<IUpdate>>(urlBackend, data);
+};
+export default {
+  getQuestionByLessonIdAPI,
+  createListQuestionAPI,
+  updateQuestionAPI,
+};

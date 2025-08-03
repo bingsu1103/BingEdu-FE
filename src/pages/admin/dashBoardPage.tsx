@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -13,12 +13,18 @@ import CoursesDashboard from "@/components/admin/coursesDashboard.tsx";
 import LessonDashboard from "@/components/admin/lessonDashboard.tsx";
 const { Header, Sider, Content } = Layout;
 
-const AdminDashBoardPage = () => {
-  const [collapsed, setCollapsed] = useState(false);
-  const [selectedKey, setSelectedKey] = useState("1");
+const AdminDashBoardPage: React.FC = () => {
+  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [selectedKey, setSelectedKey] = useState<string>(() => {
+    return localStorage.getItem("selectedMenuAdminKey") || "1";
+  });
   const {
     token: { borderRadiusLG },
   } = theme.useToken();
+
+  useEffect(() => {
+    localStorage.setItem("selectedMenuAdminKey", selectedKey);
+  }, [selectedKey]);
 
   const renderContent = () => {
     switch (selectedKey) {
@@ -54,7 +60,7 @@ const AdminDashBoardPage = () => {
             <Menu
               theme="dark"
               mode="inline"
-              defaultSelectedKeys={[selectedKey]}
+              selectedKeys={[selectedKey]}
               onClick={(e) => setSelectedKey(e.key)}
               items={[
                 {
