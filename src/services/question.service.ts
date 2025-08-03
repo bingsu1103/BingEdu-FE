@@ -24,8 +24,14 @@ const updateQuestionAPI = async (id: string, correct_answer_key: string) => {
   const urlBackend = "/v1/api/question";
   return axios.put<IBackendRes<IUpdate>>(urlBackend, data);
 };
+
+const deleteQuestionAPI = async (id: string) => {
+  const urlBackend = `/v1/api/question/id/${id}`;
+  return axios.delete<IBackendRes<IDelete>>(urlBackend);
+};
 export default {
   getQuestionByLessonIdAPI,
   createListQuestionAPI,
   updateQuestionAPI,
+  deleteQuestionAPI,
 };

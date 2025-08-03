@@ -159,6 +159,13 @@ const LessonDashboard = () => {
       message.error("Delete lesson failed! ERROR SERVER!");
     }
   };
+  // const handleDeleteQuestion = async (id: string) => {
+  //   try {
+  //     const deleteRes = await questionService.
+  //   } catch (error) {
+
+  //   }
+  // };
   const viewingLesson = listLesson.find(
     (lesson) => lesson._id === viewingLessonDetail
   );
@@ -386,7 +393,7 @@ const LessonDashboard = () => {
                           </DialogContent>
                         </Dialog>
                         <button
-                          // onClick={() => handleDeleteQuestion(question.id)}
+                          onClick={() => handleDeleteQuestion(question._id)}
                           className="inline-flex items-center justify-center px-3 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors w-full sm:w-auto"
                         >
                           <Trash2 className="h-4 w-4 mr-1" />
