@@ -159,13 +159,19 @@ const LessonDashboard = () => {
       message.error("Delete lesson failed! ERROR SERVER!");
     }
   };
-  // const handleDeleteQuestion = async (id: string) => {
-  //   try {
-  //     const deleteRes = await questionService.
-  //   } catch (error) {
-
-  //   }
-  // };
+  const handleDeleteQuestion = async (id: string) => {
+    try {
+      const deleteRes = await questionService.deleteQuestionAPI(id);
+      if (deleteRes.data?.deletedCount) {
+        message.success("Question deleted!");
+        return;
+      }
+      message.error("Question deleted failed");
+    } catch (error) {
+      console.log(error);
+      message.error("Delete question failed!");
+    }
+  };
   const viewingLesson = listLesson.find(
     (lesson) => lesson._id === viewingLessonDetail
   );
@@ -263,9 +269,9 @@ const LessonDashboard = () => {
                           Add Question
                         </button>
                         <Popconfirm
-                          title="Delete User"
+                          title="Delete Lesson"
                           onConfirm={() => handleDeleteLesson(lesson)}
-                          description="Are you sure to delete this user?"
+                          description="Are you sure to delete this lesson?"
                           okText="Yes"
                           cancelText="No"
                         >
@@ -392,13 +398,18 @@ const LessonDashboard = () => {
                             <EditQuestion id={question._id} />
                           </DialogContent>
                         </Dialog>
-                        <button
-                          onClick={() => handleDeleteQuestion(question._id)}
-                          className="inline-flex items-center justify-center px-3 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors w-full sm:w-auto"
+                        <Popconfirm
+                          title="Delete question"
+                          description="Are you sure to delete this question?"
+                          onConfirm={() => handleDeleteQuestion(question._id)}
+                          okText="Yes"
+                          cancelText="No"
                         >
-                          <Trash2 className="h-4 w-4 mr-1" />
-                          Delete
-                        </button>
+                          <button className="inline-flex items-center justify-center px-3 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors w-full sm:w-auto">
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Delete
+                          </button>
+                        </Popconfirm>
                       </div>
                     </div>
                   </div>
