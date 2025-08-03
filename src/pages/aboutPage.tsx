@@ -23,44 +23,46 @@ import {
 } from "lucide-react";
 import AnimatedSection from "./animatedSection";
 import StaggeredAnimation from "./staggeredAnimated";
+import { useNavigate } from "react-router";
 
 const AboutPage = () => {
+  const navigate = useNavigate();
   const stats = [
-    { number: "1,000+", label: "Học viên tin tựa", icon: Users },
-    { number: "95%", label: "Tỷ lệ đỗ các kỳ thi", icon: Trophy },
-    { number: "50+", label: "Giảng viên chuyên nghiệp", icon: GraduationCap },
-    { number: "24/7", label: "AI chấm chữa bài", icon: Bot },
+    { number: "1,000+", label: "Trusted Students", icon: Users },
+    { number: "95%", label: "Exam Pass Rate", icon: Trophy },
+    { number: "50+", label: "Professional Instructors", icon: GraduationCap },
+    { number: "24/7", label: "AI-Powered Grading", icon: Bot },
   ];
 
   const features = [
-    "Phương pháp giảng dạy hiện đại, tương tác cao",
-    "Giảng viên bản xứ và Việt Nam kinh nghiệm",
-    "AI thông minh chấm chữa bài tự động 24/7",
-    "Lộ trình học cá nhân hóa theo từng mục tiêu",
-    "Kho đề thi thực tế được cập nhật liên tục",
-    "Cộng đồng học tập năng động và tích cực",
+    "Modern, highly interactive teaching methods",
+    "Experienced native and local instructors",
+    "24/7 AI-powered automated grading system",
+    "Personalized learning paths for individual goals",
+    "Continuously updated real exam question bank",
+    "Dynamic and active learning community",
   ];
 
   const achievements = [
     {
       icon: Award,
       title: "Top 3 EdTech Startup 2025",
-      desc: "Được vinh danh trong cuộc thi khởi nghiệp quốc gia",
+      desc: "Recognized in the National Startup Competition",
     },
     {
       icon: Brain,
       title: "AI Technology Pioneer",
-      desc: "Tiên phong ứng dụng AI trong giáo dục tiếng Anh",
+      desc: "Pioneering AI applications in English education",
     },
     {
       icon: TrendingUp,
       title: "300% Growth Rate",
-      desc: "Tăng trưởng vượt bậc trong 6 tháng đầu tiên",
+      desc: "Remarkable growth in the first 6 months",
     },
     {
       icon: Heart,
       title: "4.9/5 Student Rating",
-      desc: "Điểm đánh giá cao từ cộng đồng học viên",
+      desc: "High ratings from the student community",
     },
   ];
 
@@ -88,10 +90,10 @@ const AboutPage = () => {
   ];
 
   const founder = {
-    name: "Ngô Gia An",
+    name: "Ngo Gia An",
     role: "CEO & Founder",
     education:
-      "Sinh viên năm cuối chuyên ngành Công nghệ thông tin, đam mê phát triển nền tảng học trực tuyến",
+      "Final-year IT student, passionate about developing online learning platforms",
     image:
       "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400",
   };
@@ -151,8 +153,8 @@ const AboutPage = () => {
 
             <AnimatedSection animation="fadeInUp" delay={600}>
               <p className="text-lg sm:text-xl opacity-90 max-w-3xl mx-auto leading-relaxed px-4 mb-8">
-                Nền tảng học tiếng Anh trực tuyến hàng đầu Việt Nam, đồng hành
-                cùng bạn chinh phục các kỳ thi quốc tế
+                Vietnam's leading online English learning platform, supporting
+                you in conquering international exams
               </p>
             </AnimatedSection>
 
@@ -161,16 +163,14 @@ const AboutPage = () => {
                 <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 hover:bg-white/20 transition-all duration-300">
                   <div className="flex items-center">
                     <Calendar className="h-4 w-4 mr-2" />
-                    <span className="text-sm font-medium">
-                      Khởi nghiệp năm 2025
-                    </span>
+                    <span className="text-sm font-medium">Founded in 2025</span>
                   </div>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 hover:bg-white/20 transition-all duration-300">
                   <div className="flex items-center">
                     <Shield className="h-4 w-4 mr-2" />
                     <span className="text-sm font-medium">
-                      Chứng nhận ISO 27001
+                      ISO 27001 Certified
                     </span>
                   </div>
                 </div>
@@ -185,13 +185,17 @@ const AboutPage = () => {
 
             <AnimatedSection animation="fadeInUp" delay={1000}>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-50 transform hover:scale-105 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl">
+                <button
+                  onClick={() => navigate("/courses")}
+                  className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-50 transform hover:scale-105 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
+                >
                   <Lightbulb className="mr-2 h-5 w-5" />
-                  Trải nghiệm miễn phí
+                  Try for Free
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
-                <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transform hover:scale-105 transition-all duration-300 backdrop-blur-sm">
-                  Xem demo AI
+                <button className="flex gap-2 border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transform hover:scale-105 transition-all duration-300 backdrop-blur-sm">
+                  <Bot />
+                  <span>AI Supporter</span>
                 </button>
               </div>
             </AnimatedSection>
@@ -205,10 +209,10 @@ const AboutPage = () => {
           <AnimatedSection animation="fadeInUp">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-black mb-2">
-                Thành tựu nổi bật
+                Key Achievements
               </h2>
               <p className="text-black/70">
-                Những cột mốc quan trọng trong hành trình phát triển
+                Significant milestones in our journey
               </p>
             </div>
           </AnimatedSection>
@@ -246,10 +250,10 @@ const AboutPage = () => {
           <AnimatedSection animation="fadeInUp">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-black mb-4">
-                Con số ấn tượng
+                Impressive Numbers
               </h2>
               <p className="text-lg text-black/70">
-                Minh chứng cho chất lượng và uy tín của BingEdu
+                Proof of BingEdu's quality and credibility
               </p>
             </div>
           </AnimatedSection>
@@ -289,10 +293,10 @@ const AboutPage = () => {
           <AnimatedSection animation="fadeInUp">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-                Công nghệ tiên tiến
+                Cutting-Edge Technology
               </h2>
               <p className="text-lg sm:text-xl opacity-90 max-w-3xl mx-auto px-4">
-                Nền tảng AI và Machine Learning hàng đầu thế giới
+                World-leading AI and Machine Learning platform
               </p>
             </div>
           </AnimatedSection>
@@ -338,7 +342,7 @@ const AboutPage = () => {
                     <Target className="h-6 w-6 text-white" />
                   </div>
                   <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
-                    Sứ mệnh của chúng tôi
+                    Our Mission
                   </h2>
                 </div>
                 <div className="bg-background rounded-xl p-6 mb-6">
@@ -347,23 +351,23 @@ const AboutPage = () => {
                   </p>
                 </div>
                 <p className="text-base sm:text-lg text-foreground/80 mb-6 leading-relaxed relative">
-                  BingEdu được sinh ra với sứ mệnh dân chủ hóa việc học tiếng
-                  Anh chất lượng cao. Chúng tôi tin rằng mọi người đều xứng đáng
-                  có cơ hội tiếp cận giáo dục tiếng Anh xuất sắc, không phân
-                  biệt địa lý hay hoàn cảnh kinh tế.
+                  BingEdu was born with a mission to democratize high-quality
+                  English education. We believe everyone deserves access to
+                  excellent English learning opportunities, regardless of
+                  geography or economic circumstances.
                 </p>
                 <p className="text-base sm:text-lg text-foreground/80 leading-relaxed">
-                  Với công nghệ AI tiên tiến và hệ thống chấm chữa bài tự động,
-                  chúng tôi tạo ra trải nghiệm học tập cá nhân hóa, giúp học
-                  viên không chỉ đạt điểm số mục tiêu mà còn thực sự làm chủ
-                  tiếng Anh.
+                  With advanced AI technology and an automated grading system,
+                  we create personalized learning experiences, helping students
+                  not only achieve their target scores but also truly master
+                  English.
                 </p>
 
                 {/* Mission Stats */}
                 <div className="grid grid-cols-2 gap-4 mt-8">
                   <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 text-center">
                     <div className="text-2xl font-bold text-green-600">3+</div>
-                    <div className="text-sm text-black/70">Tỉnh thành</div>
+                    <div className="text-sm text-black/70">Provinces</div>
                   </div>
                   <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-lg p-4 text-center">
                     <div className="text-2xl font-bold text-orange-600">
@@ -396,11 +400,11 @@ const AboutPage = () => {
           <AnimatedSection animation="fadeInUp">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-                Tại sao chọn BingEdu?
+                Why Choose BingEdu?
               </h2>
               <p className="text-lg sm:text-xl text-foreground/70 max-w-3xl mx-auto px-4">
-                Chúng tôi kết hợp phương pháp giáo dục tiên tiến với công nghệ
-                hiện đại để mang đến trải nghiệm học tập vượt trội
+                We combine advanced educational methods with modern technology
+                to deliver an exceptional learning experience
               </p>
             </div>
           </AnimatedSection>
@@ -435,27 +439,25 @@ const AboutPage = () => {
           <AnimatedSection animation="fadeInUp">
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8">
-                Câu chuyện của chúng tôi
+                Our Story
               </h2>
               <div className="prose prose-lg mx-auto text-foreground/80">
                 <p className="text-lg sm:text-xl leading-relaxed mb-6">
-                  BingEdu ra đời từ nhận thức sâu sắc về những thách thức mà học
-                  viên Việt Nam gặp phải khi chinh phục các kỳ thi tiếng Anh
-                  quốc tế. Năm 2025, với sự bùng nổ của công nghệ AI và học trực
-                  tuyến, chúng tôi quyết định xây dựng một nền tảng hoàn toàn
-                  mới.
+                  BingEdu was born from a deep understanding of the challenges
+                  Vietnamese students face in conquering international English
+                  exams. In 2025, with the rise of AI and online learning, we
+                  decided to build a completely new platform.
                 </p>
                 <p className="text-base sm:text-lg leading-relaxed mb-6">
-                  Khác với các phương pháp truyền thống, BingEdu tập trung vào
-                  việc phát triển tư duy tiếng Anh tự nhiên thông qua các tình
-                  huống thực tế và hệ thống AI chấm chữa bài thông minh. Chúng
-                  tôi không chỉ dạy để thi mà còn giúp học viên ứng dụng tiếng
-                  Anh trong cuộc sống và công việc.
+                  Unlike traditional methods, BingEdu focuses on developing
+                  natural English proficiency through real-life scenarios and an
+                  intelligent AI grading system. We don’t just teach for exams;
+                  we help students apply English in life and work.
                 </p>
                 <p className="text-base sm:text-lg leading-relaxed">
-                  Với hơn 1,000 học viên tin tưởng và tỷ lệ đỗ 95%, BingEdu đã
-                  và đang khẳng định vị thế là người bạn đồng hành đáng tin cậy
-                  trên hành trình chinh phục tiếng Anh của mọi người.
+                  With over 1,000 trusted students and a 95% pass rate, BingEdu
+                  has established itself as a reliable partner in the journey to
+                  master English.
                 </p>
               </div>
             </div>
@@ -470,11 +472,11 @@ const AboutPage = () => {
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Người sáng lập
+                  Our Founder
                 </span>
               </h2>
               <p className="text-lg sm:text-xl text-foreground/70 px-4">
-                Tầm nhìn và đam mê đang dẫn dắt BingEdu
+                Vision and passion driving BingEdu
               </p>
               <div className="flex justify-center mt-4">
                 <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
@@ -514,15 +516,13 @@ const AboutPage = () => {
                   <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-gray-200">
                     <div className="text-center">
                       <div className="text-lg font-bold text-blue-600">22</div>
-                      <div className="text-xs text-foreground/70">Tuổi</div>
+                      <div className="text-xs text-foreground/70">Age</div>
                     </div>
                     <div className="text-center">
                       <div className="text-lg font-bold text-purple-600">
                         2025
                       </div>
-                      <div className="text-xs text-foreground/70">
-                        Khởi nghiệp
-                      </div>
+                      <div className="text-xs text-foreground/70">Founded</div>
                     </div>
                   </div>
                 </div>
@@ -537,19 +537,22 @@ const AboutPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 text-center">
           <AnimatedSection animation="fadeInUp">
             <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-              Sẵn sàng bắt đầu hành trình của bạn?
+              Ready to Start Your Journey?
             </h2>
             <p className="text-lg sm:text-xl mb-8 opacity-90 max-w-2xl mx-auto px-4">
-              Hãy để BingEdu đồng hành cùng bạn chinh phục ước mơ du học, định
-              cư hay thăng tiến trong sự nghiệp
+              Let BingEdu be your partner in conquering your dreams of studying
+              abroad, immigration, or career advancement
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-background text-blue-600 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:bg-gray-50 transform hover:scale-105 transition-all duration-300 flex items-center justify-center">
-                Khám phá khóa học
+              <button
+                onClick={() => navigate("/courses")}
+                className="bg-background text-blue-600 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:bg-gray-50 transform hover:scale-105 transition-all duration-300 flex items-center justify-center"
+              >
+                Explore Courses
                 <ArrowRight className="ml-2 h-5 w-5" />
               </button>
               <button className="border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transform hover:scale-105 transition-all duration-300">
-                Tư vấn miễn phí
+                Free Consultation
               </button>
             </div>
           </AnimatedSection>

@@ -34,8 +34,6 @@ const AdminDashBoardPage: React.FC = () => {
         return <CoursesDashboard />;
       case "3":
         return <LessonDashboard />;
-      // case "4":
-      //   return <QBankingDashBoard />;
 
       default:
         return <div>Select a menu item</div>;
@@ -77,11 +75,6 @@ const AdminDashBoardPage: React.FC = () => {
                   key: "3",
                   icon: <BookOutlined />,
                   label: "Lesson",
-                },
-                {
-                  key: "4",
-                  icon: <QuestionCircleOutlined />,
-                  label: "Q Banking",
                 },
               ]}
             />

@@ -20,10 +20,20 @@ const formatTime = (seconds: number): string => {
     .padStart(2, "0")}`;
 };
 
+type IAnswerProps = {
+  user_id?: string;
+  lesson_id: string;
+  question_id: string;
+  question_type?: string;
+  user_answer_key?: string;
+  user_answer_text?: string;
+};
+
 const TestDetailPage: React.FC = () => {
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: string]: string;
   }>({});
+  const [listAnswers, setListAnswers] = useState<IAnswerProps[]>([]);
   const [timeLeft, setTimeLeft] = useState(1800);
   const [isFinished, setIsFinished] = useState(false);
   const [listQuestion, setListQuestion] = useState<IQuestion[]>([]);
@@ -78,6 +88,23 @@ const TestDetailPage: React.FC = () => {
 
   const handleSubmit = () => {
     setIsFinished(true);
+    Object.entries(selectedAnswers).map(([key, value]) => {
+      const data = {
+        user_id: user?._id || "",
+        lesson_id: lessonId || "",
+        question_id: key,
+        ...(value.length === 1 && {
+          user_answer_key: value,
+          question_type: "multiple_choice",
+        }),
+        ...(value.length > 1 && {
+          user_answer_text: value,
+          question_type: "essay",
+        }),
+      };
+      listAnswers.push(data);
+    });
+    setListAnswers(listAnswers);
   };
 
   const answeredQuestions = Object.keys(selectedAnswers).length;
