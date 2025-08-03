@@ -10,11 +10,20 @@ import {
   Headphones,
   Users,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { UseTheme } from "../context/theme.context";
 import { useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import coursesService from "@/services/courses.service";
 import lessonService from "@/services/lesson.service";
+import { Button } from "../ui/button";
 
 // Define ICourse interface for course data
 const getLevelColor = (level: string) => {
@@ -83,11 +92,8 @@ const LessonList: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch lessons
         const lessonsRes = await lessonService.getLessonByCourseIdAPI(id!);
         setSelectedListLesson(lessonsRes.data);
-
-        // Fetch course details (assuming coursesService has a method to get course by ID)
         const courseRes = await coursesService.getCourseAPI(id!);
         setSelectedCourse(courseRes.data);
       } catch (error) {
@@ -256,24 +262,50 @@ const LessonList: React.FC = () => {
                       </span>
 
                       {!isLocked && (
-                        <button
-                          onClick={() =>
-                            navigate(`/courses/${id}/lesson/${lesson._id}`)
-                          }
-                          className={`px-6 py-2 rounded-xl font-semibold transition-all cursor-pointer ${
-                            isCompleted
-                              ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                              : isCurrent
-                              ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700"
-                              : "bg-blue-500 text-white hover:bg-blue-600"
-                          }`}
-                        >
-                          {isCompleted
-                            ? "Review"
-                            : isCurrent
-                            ? "Continue"
-                            : "Start"}
-                        </button>
+                        <Dialog>
+                          <DialogTrigger>
+                            <Button
+                              className="cursor-pointer"
+                              variant="outline"
+                            >
+                              Start
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>
+                                Ready to start the test?
+                              </DialogTitle>
+                              <DialogDescription>
+                                <div className="flex gap-2 mt-2 float-end">
+                                  <Button
+                                    onClick={() =>
+                                      navigate(
+                                        `/courses/${id}/lesson/${lesson._id}`
+                                      )
+                                    }
+                                    className={`cursor-pointer ${
+                                      isCompleted
+                                        ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                        : isCurrent
+                                        ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700"
+                                        : "bg-blue-500 text-white hover:bg-blue-600"
+                                    }`}
+                                  >
+                                    {isCompleted
+                                      ? "OK"
+                                      : isCurrent
+                                      ? "OK"
+                                      : "OK"}
+                                  </Button>
+                                  <DialogTrigger>
+                                    <Button>Cancel</Button>
+                                  </DialogTrigger>
+                                </div>
+                              </DialogDescription>
+                            </DialogHeader>
+                          </DialogContent>
+                        </Dialog>
                       )}
                     </div>
                   </div>

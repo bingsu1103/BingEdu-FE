@@ -223,7 +223,7 @@ const TestDetailPage: React.FC = () => {
                         className={`text-left p-4 rounded-lg border-2 transition-all duration-200 hover:shadow-sm ${
                           selectedAnswers[question._id] === key
                             ? "border-blue-500 bg-blue-50 shadow-sm"
-                            : "border-gray-200 hover:border-gray-300 bg-background hover:bg-gray-50"
+                            : "border-gray-200 hover:border-gray-300 bg-background hover:bg-blue-400"
                         }`}
                       >
                         <div className="flex items-start space-x-3">
@@ -257,10 +257,10 @@ const TestDetailPage: React.FC = () => {
         <div className="mt-8 text-center">
           <button
             onClick={handleSubmit}
-            className="inline-flex items-center space-x-2 px-8 py-4 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="inline-flex items-center space-x-2 px-8 py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-all duration-200 shadow-lg hover:shadow-xl"
           >
             <CheckCircle className="w-5 h-5" />
-            <span>Submit Test</span>
+            <span>Submit</span>
           </button>
         </div>
 

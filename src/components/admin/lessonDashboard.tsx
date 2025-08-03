@@ -370,7 +370,7 @@ const LessonDashboard = () => {
                           </div>
                         )} */}
 
-                        {!Array.isArray((question as IQuestion).option) && (
+                        {!Array.isArray((question as IQuestion).options) && (
                           <div className="mb-3">
                             <p className="text-sm font-medium text-foreground">
                               Correct Answer:

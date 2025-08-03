@@ -10,7 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DialogClose, DialogFooter } from "@/components/ui/dialog";
+import {
+  DialogClose,
+  DialogFooter,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { message } from "antd";
 import { useEffect, useRef, useState } from "react";
 import lessonService from "@/services/lesson.service";
@@ -102,9 +106,9 @@ const CreateLesson: React.FC<CourseProps> = ({ courses }) => {
           </div>
           <DialogFooter className="mt-5">
             <DialogClose asChild>
-              <Button ref={closeRef} variant="outline">
-                Cancel
-              </Button>
+              <DialogTrigger>
+                <Button variant="outline">Cancel</Button>
+              </DialogTrigger>
             </DialogClose>
             <Button type="submit">Submit</Button>
           </DialogFooter>
