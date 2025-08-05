@@ -1181,7 +1181,7 @@ export default function HomePage() {
                     }}
                     className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105 animate-pulse-glow"
                   >
-                    Clear Filters
+                    ok
                   </button>
                 </div>
               )}
