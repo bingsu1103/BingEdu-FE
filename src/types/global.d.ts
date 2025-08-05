@@ -144,6 +144,14 @@ declare global {
     score?: number;
     is_correct: boolean;
   }
+  interface IAnswerPost {
+    user_id: string;
+    lesson_id: string;
+    question_id: string;
+    question_type?: string;
+    user_answer_key?: string;
+    user_answer_text?: string;
+  }
 
   interface ICourses {
     _id: string;
@@ -171,6 +179,17 @@ declare global {
     lessonID: string;
     rating: number;
     comment: string;
+    createdAt?: string;
+    updatedAt?: string;
+  }
+
+  interface IProgressCourses {
+    _id: string;
+    userId: string;
+    coursesId: string;
+    lessonsIdComplete: string[];
+    progress?: number;
+    completed?: boolean;
     createdAt?: string;
     updatedAt?: string;
   }

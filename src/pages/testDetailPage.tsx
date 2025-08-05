@@ -5,12 +5,15 @@ import {
   MessageCircleQuestionMark,
   CheckCircle,
   Crown,
+  CircleArrowLeft,
 } from "lucide-react";
 import questionService from "@/services/question.service";
 import { UseTheme } from "@/components/context/theme.context";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { UseCurrentApp } from "@/components/context/app.context";
+import answerService from "@/services/answer.service";
+import progressService from "@/services/progress.service";
 
 const formatTime = (seconds: number): string => {
   const minutes = Math.floor(seconds / 60);
@@ -20,26 +23,18 @@ const formatTime = (seconds: number): string => {
     .padStart(2, "0")}`;
 };
 
-type IAnswerProps = {
-  user_id?: string;
-  lesson_id: string;
-  question_id: string;
-  question_type?: string;
-  user_answer_key?: string;
-  user_answer_text?: string;
-};
-
 const TestDetailPage: React.FC = () => {
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: string]: string;
   }>({});
-  const [listAnswers, setListAnswers] = useState<IAnswerProps[]>([]);
   const [timeLeft, setTimeLeft] = useState(1800);
   const [isFinished, setIsFinished] = useState(false);
   const [listQuestion, setListQuestion] = useState<IQuestion[]>([]);
   const { lessonId } = useParams<{ lessonId: string }>();
+  const { id } = useParams<{ id: string }>();
   const { theme } = UseTheme();
   const { user } = UseCurrentApp();
+  const [totalScore, setTotalScore] = useState<number>(0);
 
   useEffect(() => {
     if (timeLeft > 0 && !isFinished) {
@@ -86,25 +81,59 @@ const TestDetailPage: React.FC = () => {
     });
   };
 
-  const handleSubmit = () => {
-    setIsFinished(true);
-    Object.entries(selectedAnswers).map(([key, value]) => {
-      const data = {
+  const handleSubmit = async () => {
+    const answersToSubmit: IAnswerPost[] = listQuestion.map((question) => {
+      const userAnswer = selectedAnswers[question._id];
+      return {
         user_id: user?._id || "",
         lesson_id: lessonId || "",
-        question_id: key,
-        ...(value.length === 1 && {
-          user_answer_key: value,
-          question_type: "multiple_choice",
+        question_id: question._id,
+        question_type: question.question_type as "multiple_choice" | "essay",
+        ...(question.question_type === "multiple_choice" && {
+          user_answer_key: userAnswer !== undefined ? userAnswer : undefined,
         }),
-        ...(value.length > 1 && {
-          user_answer_text: value,
-          question_type: "essay",
+        ...(question.question_type === "essay" && {
+          user_answer_text: userAnswer !== undefined ? userAnswer : undefined,
         }),
       };
-      listAnswers.push(data);
     });
-    setListAnswers(listAnswers);
+
+    try {
+      const answerRes = await answerService.createMultipleAnswerAPI(
+        answersToSubmit
+      );
+      const result = answerRes.data || [];
+
+      let score: number = 0;
+      result.forEach((data) => {
+        score += data?.score || 0;
+      });
+      const progressCourse = await progressService.getCourseProgressAPI(
+        user?._id || "",
+        id || ""
+      );
+      if (!progressCourse.status) {
+        await progressService.createCourseProgressAPI(
+          user?._id || "",
+          lessonId || "",
+          id || ""
+        );
+      } else {
+        if (!progressCourse.data?.lessonsIdComplete.includes(`${lessonId}`)) {
+          await progressService.updateCourseProgressAPI(
+            user?._id || "",
+            lessonId || "",
+            id || ""
+          );
+        }
+      }
+      setTotalScore(score);
+      setIsFinished(true);
+    } catch (error) {
+      console.error("Error submitting answers:", error);
+      setTotalScore(0);
+      setIsFinished(true);
+    }
   };
 
   const answeredQuestions = Object.keys(selectedAnswers).length;
@@ -122,7 +151,7 @@ const TestDetailPage: React.FC = () => {
         <div className="bg-background rounded-xl shadow-lg p-8 max-w-md w-full text-center">
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            Test Completed!
+            Lesson Completed!
           </h2>
           <p className="text-foreground mb-4">
             You answered {answeredQuestions} out of {listQuestion.length}{" "}
@@ -132,15 +161,23 @@ const TestDetailPage: React.FC = () => {
             <p className="text-blue-800 font-medium">
               Time used: {formatTime(1800 - timeLeft)}
             </p>
+            <span className="text-red-500 font-bold">
+              Score: {totalScore} / {listQuestion.length}
+            </span>
           </div>
           {user?.type === "vip" ? (
             <div className="mt-10">
               <Button>Viewing Corrections</Button>
             </div>
           ) : (
-            <div className="mt-10">
+            <div className="mt-10 space-y-3">
+              <Button variant="outline" className="cursor-pointer">
+                <Crown />
+                Upgrade to VIP to view corrections
+              </Button>
               <Button className="cursor-pointer">
-                <Crown></Crown>Upgrade to VIP to view corrections
+                <CircleArrowLeft />
+                <Link to="/">Back home</Link>
               </Button>
             </div>
           )}

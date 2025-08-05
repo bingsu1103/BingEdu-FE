@@ -24,6 +24,8 @@ import { useEffect, useState } from "react";
 import coursesService from "@/services/courses.service";
 import lessonService from "@/services/lesson.service";
 import { Button } from "../ui/button";
+import progressService from "@/services/progress.service";
+import { UseCurrentApp } from "../context/app.context";
 
 // Define ICourse interface for course data
 const getLevelColor = (level: string) => {
@@ -86,8 +88,12 @@ const LessonList: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [selectedListLesson, setSelectedListLesson] = useState<ILesson[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<ICourses | null>(null);
+  const [courseProgress, setCourseProgress] = useState<IProgressCourses | null>(
+    null
+  );
   const { theme } = UseTheme();
   const navigate = useNavigate();
+  const { user } = UseCurrentApp();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,12 +102,18 @@ const LessonList: React.FC = () => {
         setSelectedListLesson(lessonsRes.data || []);
         const courseRes = await coursesService.getCourseAPI(id!);
         setSelectedCourse(courseRes.data || null);
+        const progress = await progressService.getCourseProgressAPI(
+          user?._id || "",
+          courseRes.data?._id || ""
+        );
+        const dataProgress = progress.data;
+        setCourseProgress(dataProgress || null);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchData();
-  }, [id]);
+  }, [id, user?._id]);
 
   return (
     <div className="container mx-auto px-4 py-8 bg-background">
@@ -163,7 +175,8 @@ const LessonList: React.FC = () => {
             Course Progress
           </h2>
           <span className="text-sm text-foreground">
-            1 of {selectedListLesson.length} completed
+            {courseProgress?.lessonsIdComplete.length ?? 0} of{" "}
+            {selectedListLesson.length} completed
           </span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-3">
@@ -172,7 +185,9 @@ const LessonList: React.FC = () => {
             style={{
               width: `${
                 selectedListLesson.length > 0
-                  ? (1 / selectedListLesson.length) * 100
+                  ? ((courseProgress?.lessonsIdComplete?.length ?? 0) /
+                      selectedListLesson.length) *
+                    100
                   : 0
               }%`,
             }}
@@ -194,9 +209,9 @@ const LessonList: React.FC = () => {
           </div>
         ) : (
           selectedListLesson.map((lesson, index) => {
-            const isCompleted = index < 3; // Mock completion status
-            const isLocked = index > 4; // Mock locked status
-            const isCurrent = index === 3; // Mock current lesson
+            const isCompleted =
+              courseProgress?.lessonsIdComplete?.includes(lesson._id) ?? false;
+            const isLocked = index > 4;
 
             return (
               <div
@@ -205,7 +220,7 @@ const LessonList: React.FC = () => {
                   !isLocked
                     ? "cursor-pointer hover:-translate-y-1"
                     : "opacity-60"
-                } ${isCurrent ? "ring-2 ring-indigo-500" : ""}`}
+                } `}
               >
                 <div className="p-6">
                   <div className="flex items-center justify-between">
@@ -215,8 +230,6 @@ const LessonList: React.FC = () => {
                         className={`w-12 h-12 rounded-full flex items-center justify-center ${
                           isCompleted
                             ? "bg-green-100 text-green-600"
-                            : isCurrent
-                            ? "bg-indigo-100 text-indigo-600"
                             : isLocked
                             ? "bg-gray-100 text-gray-400"
                             : "bg-blue-100 text-blue-600"
@@ -268,7 +281,11 @@ const LessonList: React.FC = () => {
                               className="cursor-pointer"
                               variant="outline"
                             >
-                              Start
+                              {isCompleted ? (
+                                <span>Retry</span>
+                              ) : (
+                                <span>Start</span>
+                              )}
                             </Button>
                           </DialogTrigger>
                           <DialogContent>
@@ -287,16 +304,10 @@ const LessonList: React.FC = () => {
                                     className={`cursor-pointer ${
                                       isCompleted
                                         ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                                        : isCurrent
-                                        ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700"
                                         : "bg-blue-500 text-white hover:bg-blue-600"
                                     }`}
                                   >
-                                    {isCompleted
-                                      ? "OK"
-                                      : isCurrent
-                                      ? "OK"
-                                      : "OK"}
+                                    OK
                                   </Button>
                                   <DialogTrigger>
                                     <Button>Cancel</Button>
@@ -309,22 +320,6 @@ const LessonList: React.FC = () => {
                       )}
                     </div>
                   </div>
-
-                  {/* Progress bar for current lesson */}
-                  {isCurrent && (
-                    <div className="mt-4 pt-4 border-t border-gray-100">
-                      <div className="flex items-center justify-between text-sm text-foreground mb-2">
-                        <span>Lesson Progress</span>
-                        <span>75%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full"
-                          style={{ width: "75%" }}
-                        ></div>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             );
@@ -344,7 +339,12 @@ const LessonList: React.FC = () => {
               </p>
             </div>
             <div className="text-right">
-              <div className="text-3xl font-bold mb-1">75%</div>
+              <div className="text-3xl font-bold mb-1">
+                {((courseProgress?.lessonsIdComplete.length ?? 0) /
+                  selectedListLesson.length) *
+                  100}
+                %
+              </div>
               <div className="text-foreground text-sm">Completed</div>
             </div>
           </div>

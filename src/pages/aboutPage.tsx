@@ -21,8 +21,8 @@ import {
   Lightbulb,
   Rocket,
 } from "lucide-react";
-import AnimatedSection from "./animatedSection";
-import StaggeredAnimation from "./staggeredAnimated";
+import AnimatedSection from "../animations/animatedSection";
+import StaggeredAnimation from "../animations/staggeredAnimated";
 import { useNavigate } from "react-router";
 
 const AboutPage = () => {
@@ -93,7 +93,7 @@ const AboutPage = () => {
     name: "Ngo Gia An",
     role: "CEO & Founder",
     education:
-      "Final-year IT student, passionate about developing online learning platforms",
+      "3rd-year IT student, passionate about developing online learning platforms",
     image:
       "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400",
   };

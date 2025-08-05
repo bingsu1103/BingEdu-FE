@@ -25,13 +25,20 @@ export const AppProvider = (props: TProps) => {
 
   useEffect(() => {
     const fetchAccount = async () => {
-      const res = await authService.fetchAccountAPI();
-      if (res.data) {
-        const user = await userService.getUserAPI(res.data.user_id);
-        setUser(user.data ?? null);
-        setIsAuthenticated(true);
+      try {
+        const res = await authService.fetchAccountAPI();
+        if (res.data) {
+          const userRes = await userService.getUserAPI(res.data.user_id);
+          setUser(userRes.data ?? null);
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        console.error(error);
+        setIsAuthenticated(false);
+        setUser(null);
+      } finally {
+        setIsAppLoading(false);
       }
-      setIsAppLoading(false);
     };
     fetchAccount();
   }, []);

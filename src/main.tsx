@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+// import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router";
@@ -113,11 +113,9 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <AppProvider>
-        <RouterProvider router={router} />
-      </AppProvider>
-    </ThemeProvider>
-  </StrictMode>
+  <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <AppProvider>
+      <RouterProvider router={router} />
+    </AppProvider>
+  </ThemeProvider>
 );
