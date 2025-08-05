@@ -532,3 +532,7 @@ html {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.trash:hover {
+  color: rgb(244, 49, 49);
+}

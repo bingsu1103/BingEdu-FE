@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import {
-  Heart,
   MessageCircle,
-  Share2,
-  Bookmark,
   Star,
   Clock,
   Users,
@@ -12,7 +9,6 @@ import {
   FileText,
   Award,
   Search,
-  Filter,
   MoreHorizontal,
   Send,
   PenTool,
@@ -22,159 +18,40 @@ import {
   Trophy,
   Calendar,
   Briefcase,
-  ArrowUp,
   ChevronLeft,
   Siren as Fire,
   Activity,
-  BarChart3,
+  Trash2,
 } from "lucide-react";
+import coursesService from "@/services/courses.service";
+import userService from "@/services/user.service";
+import reviewService from "@/services/review.service";
+import { UseCurrentApp } from "@/components/context/app.context";
+import { message } from "antd";
 
-interface IReview {
-  _id: string;
-  userID: string;
-  userName: string;
-  lessonID: string;
-  rating: number;
-  comment: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-const reviewsFromApi: IReview[] = [
-  {
-    _id: "688b7e993061eaf427b7ed26",
-    userID: "6889e6506130e10fa2892e7d",
-    userName: "Emma Thompson",
-    lessonID: "687894cbafe51425c209675f",
-    rating: 5,
-    comment:
-      "This IELTS listening course is absolutely fantastic! The practice tests are very realistic and helped me improve my score significantly.",
-    createdAt: "2025-01-15T14:32:57.791Z",
-    updatedAt: "2025-01-15T14:32:57.791Z",
-  },
-  {
-    _id: "688b7f5dcf9e302cf6d61279",
-    userID: "6885d18a7ffea5c59b4d3a48",
-    userName: "Michael Chen",
-    lessonID: "687894cbafe51425c209675f",
-    rating: 5,
-    comment:
-      "Excellent course structure and very detailed explanations. The instructor's teaching method is clear and easy to follow.",
-    createdAt: "2025-01-14T14:36:13.776Z",
-    updatedAt: "2025-01-14T14:36:13.776Z",
-  },
-];
-
-const mockCourseFeeds: any[] = [
-  {
-    _id: "feed1",
-    course: {
-      _id: "6875f0947912353f1cd0edf1",
-      title: "IELTS Listening Mastery - Complete Course",
-      description:
-        "Master IELTS listening with comprehensive practice tests and proven strategies. This course covers all question types and provides detailed feedback to help you achieve your target score.",
-      thumbnail:
-        "https://images.pexels.com/photos/5428836/pexels-photo-5428836.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=2",
-      type: "listening",
-      level: "Intermediate",
-      duration: "12 hours",
-      lessonsCount: 24,
-    },
-    instructor: {
-      name: "Sarah Johnson",
-      avatar:
-        "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2",
-      verified: true,
-      title: "IELTS Expert & Former Examiner",
-    },
-    stats: {
-      likes: 234,
-      comments: 45,
-      shares: 12,
-      enrolled: 1250,
-      averageRating: 4.8,
-      totalReviews: 189,
-    },
-    tags: ["IELTS", "Listening", "Test Prep", "Intermediate"],
-    createdAt: "2024-01-15T10:30:00Z",
-    isLiked: false,
-    isBookmarked: true,
-    price: 49.99,
-    originalPrice: 79.99,
-  },
-  {
-    _id: "feed2",
-    course: {
-      _id: "687894b840ca534aca183c13",
-      title: "Advanced English Reading Comprehension",
-      description:
-        "Develop critical reading skills with advanced techniques for academic and professional texts. Perfect for students preparing for standardized tests or improving comprehension.",
-      thumbnail:
-        "https://images.pexels.com/photos/1181772/pexels-photo-1181772.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=2",
-      type: "reading",
-      level: "Advanced",
-      duration: "8 hours",
-      lessonsCount: 16,
-    },
-    instructor: {
-      name: "Dr. Michael Chen",
-      avatar:
-        "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2",
-      verified: true,
-      title: "Academic English Specialist",
-    },
-    stats: {
-      likes: 189,
-      comments: 32,
-      shares: 8,
-      enrolled: 890,
-      averageRating: 4.6,
-      totalReviews: 156,
-    },
-    tags: ["Reading", "Academic", "Advanced", "Critical Thinking"],
-    createdAt: "2024-01-14T14:20:00Z",
-    isLiked: true,
-    isBookmarked: false,
-    price: 39.99,
-    originalPrice: 59.99,
-  },
-  {
-    _id: "feed3",
-    course: {
-      _id: "687f320cd4e2347c3bd88dc7",
-      title: "Business English Writing Excellence",
-      description:
-        "Excel in professional communication with practical writing exercises, email templates, and business vocabulary. Ideal for career advancement and workplace success.",
-      thumbnail:
-        "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=2",
-      type: "writing",
-      level: "Intermediate",
-      duration: "15 hours",
-      lessonsCount: 30,
-    },
-    instructor: {
-      name: "Emma Williams",
-      avatar:
-        "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2",
-      verified: true,
-      title: "Business Communication Expert",
-    },
-    stats: {
-      likes: 312,
-      comments: 67,
-      shares: 23,
-      enrolled: 2100,
-      averageRating: 4.9,
-      totalReviews: 234,
-    },
-    tags: ["Business", "Writing", "Professional", "Communication"],
-    createdAt: "2024-01-13T09:15:00Z",
-    isLiked: true,
-    isBookmarked: true,
-    price: 69.99,
-    originalPrice: 99.99,
-  },
-];
+// const reviewsFromApi: IReview[] = [
+//   {
+//     _id: "688b7e993061eaf427b7ed26",
+//     userID: "6889e6506130e10fa2892e7d",
+//     userName: "Emma Thompson",
+//     lessonID: "687894cbafe51425c209675f",
+//     rating: 5,
+//     comment:
+//       "This IELTS listening course is absolutely fantastic! The practice tests are very realistic and helped me improve my score significantly.",
+//     createdAt: "2025-01-15T14:32:57.791Z",
+//     updatedAt: "2025-01-15T14:32:57.791Z",
+//   },
+//   {
+//     _id: "688b7f5dcf9e302cf6d61279",
+//     userID: "6885d18a7ffea5c59b4d3a48",
+//     userName: "Michael Chen",
+//     lessonID: "687894cbafe51425c209675f",
+//     rating: 5,
+//     comment:
+//       "Excellent course structure and very detailed explanations. The instructor's teaching method is clear and easy to follow.",
+//     createdAt: "2025-01-14T14:36:13.776Z",
+//     updatedAt: "2025-01-14T14:36:13.776Z",
+//   },
 
 const featuredCourses = [
   {
@@ -222,37 +99,31 @@ const categories = [
   {
     name: "IELTS Prep",
     icon: <FileText className="w-8 h-8" />,
-    courses: 1250,
     color: "from-blue-500 to-blue-600",
   },
   {
     name: "Grammar",
     icon: <PenTool className="w-8 h-8" />,
-    courses: 890,
     color: "from-purple-500 to-purple-600",
   },
   {
     name: "Business English",
     icon: <Briefcase className="w-8 h-8" />,
-    courses: 650,
     color: "from-green-500 to-green-600",
   },
   {
     name: "Conversation",
     icon: <MessageCircle className="w-8 h-8" />,
-    courses: 420,
     color: "from-orange-500 to-orange-600",
   },
   {
     name: "Listening",
     icon: <Headphones className="w-8 h-8" />,
-    courses: 330,
     color: "from-pink-500 to-pink-600",
   },
   {
     name: "Writing",
     icon: <BookOpen className="w-8 h-8" />,
-    courses: 280,
     color: "from-teal-500 to-teal-600",
   },
 ];
@@ -382,17 +253,16 @@ const renderStars = (rating: number) => {
 export default function HomePage() {
   const [selectedFeed, setSelectedFeed] = useState<string | null>(null);
   const [newComment, setNewComment] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState<string>("all");
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [showScrollTop, setShowScrollTop] = useState(false);
   const [animatedCards, setAnimatedCards] = useState<Set<string>>(new Set());
+  const [listCourses, setListCourses] = useState<ICourses[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [listTeacher, setListTeacher] = useState<IUser[] | null>([]);
+  const [listStudent, setListStudent] = useState<IUser[] | null>([]);
+  const [listReview, setListReview] = useState<IReview[] | null>([]);
+  const { user } = UseCurrentApp();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 400);
-    };
-
     const observeCards = () => {
       const cards = document.querySelectorAll(".animate-on-scroll");
       const observer = new IntersectionObserver(
@@ -400,6 +270,7 @@ export default function HomePage() {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               setAnimatedCards((prev) => new Set([...prev, entry.target.id]));
+              observer.unobserve(entry.target);
             }
           });
         },
@@ -410,14 +281,9 @@ export default function HomePage() {
       return () => observer.disconnect();
     };
 
-    window.addEventListener("scroll", handleScroll);
     const cleanup = observeCards();
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      cleanup();
-    };
-  }, []);
+    return cleanup;
+  }, [listCourses]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -426,25 +292,84 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  useEffect(() => {
+    const fetchAllUser = async () => {
+      const listUser = await userService.getAllUser();
+      setListStudent(listUser.data?.filter((v) => v.role === "user") || []);
+      setListTeacher(listUser.data?.filter((v) => v.role === "teacher") || []);
+    };
+    fetchAllUser();
+  }, []);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        const coursesRes = await coursesService.getAllCoursesAPI();
+        const validCourses =
+          coursesRes.data?.map((course: ICourses) => ({
+            _id: course._id || "",
+            title: course.title || "Untitled Course",
+            description: course.description || "",
+            type: course.type || "mixed",
+            thumbnail: course.thumbnail || "default-thumbnail.jpg",
+          })) || [];
+        setListCourses([...validCourses]);
+      } catch (error) {
+        console.error("Failed to fetch courses", error);
+        setListCourses([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      const result = await reviewService.getAllReviewAPI();
+      const reviews = Array.isArray(result?.data)
+        ? result.data
+        : result?.data
+        ? [result.data]
+        : [];
+      setListReview(reviews);
+    };
+    fetchReviews();
+  }, []);
+  const handlePostComment = async () => {
+    if (!user) return;
+    const res = await reviewService.createReviewAPI(
+      user._id,
+      user.name,
+      selectedFeed || "",
+      newComment,
+      5
+    );
+    const reviews = Array.isArray(res.data)
+      ? res.data
+      : res.data
+      ? [res.data]
+      : [];
+    setListReview((prev) => [...prev, ...reviews]);
+    setNewComment("");
   };
-
-  const filteredFeeds = mockCourseFeeds.filter((feed) => {
-    const matchesSearch =
-      feed.course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      feed.course.description
-        ?.toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      feed.tags.some((tag: any) =>
-        tag.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-
-    const matchesFilter =
-      selectedFilter === "all" || feed.course.type === selectedFilter;
-
-    return matchesSearch && matchesFilter;
-  });
+  const handleDeleteComment = async (id: string) => {
+    const res = await reviewService.deleteReviewAPI(id);
+    if (res.data && res.data.deletedCount) {
+      message.success("Comment deleted");
+      const remainReview = await reviewService.getAllReviewAPI();
+      const reviews = Array.isArray(remainReview?.data)
+        ? remainReview.data
+        : remainReview?.data
+        ? [remainReview.data]
+        : [];
+      setListReview(reviews);
+      return;
+    }
+    message.error("Deleted failed");
+  };
 
   return (
     <div className="min-h-screen text-foreground relative overflow-hidden">
@@ -457,6 +382,7 @@ export default function HomePage() {
         <div className="shooting-star delay-1"></div>
         <div className="shooting-star delay-2"></div>
       </div>
+
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-purple-900/20"></div>
@@ -471,71 +397,27 @@ export default function HomePage() {
               and interactive learning experience.
             </p>
 
-            {/* Enhanced Search Bar */}
-            <div className="max-w-2xl mx-auto mb-8 animate-fade-in-up animation-delay-400">
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition-opacity animate-pulse-glow"></div>
-                <div className="relative bg-background/90 backdrop-blur-sm rounded-2xl p-2 shadow-xl border border-white/10">
-                  <div className="flex items-center">
-                    <Search className="w-5 h-5 text-foreground/40 ml-4" />
-                    <input
-                      type="text"
-                      placeholder="What English skill do you want to improve today?"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="flex-1 px-4 py-4 bg-transparent text-foreground placeholder-foreground/50 focus:outline-none"
-                    />
-                    <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105 animate-pulse-glow">
-                      Search
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Trending Tags */}
-              <div className="flex flex-wrap justify-center gap-2 mt-4">
-                <span className="text-sm text-foreground/60">
-                  Popular searches:
-                </span>
-                {[
-                  "IELTS",
-                  "Grammar",
-                  "Business English",
-                  "Speaking",
-                  "Writing",
-                ].map((tag, index) => (
-                  <button
-                    key={tag}
-                    className="px-3 py-1 bg-background/50 border border-white/20 rounded-full text-sm text-foreground/70 hover:bg-background/70 transition-all duration-300 hover:scale-105 animate-fade-in-up"
-                    style={{ animationDelay: `${600 + index * 100}ms` }}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-3xl mx-auto">
               {[
                 {
                   label: "Active Students",
-                  value: "50K+",
+                  value: listStudent?.length,
                   icon: <Users className="w-6 h-6" />,
                 },
                 {
                   label: "Expert Teachers",
-                  value: "500+",
+                  value: listTeacher?.length,
                   icon: <Award className="w-6 h-6" />,
                 },
                 {
                   label: "English Courses",
-                  value: "1K+",
+                  value: listCourses.length,
                   icon: <BookOpen className="w-6 h-6" />,
                 },
                 {
                   label: "Success Stories",
-                  value: "10K+",
+                  value: "10+",
                   icon: <Trophy className="w-6 h-6" />,
                 },
               ].map((stat, index) => (
@@ -692,12 +574,9 @@ export default function HomePage() {
                 >
                   {category.icon}
                 </div>
-                <h4 className="font-semibold text-foreground text-center mb-2">
+                <h4 className="font-semibold text-foreground text-center">
                   {category.name}
                 </h4>
-                <p className="text-sm text-foreground/60 text-center">
-                  {category.courses} courses
-                </p>
               </div>
             ))}
           </div>
@@ -855,350 +734,268 @@ export default function HomePage() {
 
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
-            {/* Filter Bar */}
-            <div className="bg-background/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/10 p-4 animate-slide-in-right">
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center space-x-4">
-                  <Filter className="w-5 h-5 text-foreground/70" />
-                  <div className="flex flex-wrap gap-2">
-                    {["all", "listening", "reading", "writing", "grammar"].map(
-                      (type, index) => (
-                        <button
-                          key={type}
-                          onClick={() => setSelectedFilter(type)}
-                          className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105 animate-fade-in-up ${
-                            selectedFilter === type
-                              ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg animate-pulse-glow"
-                              : "text-foreground/70 hover:bg-background/70 border border-white/20"
-                          }`}
-                          style={{ animationDelay: `${index * 100}ms` }}
-                        >
-                          {type.charAt(0).toUpperCase() + type.slice(1)}
-                        </button>
-                      )
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2 text-sm text-foreground/60">
-                  <BarChart3 className="w-4 h-4" />
-                  <span className="animate-counter">
-                    {filteredFeeds.length} courses found
-                  </span>
-                </div>
-              </div>
-            </div>
-
             {/* Course Feed */}
-            <div className="space-y-6">
-              {filteredFeeds.map((feed, index) => (
-                <div
-                  key={feed._id}
-                  id={`feed-${index}`}
-                  className={`animate-on-scroll bg-background/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/10 overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105 ${
-                    animatedCards.has(`feed-${index}`)
-                      ? "animate-fade-in-up"
-                      : "opacity-0"
-                  }`}
-                  style={{ animationDelay: `${index * 150}ms` }}
-                >
-                  {/* Feed Header */}
-                  <div className="p-6 border-b border-white/10">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <img
-                          src={feed.instructor.avatar}
-                          alt={feed.instructor.name}
-                          className="w-12 h-12 rounded-full object-cover ring-2 ring-white/20 animate-pulse-glow"
-                        />
-                        <div>
-                          <div className="flex items-center space-x-2">
-                            <h4 className="font-semibold text-foreground">
-                              {feed.instructor.name}
-                            </h4>
-                            {feed.instructor.verified && (
-                              <Award className="w-4 h-4 text-blue-400 animate-bounce-subtle" />
-                            )}
+            {loading ? (
+              <div className="space-y-6">
+                {[1, 2, 3].map((index) => (
+                  <div
+                    key={index}
+                    className="bg-background/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/10 overflow-hidden animate-pulse"
+                  >
+                    <div className="p-6">
+                      <div className="flex flex-col lg:flex-row gap-6">
+                        <div className="lg:w-1/3">
+                          <div className="w-full h-48 bg-background/50 rounded-2xl"></div>
+                        </div>
+                        <div className="lg:w-2/3">
+                          <div className="h-6 bg-background/50 rounded mb-4"></div>
+                          <div className="h-4 bg-background/30 rounded mb-2"></div>
+                          <div className="h-4 bg-background/30 rounded mb-4"></div>
+                          <div className="flex space-x-2">
+                            <div className="h-8 w-20 bg-background/30 rounded"></div>
+                            <div className="h-8 w-24 bg-background/30 rounded"></div>
                           </div>
-                          <p className="text-sm text-foreground/50">
-                            {feed.instructor.title}
-                          </p>
-                          <p className="text-xs text-foreground/40">
-                            {formatTimeAgo(feed.createdAt)}
-                          </p>
                         </div>
                       </div>
-                      <button className="p-2 text-foreground/40 hover:text-foreground/70 rounded-full hover:bg-background/50 transition-all duration-300 hover:scale-110">
-                        <MoreHorizontal className="w-5 h-5" />
-                      </button>
                     </div>
                   </div>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {listCourses.length > 0 ? (
+                  listCourses.map((course, index) => (
+                    <div
+                      key={course._id}
+                      id={`feed-${index}`}
+                      className={`animate-on-scroll bg-background/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/10 overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-101 ${
+                        animatedCards.has(`feed-${index}`)
+                          ? "animate-fade-in-up"
+                          : "opacity-0"
+                      }`}
+                      style={{ animationDelay: `${index * 150}ms` }}
+                    >
+                      {/* Feed Header */}
+                      <div className="p-6 border-b border-white/10">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold animate-pulse-glow">
+                              {course.title.charAt(0)}
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-foreground">
+                                English Learning Course
+                              </h4>
+                              <p className="text-sm text-foreground/50">
+                                Expert Instructor
+                              </p>
+                              <p className="text-xs text-foreground/40">
+                                Recently updated
+                              </p>
+                            </div>
+                          </div>
+                          <button className="p-2 text-foreground/40 hover:text-foreground/70 rounded-full hover:bg-background/50 transition-all duration-300 hover:scale-105">
+                            <MoreHorizontal className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </div>
 
-                  {/* Course Content */}
-                  <div className="p-6">
-                    <div className="flex flex-col lg:flex-row gap-6">
-                      <div className="lg:w-1/3">
-                        <div className="relative group cursor-pointer">
-                          <img
-                            src={feed.course.thumbnail}
-                            alt={feed.course.title}
-                            className="w-full h-48 object-cover rounded-2xl transition-transform duration-300 group-hover:scale-110"
-                          />
-                          <div className="absolute inset-0 bg-black/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity">
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <button className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-all duration-300 hover:scale-110 animate-pulse-glow">
-                                <Play className="w-5 h-5 text-gray-800 ml-1" />
+                      {/* Course Content */}
+                      <div className="p-6">
+                        <div className="flex flex-col lg:flex-row gap-6">
+                          <div className="lg:w-1/3">
+                            <div className="relative group cursor-pointer">
+                              <img
+                                src={course.thumbnail}
+                                alt={course.title}
+                                className="w-full h-48 object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
+                              />
+                              <div className="absolute inset-0 bg-black/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <button className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-all duration-300 hover:scale-110 animate-pulse-glow">
+                                    <Play className="w-5 h-5 text-gray-800 ml-1" />
+                                  </button>
+                                </div>
+                              </div>
+                              <div
+                                className={`absolute top-3 left-3 w-10 h-10 bg-gradient-to-r ${getTypeColor(
+                                  course.type
+                                )} rounded-xl flex items-center justify-center text-white animate-float`}
+                              >
+                                {getTypeIcon(course.type)}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="lg:w-2/3">
+                            <div className="flex items-center space-x-2 mb-2">
+                              <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-medium rounded-full border border-blue-500/30 animate-pulse-glow">
+                                {course.type}
+                              </span>
+                            </div>
+
+                            <h3 className="text-xl font-bold text-foreground mb-2 line-clamp-2 animate-slide-in-left">
+                              {course.title}
+                            </h3>
+                            <p className="text-foreground/70 mb-4 line-clamp-3 animate-slide-in-left animation-delay-200">
+                              {course.description ||
+                                "Enhance your English skills with this comprehensive course designed to improve your language proficiency."}
+                            </p>
+
+                            {/* Course Stats */}
+                            <div className="flex flex-wrap items-center gap-4 text-sm text-foreground/60 mb-4">
+                              <div className="flex items-center space-x-1 animate-fade-in-up">
+                                <Users className="w-4 h-4" />
+                                <span className="animate-counter">
+                                  1,234 students
+                                </span>
+                              </div>
+                              <div className="flex items-center space-x-1 animate-fade-in-up animation-delay-100">
+                                {renderStars(5)}
+                                <span className="ml-1">4.8 (156 reviews)</span>
+                              </div>
+                              <div className="flex items-center space-x-1 animate-fade-in-up animation-delay-200">
+                                <BookMarked className="w-4 h-4" />
+                                <span>24 lessons</span>
+                              </div>
+                            </div>
+
+                            {/* Price and Action */}
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-2">
+                                <span className="text-2xl font-bold text-foreground animate-bounce-subtle">
+                                  $49.99
+                                </span>
+                                <span className="text-sm text-foreground/50 line-through">
+                                  $79.99
+                                </span>
+                                <span className="px-2 py-1 bg-red-500/20 text-red-400 text-xs font-medium rounded-full border border-red-500/30 animate-pulse-glow">
+                                  38% off
+                                </span>
+                              </div>
+                              <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105 animate-pulse-glow">
+                                Start Learning
                               </button>
                             </div>
                           </div>
-                          <div
-                            className={`absolute top-3 left-3 w-10 h-10 bg-gradient-to-r ${getTypeColor(
-                              feed.course.type
-                            )} rounded-xl flex items-center justify-center text-white animate-float`}
-                          >
-                            {getTypeIcon(feed.course.type)}
-                          </div>
                         </div>
                       </div>
 
-                      <div className="lg:w-2/3">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-medium rounded-full border border-blue-500/30 animate-pulse-glow">
-                            {feed.course.level}
-                          </span>
-                          <span className="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-medium rounded-full border border-green-500/30 animate-pulse-glow">
-                            {feed.course.duration}
-                          </span>
-                        </div>
-
-                        <h3 className="text-xl font-bold text-foreground mb-2 line-clamp-2 animate-slide-in-left">
-                          {feed.course.title}
-                        </h3>
-                        <p className="text-foreground/70 mb-4 line-clamp-3 animate-slide-in-left animation-delay-200">
-                          {feed.course.description}
-                        </p>
-
-                        {/* Tags */}
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {feed.tags
-                            .slice(0, 4)
-                            .map((tag: string, tagIndex: number) => (
-                              <span
-                                key={tag}
-                                className="px-3 py-1 bg-background/30 text-foreground/60 text-sm rounded-full border border-white/20 animate-fade-in-up hover:scale-105 transition-transform duration-300"
-                                style={{
-                                  animationDelay: `${tagIndex * 100}ms`,
-                                }}
-                              >
-                                #{tag}
-                              </span>
-                            ))}
-                        </div>
-
-                        {/* Course Stats */}
-                        <div className="flex flex-wrap items-center gap-4 text-sm text-foreground/60 mb-4">
-                          <div className="flex items-center space-x-1 animate-fade-in-up">
-                            <Users className="w-4 h-4" />
-                            <span className="animate-counter">
-                              {feed.stats.enrolled.toLocaleString()} students
-                            </span>
-                          </div>
-                          <div className="flex items-center space-x-1 animate-fade-in-up animation-delay-100">
-                            {renderStars(Math.floor(feed.stats.averageRating))}
-                            <span className="ml-1">
-                              {feed.stats.averageRating} (
-                              {feed.stats.totalReviews})
-                            </span>
-                          </div>
-                          <div className="flex items-center space-x-1 animate-fade-in-up animation-delay-200">
-                            <BookMarked className="w-4 h-4" />
-                            <span>{feed.course.lessonsCount} lessons</span>
-                          </div>
-                        </div>
-
-                        {/* Price and Action */}
+                      {/* Engagement Actions */}
+                      <div className="px-6 py-4 border-t border-white/10 bg-background/30">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            <span className="text-2xl font-bold text-foreground animate-bounce-subtle">
-                              ${feed.price}
-                            </span>
-                            <span className="text-sm text-foreground/50 line-through">
-                              ${feed.originalPrice}
-                            </span>
-                            <span className="px-2 py-1 bg-red-500/20 text-red-400 text-xs font-medium rounded-full border border-red-500/30 animate-pulse-glow">
-                              {Math.round(
-                                (1 - feed.price / feed.originalPrice) * 100
-                              )}
-                              % off
-                            </span>
-                          </div>
-                          <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105 animate-pulse-glow">
-                            Start Learning
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Engagement Actions */}
-                  <div className="px-6 py-4 border-t border-white/10 bg-background/30">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-6">
-                        <button
-                          className={`flex items-center space-x-2 transition-all duration-300 hover:scale-105 ${
-                            feed.isLiked
-                              ? "text-red-400"
-                              : "text-foreground/50 hover:text-red-400"
-                          }`}
-                        >
-                          <Heart
-                            className={`w-5 h-5 ${
-                              feed.isLiked
-                                ? "fill-current animate-heartbeat"
-                                : ""
-                            }`}
-                          />
-                          <span className="animate-counter">
-                            {feed.stats.likes}
-                          </span>
-                        </button>
-
-                        <button
-                          onClick={() =>
-                            setSelectedFeed(
-                              selectedFeed === feed._id ? null : feed._id
-                            )
-                          }
-                          className="flex items-center space-x-2 text-foreground/50 hover:text-blue-400 transition-all duration-300 hover:scale-105"
-                        >
-                          <MessageCircle className="w-5 h-5" />
-                          <span className="animate-counter">
-                            {feed.stats.comments}
-                          </span>
-                        </button>
-
-                        <button className="flex items-center space-x-2 text-foreground/50 hover:text-green-400 transition-all duration-300 hover:scale-105">
-                          <Share2 className="w-5 h-5" />
-                          <span className="animate-counter">
-                            {feed.stats.shares}
-                          </span>
-                        </button>
-                      </div>
-
-                      <button
-                        className={`transition-all duration-300 hover:scale-105 ${
-                          feed.isBookmarked
-                            ? "text-yellow-400"
-                            : "text-foreground/50 hover:text-yellow-400"
-                        }`}
-                      >
-                        <Bookmark
-                          className={`w-5 h-5 ${
-                            feed.isBookmarked
-                              ? "fill-current animate-bounce-subtle"
-                              : ""
-                          }`}
-                        />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Compact Comments Section */}
-                  {selectedFeed === feed._id && (
-                    <div className="border-t border-white/10 p-4 bg-background/30 animate-slide-down">
-                      <div className="max-h-64 overflow-y-auto space-y-3">
-                        {reviewsFromApi
-                          ?.slice(0, 3)
-                          .map((review, reviewIndex) => (
-                            <div
-                              key={review._id}
-                              className="bg-background/50 p-3 rounded-xl animate-fade-in-up"
-                              style={{
-                                animationDelay: `${reviewIndex * 100}ms`,
-                              }}
+                          <div className="flex items-center space-x-6">
+                            <button
+                              onClick={() =>
+                                setSelectedFeed(
+                                  selectedFeed === course._id
+                                    ? null
+                                    : course._id
+                                )
+                              }
+                              className="flex items-center space-x-2 text-foreground/50 hover:text-blue-400 transition-all duration-300 hover:scale-105"
                             >
-                              <div className="flex items-start space-x-2">
-                                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold animate-pulse-glow">
-                                  {review.userName?.charAt(0) || "U"}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center space-x-2 mb-1">
-                                    <h5 className="font-medium text-foreground text-sm">
-                                      {review.userName || "Anonymous"}
-                                    </h5>
-                                    <div className="flex space-x-1">
-                                      {renderStars(review.rating)}
-                                    </div>
-                                    <span className="text-xs text-foreground/50">
-                                      {formatTimeAgo(review.createdAt!)}
-                                    </span>
-                                  </div>
-                                  {review.comment && (
-                                    <p className="text-foreground/70 text-sm">
-                                      {review.comment}
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-
-                      <div className="mt-3 pt-3 border-t border-white/10">
-                        <div className="flex space-x-2">
-                          <input
-                            type="text"
-                            placeholder="Share your thoughts about this English course..."
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                            className="flex-1 px-3 py-2 bg-background/50 border border-white/20 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm"
-                          />
-                          <button className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all transform hover:scale-105 animate-pulse-glow">
-                            <Send className="w-4 h-4" />
-                          </button>
+                              <MessageCircle className="w-5 h-5" />
+                              <span className="animate-counter">
+                                {listReview?.filter(
+                                  (v) => v.courseID === course._id
+                                ).length ?? 0}
+                              </span>
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ))}
 
-              {filteredFeeds.length === 0 && (
-                <div className="bg-background/50 backdrop-blur-sm rounded-2xl shadow-lg border border-white/10 p-12 text-center animate-fade-in-up">
-                  <div className="w-20 h-20 bg-background/30 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse-glow">
-                    <Search className="w-10 h-10 text-foreground/40" />
+                      {/* Compact Comments Section */}
+                      {selectedFeed === course._id && (
+                        <div className="border-t border-white/10 p-4 bg-background/30 animate-slide-down">
+                          <div className="max-h-64 overflow-y-auto space-y-3">
+                            {listReview
+                              ?.filter((v) => v.courseID === course._id)
+                              ?.map((review, reviewIndex) => (
+                                <div
+                                  key={review.courseID}
+                                  className="bg-background/50 p-3 rounded-xl animate-fade-in-up"
+                                  style={{
+                                    animationDelay: `${reviewIndex * 100}ms`,
+                                  }}
+                                >
+                                  <div className="flex items-start space-x-2">
+                                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold animate-pulse-glow">
+                                      {review.userName?.charAt(0) || "U"}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-center space-x-2 mb-1">
+                                        <h5 className="font-medium text-foreground text-sm">
+                                          {review.userName || "Anonymous"}
+                                        </h5>
+                                        <span className="text-xs text-foreground/50">
+                                          {review.createdAt
+                                            ? formatTimeAgo(review.createdAt)
+                                            : "Recently"}
+                                        </span>
+                                      </div>
+                                      {review.comment && (
+                                        <p className="text-foreground/70 text-sm">
+                                          {review.comment}
+                                        </p>
+                                      )}
+                                    </div>
+                                    {review.userID === user?._id && (
+                                      <button
+                                        onClick={() =>
+                                          handleDeleteComment(review._id)
+                                        }
+                                        className="cursor-pointer trash"
+                                      >
+                                        <Trash2 className="w-5" />
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                          </div>
+
+                          <div className="mt-3 pt-3 border-t border-white/10">
+                            <div className="flex space-x-2">
+                              <input
+                                type="text"
+                                placeholder="Share your thoughts about this English course..."
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                                className="flex-1 px-3 py-2 bg-background/50 border border-white/20 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm"
+                              />
+                              <button
+                                onClick={handlePostComment}
+                                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all transform hover:scale-105 animate-pulse-glow"
+                              >
+                                <Send className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <div className="bg-background/50 backdrop-blur-sm rounded-2xl shadow-lg border border-white/10 p-12 text-center animate-fade-in-up">
+                    <div className="w-20 h-20 bg-background/30 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse-glow">
+                      <Search className="w-10 h-10 text-foreground/40" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-foreground mb-2">
+                      No English courses found
+                    </h3>
+                    <p className="text-foreground/60 mb-4">
+                      It looks like there are no courses available at the
+                      moment. Please check back later.
+                    </p>
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground mb-2">
-                    No English courses found
-                  </h3>
-                  <p className="text-foreground/60 mb-4">
-                    Try adjusting your search or filter criteria to find the
-                    perfect English learning course.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setSearchQuery("");
-                      setSelectedFilter("all");
-                    }}
-                    className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105 animate-pulse-glow"
-                  >
-                    Clear Filters
-                  </button>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
-
-      {/* Scroll to Top Button */}
-      {showScrollTop && (
-        <button
-          onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 animate-pulse-glow"
-        >
-          <ArrowUp className="w-5 h-5 mx-auto" />
-        </button>
-      )}
     </div>
   );
 }

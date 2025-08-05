@@ -176,8 +176,8 @@ declare global {
     _id: string;
     userID: string;
     userName: string;
-    lessonID: string;
-    rating: number;
+    courseID: string;
+    rating?: number;
     comment: string;
     createdAt?: string;
     updatedAt?: string;
