@@ -28,30 +28,8 @@ import userService from "@/services/user.service";
 import reviewService from "@/services/review.service";
 import { UseCurrentApp } from "@/components/context/app.context";
 import { message } from "antd";
-
-// const reviewsFromApi: IReview[] = [
-//   {
-//     _id: "688b7e993061eaf427b7ed26",
-//     userID: "6889e6506130e10fa2892e7d",
-//     userName: "Emma Thompson",
-//     lessonID: "687894cbafe51425c209675f",
-//     rating: 5,
-//     comment:
-//       "This IELTS listening course is absolutely fantastic! The practice tests are very realistic and helped me improve my score significantly.",
-//     createdAt: "2025-01-15T14:32:57.791Z",
-//     updatedAt: "2025-01-15T14:32:57.791Z",
-//   },
-//   {
-//     _id: "688b7f5dcf9e302cf6d61279",
-//     userID: "6885d18a7ffea5c59b4d3a48",
-//     userName: "Michael Chen",
-//     lessonID: "687894cbafe51425c209675f",
-//     rating: 5,
-//     comment:
-//       "Excellent course structure and very detailed explanations. The instructor's teaching method is clear and easy to follow.",
-//     createdAt: "2025-01-14T14:36:13.776Z",
-//     updatedAt: "2025-01-14T14:36:13.776Z",
-//   },
+import SubmissionGraph from "@/components/ui/submission";
+import submissionService from "@/services/submission.service";
 
 const featuredCourses = [
   {
@@ -260,7 +238,8 @@ export default function HomePage() {
   const [listTeacher, setListTeacher] = useState<IUser[] | null>([]);
   const [listStudent, setListStudent] = useState<IUser[] | null>([]);
   const [listReview, setListReview] = useState<IReview[] | null>([]);
-  const { user } = UseCurrentApp();
+  const [submission, setSubmission] = useState<ISubmission[] | null>([]);
+  const { user, isAuthenticated } = UseCurrentApp();
 
   useEffect(() => {
     const observeCards = () => {
@@ -325,6 +304,15 @@ export default function HomePage() {
 
     fetchCourses();
   }, []);
+  useEffect(() => {
+    const fetchSubmission = async () => {
+      const resSubmission = await submissionService.getSubmissionByUserIdAPI(
+        user?._id || ""
+      );
+      setSubmission(resSubmission.data || []);
+    };
+    fetchSubmission();
+  });
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -340,19 +328,20 @@ export default function HomePage() {
   }, []);
   const handlePostComment = async () => {
     if (!user) return;
-    const res = await reviewService.createReviewAPI(
+    await reviewService.createReviewAPI(
       user._id,
       user.name,
       selectedFeed || "",
       newComment,
       5
     );
+    const res = await reviewService.getAllReviewAPI();
     const reviews = Array.isArray(res.data)
       ? res.data
       : res.data
       ? [res.data]
       : [];
-    setListReview((prev) => [...prev, ...reviews]);
+    setListReview(reviews);
     setNewComment("");
   };
   const handleDeleteComment = async (id: string) => {
@@ -734,6 +723,9 @@ export default function HomePage() {
 
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
+            {submission && isAuthenticated && (
+              <SubmissionGraph submissions={submission ?? []} />
+            )}
             {/* Course Feed */}
             {loading ? (
               <div className="space-y-6">
@@ -764,7 +756,7 @@ export default function HomePage() {
             ) : (
               <div className="space-y-6">
                 {listCourses.length > 0 ? (
-                  listCourses.map((course, index) => (
+                  listCourses.slice(0, 3).map((course, index) => (
                     <div
                       key={course._id}
                       id={`feed-${index}`}
@@ -893,7 +885,7 @@ export default function HomePage() {
                                     : course._id
                                 )
                               }
-                              className="flex items-center space-x-2 text-foreground/50 hover:text-blue-400 transition-all duration-300 hover:scale-105"
+                              className="cursor-pointer flex items-center space-x-2 text-foreground/50 hover:text-blue-400 transition-all duration-300 hover:scale-105"
                             >
                               <MessageCircle className="w-5 h-5" />
                               <span className="animate-counter">
@@ -967,7 +959,7 @@ export default function HomePage() {
                               />
                               <button
                                 onClick={handlePostComment}
-                                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all transform hover:scale-105 animate-pulse-glow"
+                                className="cursor-pointer px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all transform hover:scale-105 animate-pulse-glow"
                               >
                                 <Send className="w-4 h-4" />
                               </button>

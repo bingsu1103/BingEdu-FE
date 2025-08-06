@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { UseCurrentApp } from "@/components/context/app.context";
 import answerService from "@/services/answer.service";
 import progressService from "@/services/progress.service";
+import submissionService from "@/services/submission.service";
 
 const formatTime = (seconds: number): string => {
   const minutes = Math.floor(seconds / 60);
@@ -108,6 +109,11 @@ const TestDetailPage: React.FC = () => {
       result.forEach((data) => {
         score += data?.score || 0;
       });
+      await submissionService.createSubmissionAPI(
+        user?._id || "",
+        lessonId || "",
+        score
+      );
       const progressCourse = await progressService.getCourseProgressAPI(
         user?._id || "",
         id || ""

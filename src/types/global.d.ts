@@ -183,6 +183,15 @@ declare global {
     updatedAt?: string;
   }
 
+  interface ISubmission {
+    _id: string;
+    userId: string;
+    lessonId: string;
+    score: number;
+    createdAt?: string;
+    updatedAt?: string;
+  }
+
   interface IProgressCourses {
     _id: string;
     userId: string;
@@ -190,7 +199,7 @@ declare global {
     lessonsIdComplete: string[];
     progress?: number;
     completed?: boolean;
-    createdAt?: string;
-    updatedAt?: string;
+    createdAt: string;
+    updatedAt: string;
   }
 }
