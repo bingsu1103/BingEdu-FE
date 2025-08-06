@@ -45,7 +45,7 @@ const CourseList: React.FC = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       const listCourse = await coursesService.getAllCoursesAPI();
-      setListCourses(listCourse.data);
+      setListCourses(listCourse.data || []);
     };
     fetchCourse();
   }, []);
@@ -110,7 +110,7 @@ const CourseList: React.FC = () => {
               <div className="flex items-center justify-between text-sm text-foreground mb-4">
                 <div className="flex items-center">
                   <Clock className="w-4 h-4 mr-1" />
-                  <span>12 lessons</span>
+                  <span>{listCourse} lessons</span>
                 </div>
                 <div className="flex items-center">
                   <Users className="w-4 h-4 mr-1" />

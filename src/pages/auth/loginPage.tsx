@@ -34,6 +34,11 @@ const LoginPage = () => {
     e.preventDefault();
     setIsLoading(true);
     const logRes = await authService.loginAPI(email, password);
+    if (!logRes.status) {
+      message.error("Wrong email or password!");
+      setIsLoading(false);
+      return;
+    }
     if (logRes.status) {
       localStorage.setItem("access_token", logRes.data?.access_token || "");
       navigate("/");
