@@ -8,7 +8,6 @@ import {
   MapPin,
   Globe,
   Shield,
-  Monitor,
   Save,
   Eye,
   EyeOff,
@@ -17,13 +16,6 @@ import {
 } from "lucide-react";
 import { UseTheme } from "@/components/context/theme.context";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectTrigger,
-  SelectItem,
-  SelectContent,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import userService from "@/services/user.service";
 import { message } from "antd";
@@ -124,29 +116,6 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">
-                    Name
-                  </label>
-                  <Input
-                    type="text"
-                    value={name}
-                    defaultValue={user?.name || ""}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-foreground">
-                    Type
-                  </label>
-                  <Input
-                    disabled
-                    type="text"
-                    defaultValue={user?.type}
-                    className="w-full p-2 border  border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
                     Email
                   </label>
                   <div className="relative">
@@ -161,6 +130,29 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
                       className="w-full pl-10 pr-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                     />
                   </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-foreground">
+                    Type
+                  </label>
+                  <Input
+                    disabled
+                    type="text"
+                    defaultValue={user?.type}
+                    className="w-full p-2 border  border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Name
+                  </label>
+                  <Input
+                    type="text"
+                    value={name}
+                    defaultValue={user?.name || ""}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">
@@ -272,49 +264,6 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
                   <Button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                     Active
                   </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Learning Preferences */}
-            <div className="bg-background rounded-xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center gap-3 mb-6">
-                <Monitor size={20} className="text-foreground" />
-                <h3 className="text-lg font-semibold text-foreground">
-                  Option
-                </h3>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Target per day
-                  </label>
-                  <Select>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Hours" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="30m">30m</SelectItem>
-                      <SelectItem value="1h">1h</SelectItem>
-                      <SelectItem value="2h">2h</SelectItem>
-                      <SelectItem value="3h">3h</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Video Quality
-                  </label>
-                  <Select>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Quality" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="vi">Auto</SelectItem>
-                      <SelectItem value="en">720p HD</SelectItem>
-                      <SelectItem value="cn">1080p FullHD</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
               </div>
             </div>
