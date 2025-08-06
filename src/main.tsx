@@ -22,6 +22,7 @@ import ReadingTips from "./components/docs/readingTips.tsx";
 import SpeakingTips from "./components/docs/speakingTips.tsx";
 import WritingTips from "./components/docs/writingTips.tsx";
 import BlogPost from "./components/docs/blogPost.tsx";
+import RankingPage from "@/pages/rankingPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
       {
         path: "/about",
         element: <AboutPage />,
+      },
+      {
+        path: "/ranking",
+        element: <RankingPage />,
       },
       {
         path: "/reading/tips",

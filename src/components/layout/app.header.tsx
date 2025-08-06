@@ -20,7 +20,6 @@ import logo from "@/assets/binglogo.jpg";
 import { MenuOutlined } from "@ant-design/icons";
 import { Moon, Sun, Bell } from "lucide-react";
 import { UseTheme } from "@/components/context/theme.context";
-import data from "@/components/data/data";
 
 const AppHeader = () => {
   const { setTheme, theme } = UseTheme();
@@ -90,20 +89,12 @@ const AppHeader = () => {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Exam library</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                  {data.components.map((component) => (
-                    <ListItem
-                      key={component.title}
-                      title={component.title}
-                      to={component.to}
-                    >
-                      {component.description}
-                    </ListItem>
-                  ))}
-                </ul>
-              </NavigationMenuContent>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
+                <Link to="/ranking">Ranking</Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
 
             <NavigationMenuItem>

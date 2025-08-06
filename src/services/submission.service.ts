@@ -15,4 +15,13 @@ const getSubmissionByUserIdAPI = async (userId: string) => {
   return axios.get<IBackendRes<ISubmission[]>>(urlBackend);
 };
 
-export default { createSubmissionAPI, getSubmissionByUserIdAPI };
+const getAllSubmissionAPI = async () => {
+  const urlBackend = "/v1/api/submission";
+  return axios.get<IBackendRes<ISubmission[]>>(urlBackend);
+};
+
+export default {
+  createSubmissionAPI,
+  getSubmissionByUserIdAPI,
+  getAllSubmissionAPI,
+};

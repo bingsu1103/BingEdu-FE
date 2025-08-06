@@ -1,4 +1,5 @@
 import coursesService from "@/services/courses.service";
+import userService from "@/services/user.service";
 import {
   BookOpen,
   Headphones,
@@ -42,6 +43,7 @@ const getTypeColor = (type: string) => {
 
 const CourseList: React.FC = () => {
   const [listCourse, setListCourses] = useState<ICourses[]>([]);
+  const [listStudent, setListStudent] = useState<IUser[]>([]);
   useEffect(() => {
     const fetchCourse = async () => {
       const listCourse = await coursesService.getAllCoursesAPI();
@@ -49,6 +51,17 @@ const CourseList: React.FC = () => {
     };
     fetchCourse();
   }, []);
+
+  useEffect(() => {
+    const fetchStudent = async () => {
+      const listUser = await userService.getAllUser();
+      const listStudent = (listUser.data ?? []).filter(
+        (v) => v.role === "user"
+      );
+      setListStudent(listStudent);
+    };
+    fetchStudent();
+  });
   const navigate = useNavigate();
   return (
     <div className="container mx-auto px-4 py-8">
@@ -110,12 +123,12 @@ const CourseList: React.FC = () => {
               <div className="flex items-center justify-between text-sm text-foreground mb-4">
                 <div className="flex items-center">
                   <Clock className="w-4 h-4 mr-1" />
-                  <span>{listCourse} lessons</span>
+                  <span>lessons</span>
                 </div>
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                   <Users className="w-4 h-4 mr-1" />
                   <span>2.4k students</span>
-                </div>
+                </div> */}
               </div>
 
               <div className="flex items-center justify-between">
@@ -143,11 +156,15 @@ const CourseList: React.FC = () => {
       <div className="mt-16 bg-blue-400 rounded-2xl shadow-lg p-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
           <div className="space-y-2">
-            <div className="text-3xl font-bold text-foreground">50+</div>
+            <div className="text-3xl font-bold text-foreground">
+              {listCourse.length}
+            </div>
             <div className="text-foreground">Courses Available</div>
           </div>
           <div className="space-y-2">
-            <div className="text-3xl font-bold text-foreground">10k+</div>
+            <div className="text-3xl font-bold text-foreground">
+              {listStudent.length} +
+            </div>
             <div className="text-foreground">Active Students</div>
           </div>
           <div className="space-y-2">

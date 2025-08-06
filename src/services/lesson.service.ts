@@ -14,4 +14,14 @@ const getLessonByCourseIdAPI = async (id: string) => {
   const urlBackend = `/v1/api/lesson/course/${id}`;
   return axios.get<IBackendRes<ILesson[]>>(urlBackend);
 };
-export default { createLessonAPI, deleteLessonAPI, getLessonByCourseIdAPI };
+
+const getAllLessonAPI = async () => {
+  const urlBackend = "/v1/api/lesson/multiple";
+  return axios.get<IBackendRes<ILesson[]>>(urlBackend);
+};
+export default {
+  createLessonAPI,
+  deleteLessonAPI,
+  getLessonByCourseIdAPI,
+  getAllLessonAPI,
+};
