@@ -34,10 +34,16 @@ const getCourseProgressAPI = async (userId: string, coursesId: string) => {
   const urlBackend = `/v1/api/progress/courses/userId/${userId}/coursesId/${coursesId}`;
   return axios.get<IBackendRes<IProgressCourses>>(urlBackend);
 };
+
+const getCourseProgressByUserAPI = async (userId: string) => {
+  const urlBackend = `/v1/api/progress/courses/userId/${userId}`;
+  return axios.get<IBackendRes<IProgressCourses[]>>(urlBackend);
+};
 export default {
   createLessonProgressAPI,
   getLessonProgressAPI,
   createCourseProgressAPI,
   updateCourseProgressAPI,
   getCourseProgressAPI,
+  getCourseProgressByUserAPI,
 };

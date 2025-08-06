@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import logo from "@/assets/binglogo.jpg";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,13 +19,21 @@ import { UseTheme } from "@/components/context/theme.context";
 import { UseCurrentApp } from "@/components/context/app.context";
 import CoursesPage from "@/pages/client/coursesPage";
 
-const OverallUser: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("profile");
+const OverallUser = () => {
+  const [activeTabClient, setActiveTabClient] = useState(() => {
+    // Retrieve the saved tab from localStorage, default to "profile" if not found
+    return sessionStorage.getItem("activeTabClient") || "profile";
+  });
   const { theme } = UseTheme();
   const { user } = UseCurrentApp();
 
+  // Save the active tab to localStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("activeTabClient", activeTabClient);
+  }, [activeTabClient]);
+
   const renderContent = () => {
-    switch (activeTab) {
+    switch (activeTabClient) {
       case "profile":
         return <ProfilePage user={user} />;
       case "messages":
@@ -51,66 +59,66 @@ const OverallUser: React.FC = () => {
           <div className="flex flex-col items-center gap-2 w-4/5">
             <Button
               className={`w-full flex items-center justify-start gap-3 rounded-md py-2 px-4 cursor-pointer ${
-                activeTab === "profile"
+                activeTabClient === "profile"
                   ? "bg-blue-400 text-white hover:bg-blue-500"
                   : "bg-background text-white hover:bg-gray-300"
               } ${theme === "dark" && "hover:bg-gray-600"}`}
-              onClick={() => setActiveTab("profile")}
+              onClick={() => setActiveTabClient("profile")}
             >
               <UserRoundPen className="w-5 h-5 text-foreground" />
               <span className="text-foreground">Profile</span>
             </Button>
             <Button
               className={`w-full flex items-center justify-start gap-3 rounded-md py-2 px-4 cursor-pointer ${
-                activeTab === "messages"
+                activeTabClient === "messages"
                   ? "bg-blue-400 text-white hover:bg-blue-500"
                   : "bg-background text-white hover:bg-gray-300"
               } ${theme === "dark" && "hover:bg-gray-600"}`}
-              onClick={() => setActiveTab("messages")}
+              onClick={() => setActiveTabClient("messages")}
             >
               <MessageCircle className="w-5 h-5 text-foreground" />
               <span className="text-foreground">Message</span>
             </Button>
             <Button
               className={`w-full flex items-center justify-start gap-3 rounded-md py-2 px-4 cursor-pointer ${
-                activeTab === "results"
+                activeTabClient === "results"
                   ? "bg-blue-400 text-white hover:bg-blue-500"
                   : "bg-background text-white hover:bg-gray-300"
               } ${theme === "dark" && "hover:bg-gray-600"}`}
-              onClick={() => setActiveTab("results")}
+              onClick={() => setActiveTabClient("results")}
             >
               <LaptopMinimalCheck className="w-5 h-5 text-foreground" />
               <span className="text-foreground">Result</span>
             </Button>
             <Button
               className={`w-full flex items-center justify-start gap-3 rounded-md py-2 px-4 cursor-pointer ${
-                activeTab === "courses"
+                activeTabClient === "courses"
                   ? "bg-blue-400 text-white hover:bg-blue-500"
                   : "bg-background text-white hover:bg-gray-300"
               } ${theme === "dark" && "hover:bg-gray-600"}`}
-              onClick={() => setActiveTab("courses")}
+              onClick={() => setActiveTabClient("courses")}
             >
               <BookmarkCheck className="w-5 h-5 text-foreground" />
               <span className="text-foreground">Courses</span>
             </Button>
             <Button
               className={`w-full flex items-center justify-start gap-3 rounded-md py-2 px-4 cursor-pointer ${
-                activeTab === "settings"
+                activeTabClient === "settings"
                   ? "bg-blue-400 text-white hover:bg-blue-500"
                   : "bg-background text-white hover:bg-gray-300"
               } ${theme === "dark" && "hover:bg-gray-600"}`}
-              onClick={() => setActiveTab("settings")}
+              onClick={() => setActiveTabClient("settings")}
             >
               <Settings className="w-5 h-5 text-foreground" />
               <span className="text-foreground">Setting</span>
             </Button>
             <Button
               className={`w-full flex items-center justify-start gap-3 rounded-md py-2 px-4 cursor-pointer ${
-                activeTab === "payment"
+                activeTabClient === "payment"
                   ? "bg-blue-400 text-white hover:bg-blue-500"
                   : "bg-background text-white hover:bg-gray-300"
               } ${theme === "dark" && "hover:bg-gray-600"}`}
-              onClick={() => setActiveTab("payment")}
+              onClick={() => setActiveTabClient("payment")}
             >
               <CreditCard className="w-5 h-5 text-foreground" />
               <span className="text-foreground">Payment</span>

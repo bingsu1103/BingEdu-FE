@@ -93,7 +93,7 @@ const LessonList: React.FC = () => {
   );
   const { theme } = UseTheme();
   const navigate = useNavigate();
-  const { user } = UseCurrentApp();
+  const { user, isAuthenticated } = UseCurrentApp();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -148,7 +148,11 @@ const LessonList: React.FC = () => {
                   </span>
                   <span className="flex items-center">
                     <Clock className="w-4 h-4 mr-1" />
-                    ~2h 30min
+                    {selectedListLesson.reduce(
+                      (acc, lesson) => acc + (lesson.time || 0),
+                      0
+                    )}
+                    <span>m</span>
                   </span>
                   <span className="flex items-center">
                     <Award className="w-4 h-4 mr-1" />
@@ -288,34 +292,63 @@ const LessonList: React.FC = () => {
                               )}
                             </Button>
                           </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>
-                                Ready to start the test?
-                              </DialogTitle>
-                              <DialogDescription>
-                                <div className="flex gap-2 mt-2 float-end">
-                                  <Button
-                                    onClick={() =>
-                                      navigate(
-                                        `/courses/${id}/lesson/${lesson._id}`
-                                      )
-                                    }
-                                    className={`cursor-pointer ${
-                                      isCompleted
-                                        ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                                        : "bg-blue-500 text-white hover:bg-blue-600"
-                                    }`}
-                                  >
-                                    OK
-                                  </Button>
-                                  <DialogTrigger>
-                                    <Button>Cancel</Button>
-                                  </DialogTrigger>
-                                </div>
-                              </DialogDescription>
-                            </DialogHeader>
-                          </DialogContent>
+                          {isAuthenticated ? (
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>
+                                  Ready to start the test?
+                                </DialogTitle>
+                                <DialogDescription>
+                                  <div className="flex gap-2 mt-2 float-end">
+                                    <Button
+                                      onClick={() =>
+                                        navigate(
+                                          `/courses/${id}/lesson/${lesson._id}`
+                                        )
+                                      }
+                                      className={`cursor-pointer ${
+                                        isCompleted
+                                          ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                          : "bg-blue-500 text-white hover:bg-blue-600"
+                                      }`}
+                                    >
+                                      OK
+                                    </Button>
+                                    <DialogTrigger>
+                                      <Button className="cursor-pointer">
+                                        Cancel
+                                      </Button>
+                                    </DialogTrigger>
+                                  </div>
+                                </DialogDescription>
+                              </DialogHeader>
+                            </DialogContent>
+                          ) : (
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>You need to login!</DialogTitle>
+                                <DialogDescription>
+                                  <div className="flex gap-2 mt-2 float-end">
+                                    <Button
+                                      onClick={() => navigate("/login")}
+                                      className={`cursor-pointer ${
+                                        isCompleted
+                                          ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                          : "bg-blue-500 text-white hover:bg-blue-600"
+                                      }`}
+                                    >
+                                      Login
+                                    </Button>
+                                    <DialogTrigger>
+                                      <Button className="cursor-pointer">
+                                        Cancel
+                                      </Button>
+                                    </DialogTrigger>
+                                  </div>
+                                </DialogDescription>
+                              </DialogHeader>
+                            </DialogContent>
+                          )}
                         </Dialog>
                       )}
                     </div>

@@ -15,18 +15,7 @@ import uploadFile from "@/services/upload.service";
 import userService from "@/services/user.service";
 import { message } from "antd";
 import coursesService from "@/services/courses.service";
-
-interface Course {
-  id: string;
-  title: string;
-  instructor: string;
-  progress: number;
-  thumbnail: string;
-  category: string;
-  duration: string;
-  completed?: boolean;
-  certificate?: boolean;
-}
+import progressService from "@/services/progress.service";
 
 interface Achievement {
   id: string;
@@ -46,9 +35,22 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
   const [avatar, setAvatar] = useState<string>(
     user?.avatar || "https://github.com/shadcn.png"
   );
+  const [progress, setProgress] = useState<IProgressCourses[] | null>([]);
   const dateString = user?.createdAt
     ? new Date(user.createdAt).toISOString().split("T")[0]
     : "";
+
+  useEffect(() => {
+    const fetchProgress = async () => {
+      if (user?._id) {
+        const progressRes = await progressService.getCourseProgressByUserAPI(
+          user._id
+        );
+        setProgress(progressRes.data || []);
+      }
+    };
+    fetchProgress();
+  }, [user?._id]);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -57,7 +59,7 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
       // if(!Array.isArray(listCourses) || listCourses.length === 0){
 
       // }
-      setCourses(listCourses);
+      setCourses(listCourses || []);
     };
     fetchCourses();
   }, []);
@@ -125,74 +127,6 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
       }
     }
   };
-
-  const userStats = {
-    coursesCompleted: 12,
-    currentCourses: 3,
-    totalHours: 145,
-    certificates: 8,
-    currentStreak: 7,
-  };
-
-  const currentCourses: Course[] = [
-    {
-      id: "1",
-      title: "IELTS Speaking Mastery",
-      instructor: "Emma Thompson",
-      progress: 75,
-      thumbnail:
-        "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=400",
-      category: "English",
-      duration: "8h 30m",
-    },
-    {
-      id: "2",
-      title: "Business English Communication",
-      instructor: "Michael Davis",
-      progress: 45,
-      thumbnail:
-        "https://images.pexels.com/photos/5428836/pexels-photo-5428836.jpeg?auto=compress&cs=tinysrgb&w=400",
-      category: "English",
-      duration: "6h 15m",
-    },
-    {
-      id: "3",
-      title: "TOEFL Preparation Course",
-      instructor: "Sarah Wilson",
-      progress: 20,
-      thumbnail:
-        "https://images.pexels.com/photos/5427674/pexels-photo-5427674.jpeg?auto=compress&cs=tinysrgb&w=400",
-      category: "English",
-      duration: "5h 45m",
-    },
-  ];
-
-  const completedCourses: Course[] = [
-    {
-      id: "4",
-      title: "English Grammar Fundamentals",
-      instructor: "Jennifer Brown",
-      progress: 100,
-      thumbnail:
-        "https://images.pexels.com/photos/5212320/pexels-photo-5212320.jpeg?auto=compress&cs=tinysrgb&w=400",
-      category: "English",
-      duration: "10h 20m",
-      completed: true,
-      certificate: true,
-    },
-    {
-      id: "5",
-      title: "Advanced English Vocabulary",
-      instructor: "David Miller",
-      progress: 100,
-      thumbnail:
-        "https://images.pexels.com/photos/5427829/pexels-photo-5427829.jpeg?auto=compress&cs=tinysrgb&w=400",
-      category: "English",
-      duration: "7h 30m",
-      completed: true,
-      certificate: true,
-    },
-  ];
 
   const achievements: Achievement[] = [
     {
@@ -265,7 +199,7 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
     course,
     showProgress = true,
   }: {
-    course: Course;
+    course: ICourses;
     showProgress?: boolean;
   }) => (
     <div className="bg-background rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 group">
@@ -277,10 +211,10 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
         />
         <div className="absolute top-3 left-3">
           <span className="bg-background backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-gray-700">
-            {course.category}
+            {course.description}
           </span>
         </div>
-        {course.certificate && (
+        {course.title && (
           <div className="absolute top-3 right-3">
             <div className="bg-yellow-400 p-1.5 rounded-full">
               <Award size={14} className="text-white" />
@@ -293,16 +227,14 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
         <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
           {course.title}
         </h3>
-        <p className="text-gray-600 text-sm mb-3">
-          Giảng viên: {course.instructor}
-        </p>
+        <p className="text-gray-600 text-sm mb-3">Giảng viên: {course.title}</p>
 
         <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
           <div className="flex items-center gap-1">
             <Clock size={14} />
-            {course.duration}
+            {course.description}
           </div>
-          {course.completed && (
+          {course.title && (
             <div className="flex items-center gap-1 text-green-600">
               <CheckCircle size={14} />
               Hoàn thành
@@ -315,20 +247,20 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Tiến độ</span>
               <span className="font-medium text-gray-900">
-                {course.progress}%
+                {course.description}%
               </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div
                 className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500"
-                style={{ width: `${course.progress}%` }}
+                style={{ width: `${course.thumbnail}%` }}
               />
             </div>
           </div>
         )}
 
         <button className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
-          {course.completed ? (
+          {course.thumbnail ? (
             <>
               <Award size={16} />
               Xem chứng chỉ
@@ -414,17 +346,13 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
                   </div>
                   <div className="flex items-center gap-1">
                     <MapPin size={16} />
-                    Hà Nội, Việt Nam
+                    {user?.location}
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-r from-orange-400 to-red-500 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2">
-                <div className="w-2 h-2 bg-background rounded-full animate-pulse"></div>
-                Streak: {userStats.currentStreak} ngày
-              </div>
               <button className="bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl">
                 <Crown size={16} />
                 Upgrade to VIP
@@ -442,25 +370,25 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
             <StatCard
               icon={BookOpen}
               label="Khóa học đã hoàn thành"
-              value={userStats.coursesCompleted}
+              value={progress?.filter((v) => v.completed).length}
               color="blue"
             />
             <StatCard
               icon={Play}
               label="Khóa học hiện tại"
-              value={userStats.currentCourses}
+              value={0}
               color="green"
             />
             <StatCard
               icon={Clock}
               label="Tổng thời gian học"
-              value={`${userStats.totalHours}h`}
+              value={`${0}h`}
               color="orange"
             />
             <StatCard
               icon={Award}
               label="Chứng chỉ"
-              value={userStats.certificates}
+              value={progress?.filter((v) => v.completed).length}
               color="purple"
             />
             <StatCard
@@ -482,8 +410,8 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
               </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {currentCourses.map((course) => (
-                <CourseCard key={course.id} course={course} />
+              {courses.map((course) => (
+                <CourseCard key={course._id} course={course} />
               ))}
             </div>
           </div>
@@ -509,12 +437,12 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
           {/* Completed Courses */}
           <div>
             <h2 className="text-xl font-bold text-foreground mb-6">
-              Khóa học đã hoàn thành ({completedCourses.length})
+              Khóa học đã hoàn thành ({courses.length})
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {completedCourses.map((course) => (
+              {courses.map((course) => (
                 <CourseCard
-                  key={course.id}
+                  key={course._id}
                   course={course}
                   showProgress={false}
                 />

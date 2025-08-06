@@ -25,6 +25,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import userService from "@/services/user.service";
+import { message } from "antd";
 
 interface ISettingUser {
   user: IUser | null;
@@ -32,6 +34,9 @@ interface ISettingUser {
 
 const SettingPage: React.FC<ISettingUser> = ({ user }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [phone, setPhone] = useState<string>(user?.phone || "");
+  const [name, setName] = useState<string>(user?.name || "");
+  const [location, setLocation] = useState<string>(user?.location || "");
   const { setTheme } = UseTheme();
   const [notifications, setNotifications] = useState({
     email: true,
@@ -52,6 +57,19 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
       ...prev,
       [key]: !prev[key],
     }));
+  };
+  const handleSubmit = async () => {
+    try {
+      await userService.updateUserAPI({
+        id: user?._id,
+        name,
+        phone,
+        location,
+      });
+    } catch (error) {
+      console.log(error);
+      message.error("Update failed");
+    }
   };
 
   const ToggleSwitch = ({
@@ -74,8 +92,6 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
       />
     </button>
   );
-
-  const handleUpdate = () => {};
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -112,7 +128,9 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
                   </label>
                   <Input
                     type="text"
+                    value={name}
                     defaultValue={user?.name || ""}
+                    onChange={(e) => setName(e.target.value)}
                     className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                   />
                 </div>
@@ -137,6 +155,7 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
                       className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                     />
                     <Input
+                      disabled
                       type="email"
                       defaultValue={user?.email || ""}
                       className="w-full pl-10 pr-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
@@ -153,6 +172,8 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
                       className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                     />
                     <Input
+                      onChange={(e) => setPhone(e.target.value)}
+                      value={phone}
                       type="tel"
                       defaultValue={user?.phone || "+84 xxx xxx xxx"}
                       className="w-full pl-10 pr-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
@@ -170,6 +191,8 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
                     />
                     <textarea
                       defaultValue={user?.location || ""}
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
                       rows={3}
                       className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
                     />
@@ -178,7 +201,7 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
               </div>
               <div className="flex justify-end mt-6">
                 <Button
-                  onClick={handleUpdate}
+                  onClick={handleSubmit}
                   type="submit"
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
                 >
@@ -330,20 +353,6 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
                     onChange={() => handleNotificationChange("sms")}
                   />
                 </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="font-medium text-foreground">
-                      Marketing
-                    </span>
-                    <p className="text-sm text-foreground">
-                      Khuyến mãi và tin tức
-                    </p>
-                  </div>
-                  <ToggleSwitch
-                    enabled={notifications.marketing}
-                    onChange={() => handleNotificationChange("marketing")}
-                  />
-                </div>
               </div>
             </div>
 
@@ -356,21 +365,6 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
                 </h3>
               </div>
               <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Language
-                  </label>
-                  <Select>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Language" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="vi">Vietnamese</SelectItem>
-                      <SelectItem value="en">Engish</SelectItem>
-                      <SelectItem value="cn">Chinese</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">
                     Theme

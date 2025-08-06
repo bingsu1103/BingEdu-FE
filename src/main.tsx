@@ -42,7 +42,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/courses/:id/lesson/:lessonId",
-        element: <TestDetailPage />,
+        element: (
+          <ProtectedRoute>
+            <TestDetailPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/about",
