@@ -44,7 +44,7 @@ import EditUser from "@/components/manager/editUser";
 import { FaCrown } from "react-icons/fa";
 import { message, Popconfirm } from "antd";
 
-const UserDashBoard = () => {
+const UserDashBoard: React.FC = () => {
   const [userData, setUserData] = useState<IUser[]>([]);
   const [page, setPage] = useState<number>(1);
   const [limit] = useState<number>(8);

@@ -29,7 +29,7 @@ import { Popconfirm } from "antd";
 import { Badge } from "../ui/badge";
 import EditQuestion from "../manager/editQuestion";
 
-const LessonDashboard = () => {
+const LessonDashboard: React.FC = () => {
   const [selectedCourse, setSelectedCourse] = useState<ICourses | null>(null);
   const [listCourses, setListCourses] = useState<ICourses[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);

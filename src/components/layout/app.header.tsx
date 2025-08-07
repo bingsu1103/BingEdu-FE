@@ -20,6 +20,14 @@ import logo from "@/assets/binglogo.jpg";
 import { MenuOutlined } from "@ant-design/icons";
 import { Moon, Sun, Bell } from "lucide-react";
 import { UseTheme } from "@/components/context/theme.context";
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const AppHeader = () => {
   const { setTheme, theme } = UseTheme();
@@ -38,9 +46,32 @@ const AppHeader = () => {
   return (
     <>
       <div className="w-full p-5 flex justify-between sm:justify-around items-center sticky z-50 top-0 bg-background">
-        <Button className="sm:hidden">
-          <MenuOutlined className="text-2xl" />
-        </Button>
+        <div className="sm:hidden">
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              {" "}
+              <Button className="sm:hidden">
+                <MenuOutlined className="text-2xl" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Bing Edu</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link to="/">Home</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/about">About</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/courses">Courses</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/ranking">Ranking</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
         <NavigationMenu className="max-sm:hidden" viewport={false}>
           <NavigationMenuList>
             <NavigationMenuItem>

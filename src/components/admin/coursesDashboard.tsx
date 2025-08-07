@@ -26,7 +26,7 @@ import { message, Popconfirm } from "antd";
 import coursesService from "@/services/courses.service";
 import { BookmarkPlus } from "lucide-react";
 import CreateCourses from "../manager/createCourses";
-const CoursesDashboard = () => {
+const CoursesDashboard: React.FC = () => {
   const [coursesData, setCoursesData] = useState<ICourses[]>([]);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const CoursesDashboard = () => {
   const handleDeleteCourses = async (id: string) => {
     try {
       const deleteRes = await coursesService.deleteCoursesAPI(id);
-      if (deleteRes.data.acknowledged) {
+      if (deleteRes.data?.deletedCount) {
         message.success("Delete courses successfully!");
         return;
       }

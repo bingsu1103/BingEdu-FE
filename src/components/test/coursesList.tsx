@@ -64,7 +64,7 @@ const CourseList: React.FC = () => {
   });
   const navigate = useNavigate();
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-8 py-8">
       {/* Header */}
       <div className="text-center mb-12">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-background rounded-full shadow-lg mb-6">

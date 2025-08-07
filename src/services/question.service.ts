@@ -19,8 +19,8 @@ const createListQuestionAPI = async (file: File) => {
   });
 };
 
-const updateQuestionAPI = async (id: string, correct_answer_key: string) => {
-  const data = { id, correct_answer_key };
+const updateQuestionAPI = async (id: string, updateData: object) => {
+  const data = { ...updateData, id };
   const urlBackend = "/v1/api/question";
   return axios.put<IBackendRes<IUpdate>>(urlBackend, data);
 };

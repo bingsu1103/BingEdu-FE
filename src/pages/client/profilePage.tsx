@@ -11,11 +11,11 @@ import {
   Mail,
   MapPin,
 } from "lucide-react";
-import uploadFile from "@/services/upload.service";
 import userService from "@/services/user.service";
 import { message } from "antd";
 import coursesService from "@/services/courses.service";
 import progressService from "@/services/progress.service";
+import uploadService from "@/services/upload.service";
 
 interface Achievement {
   id: string;
@@ -104,7 +104,9 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
                   const fileToUpload = new File([blob], "avatar.png", {
                     type: "image/png",
                   });
-                  const response = await uploadFile(fileToUpload);
+                  const response = await uploadService.uploadAvatar(
+                    fileToUpload
+                  );
                   const uploadedUrl = response.data.url;
                   const data = { id: user?._id, avatar: uploadedUrl };
                   const avatarRes = await userService.updateUserAPI(data);

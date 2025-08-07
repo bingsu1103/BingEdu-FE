@@ -121,7 +121,7 @@ const AboutPage = () => {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 xl:px-12">
           <div className="text-center relative z-10">
             <AnimatedSection animation="fadeIn" delay={200}>
               <div className="flex items-center justify-center mb-6 group">
@@ -193,7 +193,7 @@ const AboutPage = () => {
                   Try for Free
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
-                <button className="flex gap-2 border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transform hover:scale-105 transition-all duration-300 backdrop-blur-sm">
+                <button className="flex justify-center gap-2 border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transform hover:scale-105 transition-all duration-300 backdrop-blur-sm">
                   <Bot />
                   <span>AI Supporter</span>
                 </button>
@@ -205,7 +205,7 @@ const AboutPage = () => {
 
       {/* Achievements Banner */}
       <section className="py-12 bg-gradient-to-br from-gray-50 to-blue-50 border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 xl:px-12">
           <AnimatedSection animation="fadeInUp">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-black mb-2">
@@ -246,7 +246,7 @@ const AboutPage = () => {
 
       {/* Stats Section */}
       <section className="py-16 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 xl:px-12">
           <AnimatedSection animation="fadeInUp">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-black mb-4">
@@ -289,7 +289,7 @@ const AboutPage = () => {
 
       {/* Technology Stack */}
       <section className="py-20 bg-gradient-to-br from-slate-900 to-blue-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 xl:px-12">
           <AnimatedSection animation="fadeInUp">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold mb-4">
@@ -332,7 +332,7 @@ const AboutPage = () => {
 
       {/* Mission & Vision */}
       <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 xl:px-12">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <AnimatedSection animation="fadeInLeft">
               <div className="relative">
@@ -396,7 +396,7 @@ const AboutPage = () => {
 
       {/* Why Choose Us */}
       <section className="py-20 bg-background to-indigo-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 xl:px-12">
           <AnimatedSection animation="fadeInUp">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
@@ -435,7 +435,7 @@ const AboutPage = () => {
 
       {/* Our Story */}
       <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 xl:px-12">
           <AnimatedSection animation="fadeInUp">
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8">
@@ -467,7 +467,7 @@ const AboutPage = () => {
 
       {/* Founder Section */}
       <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 xl:px-12">
           <AnimatedSection animation="fadeInUp">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
@@ -534,7 +534,7 @@ const AboutPage = () => {
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 text-center">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 xl:px-12 text-center">
           <AnimatedSection animation="fadeInUp">
             <h2 className="text-3xl sm:text-4xl font-bold mb-6">
               Ready to Start Your Journey?
