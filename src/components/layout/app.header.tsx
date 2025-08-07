@@ -28,6 +28,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import ProtectedLink from "@/pages/auth/protectedLink";
 
 const AppHeader = () => {
   const { setTheme, theme } = UseTheme();
@@ -58,16 +59,16 @@ const AppHeader = () => {
               <DropdownMenuLabel>Bing Edu</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link to="/">Home</Link>
+                <ProtectedLink to="/">Home</ProtectedLink>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/about">About</Link>
+                <ProtectedLink to="/about">About</ProtectedLink>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/courses">Courses</Link>
+                <ProtectedLink to="/courses">Courses</ProtectedLink>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/ranking">Ranking</Link>
+                <ProtectedLink to="/ranking">Ranking</ProtectedLink>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -80,12 +81,12 @@ const AppHeader = () => {
                 <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                   <li className="row-span-3">
                     <NavigationMenuLink asChild>
-                      <Link
+                      <ProtectedLink
                         to="/"
                         className="from-muted/50 to-muted flex h-full w-full flex-col justify-end rounded-md bg-linear-to-b p-6 no-underline outline-hidden select-none focus:shadow-md"
                       >
                         <img className="w-full" src={logo} alt="" />
-                      </Link>
+                      </ProtectedLink>
                     </NavigationMenuLink>
                   </li>
                   <ListItem to="/docs" title="Introduction">
@@ -106,7 +107,7 @@ const AppHeader = () => {
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
-                <Link to="/about">About</Link>
+                <ProtectedLink to="/about">About</ProtectedLink>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
@@ -115,7 +116,7 @@ const AppHeader = () => {
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
-                <Link to="/courses">Courses</Link>
+                <ProtectedLink to="/courses">Courses</ProtectedLink>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
@@ -124,7 +125,7 @@ const AppHeader = () => {
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
-                <Link to="/ranking">Ranking</Link>
+                <ProtectedLink to="/ranking">Ranking</ProtectedLink>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
@@ -134,28 +135,28 @@ const AppHeader = () => {
                 <ul className="grid w-[300px] gap-4">
                   <li>
                     <NavigationMenuLink asChild>
-                      <Link to="/reading/tips">
+                      <ProtectedLink to="/reading/tips">
                         <div className="font-medium">Reading tips</div>
                         <div className="text-muted-foreground">
                           Read Faster, Comprehend Deeper
                         </div>
-                      </Link>
+                      </ProtectedLink>
                     </NavigationMenuLink>
                     <NavigationMenuLink asChild>
-                      <Link to="/speaking/tips">
+                      <ProtectedLink to="/speaking/tips">
                         <div className="font-medium">Speaking tips</div>
                         <div className="text-muted-foreground">
                           Speak Clearly, Connect Confidently
                         </div>
-                      </Link>
+                      </ProtectedLink>
                     </NavigationMenuLink>
                     <NavigationMenuLink asChild>
-                      <Link to="/writing/tips">
+                      <ProtectedLink to="/writing/tips">
                         <div className="font-medium">Writing tips</div>
                         <div className="text-muted-foreground">
                           Write Clearly, Write Better
                         </div>
-                      </Link>
+                      </ProtectedLink>
                     </NavigationMenuLink>
                   </li>
                 </ul>
@@ -178,7 +179,7 @@ const AppHeader = () => {
                     <ul className="grid max-sm:w-[140px] w-[200px] gap-4">
                       <li>
                         <NavigationMenuLink asChild>
-                          <Link
+                          <ProtectedLink
                             to="/overall"
                             className="flex-row items-center gap-2"
                           >
@@ -187,17 +188,20 @@ const AppHeader = () => {
                               Account Overall
                             </span>
                             <span className="sm:hidden">Account</span>
-                          </Link>
+                          </ProtectedLink>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
-                          <Link to="#" className="flex-row items-center gap-2">
+                          <ProtectedLink
+                            to="#"
+                            className="flex-row items-center gap-2"
+                          >
                             <RiVipDiamondLine />
                             Upgrade to VIP
-                          </Link>
+                          </ProtectedLink>
                         </NavigationMenuLink>
                         {user?.role === "admin" && (
                           <NavigationMenuLink asChild>
-                            <Link
+                            <ProtectedLink
                               to="/admin/dashboard"
                               className="flex-row items-center gap-2"
                             >
@@ -206,11 +210,11 @@ const AppHeader = () => {
                                 Admin Dashboard
                               </span>
                               <span className="sm:hidden">Dashboard</span>
-                            </Link>
+                            </ProtectedLink>
                           </NavigationMenuLink>
                         )}
                         <NavigationMenuLink asChild>
-                          <Link to="#" className="flex-row">
+                          <ProtectedLink to="#" className="flex-row">
                             <button
                               onClick={handleLogout}
                               className="flex items-center gap-2 w-full"
@@ -218,7 +222,7 @@ const AppHeader = () => {
                               <RiLogoutCircleRLine />
                               <span>Log Out</span>
                             </button>
-                          </Link>
+                          </ProtectedLink>
                         </NavigationMenuLink>
                       </li>
                     </ul>
@@ -295,12 +299,12 @@ function ListItem({
   return (
     <li {...props}>
       <NavigationMenuLink asChild>
-        <Link to={to}>
+        <ProtectedLink to={to}>
           <div className="text-sm leading-none font-medium">{title}</div>
           <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
             {children}
           </p>
-        </Link>
+        </ProtectedLink>
       </NavigationMenuLink>
     </li>
   );

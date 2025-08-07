@@ -10,6 +10,8 @@ interface IAppContext {
   setUser: (v: IUser | null) => void;
   isAppLoading: boolean;
   setIsAppLoading: (v: boolean) => void;
+  isDoingTest: boolean;
+  setIsDoingTest: (v: boolean) => void;
 }
 
 const CurrentAppContext = createContext<IAppContext | null>(null);
@@ -22,6 +24,7 @@ export const AppProvider = (props: TProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<IUser | null>(null);
   const [isAppLoading, setIsAppLoading] = useState<boolean>(true);
+  const [isDoingTest, setIsDoingTest] = useState(false);
 
   useEffect(() => {
     const fetchAccount = async () => {
@@ -54,6 +57,8 @@ export const AppProvider = (props: TProps) => {
             setUser,
             isAppLoading,
             setIsAppLoading,
+            isDoingTest,
+            setIsDoingTest,
           }}
         >
           {props.children}

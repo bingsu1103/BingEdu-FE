@@ -395,7 +395,7 @@ const LessonDashboard: React.FC = () => {
                                 Select correct answer
                               </DialogDescription>
                             </DialogHeader>
-                            <EditQuestion id={question._id} />
+                            <EditQuestion question={question} />
                           </DialogContent>
                         </Dialog>
                         <Popconfirm

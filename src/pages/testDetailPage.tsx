@@ -6,6 +6,7 @@ import {
   CheckCircle,
   Crown,
   CircleArrowLeft,
+  Loader2,
 } from "lucide-react";
 import questionService from "@/services/question.service";
 import { UseTheme } from "@/components/context/theme.context";
@@ -15,6 +16,8 @@ import { UseCurrentApp } from "@/components/context/app.context";
 import answerService from "@/services/answer.service";
 import progressService from "@/services/progress.service";
 import submissionService from "@/services/submission.service";
+import { UseTestGuard } from "@/components/context/testGuard.context";
+import aiService from "@/services/ai.service";
 
 const formatTime = (seconds: number): string => {
   const minutes = Math.floor(seconds / 60);
@@ -36,6 +39,8 @@ const TestDetailPage: React.FC = () => {
   const { theme } = UseTheme();
   const { user } = UseCurrentApp();
   const [totalScore, setTotalScore] = useState<number>(0);
+  const { setIsDoingTest } = UseTestGuard();
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (timeLeft > 0 && !isFinished) {
@@ -68,6 +73,11 @@ const TestDetailPage: React.FC = () => {
     getQuestion();
   }, [lessonId]);
 
+  useEffect(() => {
+    setIsDoingTest(true);
+    return () => setIsDoingTest(false);
+  }, [setIsDoingTest]);
+
   const handleAnswerSelect = (questionId: string, answer: string) => {
     setSelectedAnswers({
       ...selectedAnswers,
@@ -83,6 +93,7 @@ const TestDetailPage: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     const answersToSubmit: IAnswerPost[] = listQuestion.map((question) => {
       const userAnswer = selectedAnswers[question._id];
       return {
@@ -105,7 +116,21 @@ const TestDetailPage: React.FC = () => {
       );
       const result = answerRes.data || [];
 
-      let score: number = 0;
+      const aiReply = await aiService.getMarkFromAI(listQuestion, result);
+
+      let score: number =
+        aiReply.data?.reduce(
+          (acc, curr) =>
+            acc +
+            (typeof curr === "number"
+              ? curr
+              : curr && typeof curr.score === "number"
+              ? curr.score
+              : 0),
+          0
+        ) || 0;
+      console.log("score AI", score);
+
       result.forEach((data) => {
         score += data?.score || 0;
       });
@@ -139,6 +164,8 @@ const TestDetailPage: React.FC = () => {
       console.error("Error submitting answers:", error);
       setTotalScore(0);
       setIsFinished(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -272,6 +299,22 @@ const TestDetailPage: React.FC = () => {
                   <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
                 )}
               </div>
+              {question.imageUrl && (
+                <div className="flex justify-center pb-10">
+                  <img src={question.imageUrl} />
+                </div>
+              )}
+              {question.audioUrl && (
+                <div className="w-full mb-6 bg-gray-100 rounded-lg shadow-md">
+                  <audio
+                    className="w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    controls
+                  >
+                    <source src={question.audioUrl} type="audio/mpeg" />
+                    Your browser does not support the audio element.
+                  </audio>
+                </div>
+              )}
 
               {question.question_type === "essay" ? (
                 <textarea
@@ -325,13 +368,24 @@ const TestDetailPage: React.FC = () => {
         </div>
 
         <div className="mt-8 text-center">
-          <button
+          <Button
+            size="lg"
+            disabled={loading}
             onClick={handleSubmit}
-            className="inline-flex items-center space-x-2 px-8 py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="inline-flex items-center space-x-2 px-2 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-all duration-200 shadow-lg hover:shadow-xl"
           >
-            <CheckCircle className="w-5 h-5" />
-            <span>Submit</span>
-          </button>
+            {loading ? (
+              <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+            ) : (
+              <CheckCircle className="w-5 h-5" />
+            )}
+
+            {loading ? (
+              <span> Waiting for AI to score</span>
+            ) : (
+              <span>Submit</span>
+            )}
+          </Button>
         </div>
 
         <div className="mt-6 bg-background rounded-lg shadow-sm border border-gray-200 p-4">

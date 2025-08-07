@@ -23,6 +23,7 @@ import SpeakingTips from "./components/docs/speakingTips.tsx";
 import WritingTips from "./components/docs/writingTips.tsx";
 import BlogPost from "./components/docs/blogPost.tsx";
 import RankingPage from "@/pages/rankingPage.tsx";
+import { TestGuardProvider } from "./components/context/testGuard.context.tsx";
 
 const router = createBrowserRouter([
   {
@@ -122,9 +123,11 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")!).render(
-  <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-    <AppProvider>
-      <RouterProvider router={router} />
-    </AppProvider>
-  </ThemeProvider>
+  <TestGuardProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <AppProvider>
+        <RouterProvider router={router} />
+      </AppProvider>
+    </ThemeProvider>
+  </TestGuardProvider>
 );

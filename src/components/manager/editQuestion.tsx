@@ -14,13 +14,19 @@ import { message } from "antd";
 import { DialogClose } from "@radix-ui/react-dialog";
 import uploadService from "@/services/upload.service";
 import { Upload } from "lucide-react";
+import { Input } from "../ui/input";
 
 interface IEditQuestionProps {
-  id: string;
+  question: IQuestion;
 }
 
-const EditQuestion: React.FC<IEditQuestionProps> = ({ id }) => {
-  const [correctAnswer, setCorrectAnswer] = useState<string>("");
+const EditQuestion: React.FC<IEditQuestionProps> = ({ question }) => {
+  const [correctAnswer, setCorrectAnswer] = useState<string>(
+    question.correct_answer_key || ""
+  );
+  const [questionTxt, setQuestionTxt] = useState<string>(
+    question.question_text
+  );
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [previewImg, setPreviewImg] = useState<string | null>(null);
@@ -29,11 +35,11 @@ const EditQuestion: React.FC<IEditQuestionProps> = ({ id }) => {
 
   const handleUpdateQuestion = async (id: string) => {
     try {
-      let imageUrl = "";
-      let audioUrl = "";
+      let imageUrl = question.imageUrl || "";
+      let audioUrl = question.audioUrl || "";
 
       if (imageFile) {
-        const imgRes = await uploadService.uploadFile(imageFile);
+        const imgRes = await uploadService.uploadImage(imageFile);
         imageUrl = imgRes.data?.url || "";
       }
 
@@ -46,6 +52,7 @@ const EditQuestion: React.FC<IEditQuestionProps> = ({ id }) => {
         correct_answer_key: correctAnswer,
         imageUrl,
         audioUrl,
+        question_text: questionTxt,
       });
 
       if (updateRes.data?.modifiedCount) {
@@ -65,12 +72,24 @@ const EditQuestion: React.FC<IEditQuestionProps> = ({ id }) => {
 
   return (
     <div className="space-y-5">
+      <div>
+        <label className="block text-sm font-medium mb-1">Question</label>
+      </div>
+      <Input
+        value={questionTxt}
+        type="text"
+        onChange={(e) => setQuestionTxt(e.target.value)}
+      />
       {/* Answer selection */}
       <div>
         <label className="block text-sm font-medium mb-1">
           Select correct answer
         </label>
-        <Select value={correctAnswer} onValueChange={setCorrectAnswer}>
+        <Select
+          defaultValue={correctAnswer}
+          value={correctAnswer}
+          onValueChange={setCorrectAnswer}
+        >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select answer" />
           </SelectTrigger>
@@ -147,7 +166,7 @@ const EditQuestion: React.FC<IEditQuestionProps> = ({ id }) => {
       {/* Action buttons */}
       <div className="flex justify-end gap-2 pt-4">
         <Button
-          onClick={() => handleUpdateQuestion(id)}
+          onClick={() => handleUpdateQuestion(question._id)}
           className="cursor-pointer"
         >
           Update

@@ -125,6 +125,8 @@ declare global {
     };
     question_type: string;
     question_text: string;
+    imageUrl: string;
+    audioUrl: string;
     options?: {
       [key: string]: string;
     };
