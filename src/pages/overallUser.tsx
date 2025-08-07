@@ -2,19 +2,15 @@ import { useState, useEffect } from "react";
 import logo from "@/assets/binglogo.jpg";
 import { Button } from "@/components/ui/button";
 import {
-  MessageCircle,
   UserRoundPen,
   BookmarkCheck,
   Settings,
-  CreditCard,
   LaptopMinimalCheck,
 } from "lucide-react";
 
 import ProfilePage from "@/pages/client/profilePage";
-import MessagePage from "@/pages/client/messagePage";
 import ResultPage from "@/pages/client/resultPage";
 import SettingPage from "@/pages/client/setting";
-import PaymentPage from "@/pages/client/payment";
 import { UseTheme } from "@/components/context/theme.context";
 import { UseCurrentApp } from "@/components/context/app.context";
 import CoursesPage from "@/pages/client/coursesPage";
@@ -36,16 +32,12 @@ const OverallUser = () => {
     switch (activeTabClient) {
       case "profile":
         return <ProfilePage user={user} />;
-      case "messages":
-        return <MessagePage />;
       case "results":
         return <ResultPage />;
       case "courses":
         return <CoursesPage />;
       case "settings":
         return <SettingPage user={user} />;
-      case "payment":
-        return <PaymentPage />;
       default:
         return <ProfilePage user={user} />;
     }
@@ -67,17 +59,6 @@ const OverallUser = () => {
             >
               <UserRoundPen className="w-5 h-5 text-foreground" />
               <span className="text-foreground">Profile</span>
-            </Button>
-            <Button
-              className={`w-full flex items-center justify-start gap-3 rounded-md py-2 px-4 cursor-pointer ${
-                activeTabClient === "messages"
-                  ? "bg-blue-400 text-white hover:bg-blue-500"
-                  : "bg-background text-white hover:bg-gray-300"
-              } ${theme === "dark" && "hover:bg-gray-600"}`}
-              onClick={() => setActiveTabClient("messages")}
-            >
-              <MessageCircle className="w-5 h-5 text-foreground" />
-              <span className="text-foreground">Message</span>
             </Button>
             <Button
               className={`w-full flex items-center justify-start gap-3 rounded-md py-2 px-4 cursor-pointer ${
@@ -111,17 +92,6 @@ const OverallUser = () => {
             >
               <Settings className="w-5 h-5 text-foreground" />
               <span className="text-foreground">Setting</span>
-            </Button>
-            <Button
-              className={`w-full flex items-center justify-start gap-3 rounded-md py-2 px-4 cursor-pointer ${
-                activeTabClient === "payment"
-                  ? "bg-blue-400 text-white hover:bg-blue-500"
-                  : "bg-background text-white hover:bg-gray-300"
-              } ${theme === "dark" && "hover:bg-gray-600"}`}
-              onClick={() => setActiveTabClient("payment")}
-            >
-              <CreditCard className="w-5 h-5 text-foreground" />
-              <span className="text-foreground">Payment</span>
             </Button>
           </div>
         </div>

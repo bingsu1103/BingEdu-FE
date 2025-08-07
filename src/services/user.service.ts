@@ -22,7 +22,7 @@ const getAllUser = async () => {
 
 const deleteUserAPI = async (id: string) => {
   const urlBackend = `/v1/api/user/id/${id}`;
-  return axios.delete<IBackendRes<IUpdate>>(urlBackend);
+  return axios.delete<IBackendRes<IDelete>>(urlBackend);
 };
 
 const getUserWithPaginateAPI = async (

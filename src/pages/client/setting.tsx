@@ -18,7 +18,9 @@ import { UseTheme } from "@/components/context/theme.context";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import userService from "@/services/user.service";
-import { message } from "antd";
+import { message, Popconfirm } from "antd";
+import { UseCurrentApp } from "@/components/context/app.context";
+import authService from "@/services/auth.service";
 
 interface ISettingUser {
   user: IUser | null;
@@ -29,7 +31,8 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
   const [phone, setPhone] = useState<string>(user?.phone || "");
   const [name, setName] = useState<string>(user?.name || "");
   const [location, setLocation] = useState<string>(user?.location || "");
-  const { setTheme } = UseTheme();
+  const { setTheme, theme } = UseTheme();
+  const { setUser, setIsAuthenticated } = UseCurrentApp();
   const [notifications, setNotifications] = useState({
     email: true,
     push: true,
@@ -37,18 +40,32 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
     marketing: true,
   });
 
-  const [preferences, setPreferences] = useState({
-    language: "vi",
-    theme: "light",
-    autoplay: true,
-    quality: "auto",
-  });
+  // const [preferences, setPreferences] = useState({
+  //   language: "vi",
+  //   theme: "light",
+  //   autoplay: true,
+  //   quality: "auto",
+  // });
 
   const handleNotificationChange = (key: string) => {
     setNotifications((prev) => ({
       ...prev,
       [key]: !prev[key],
     }));
+  };
+  const handleDeleteAccount = async () => {
+    if (!user?._id) {
+      message.error("User not found");
+      return;
+    }
+    const userId = user._id;
+    await authService.logoutAPI();
+    setIsAuthenticated(false);
+    setUser(null);
+    const res = await userService.deleteUserAPI(userId);
+    if (res.data && res.data.modifiedCount) {
+      message.success("User deleted");
+    }
   };
   const handleSubmit = async () => {
     try {
@@ -321,8 +338,8 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => setTheme("light")}
-                      className={`p-2 flex items-center gap-3 border rounded-lg text-sm font-medium transition-colors ${
-                        preferences.theme === "light"
+                      className={`p-2 flex items-center cursor-pointer gap-3 border rounded-lg text-sm font-medium transition-colors ${
+                        theme === "light"
                           ? "border-blue-500 bg-blue-50 text-blue-700"
                           : "border-gray-300 hover:border-gray-400"
                       }`}
@@ -332,8 +349,8 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
                     </button>
                     <button
                       onClick={() => setTheme("dark")}
-                      className={`p-2 flex items-center gap-3 border rounded-lg text-sm font-medium transition-colors ${
-                        preferences.theme === "dark"
+                      className={`p-2 flex items-center gap-3 border cursor-pointer rounded-lg text-sm font-medium transition-colors ${
+                        theme === "dark"
                           ? "border-blue-500 bg-blue-50 text-blue-700"
                           : "border-gray-300 hover:border-gray-400"
                       }`}
@@ -349,18 +366,23 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
             {/* Account Actions */}
             <div className="bg-background rounded-xl p-6 shadow-sm border border-gray-100">
               <h3 className="text-lg font-semibold text-foreground mb-4">
-                Tài khoản
+                Account
               </h3>
               <div className="space-y-2">
-                <button className="w-full text-left p-2 hover:bg-gray-50 rounded-lg transition-colors text-foreground">
-                  Xuất dữ liệu cá nhân
+                <button className="w-full text-left p-2 hover:opacity-60 cursor-pointer rounded-lg transition-colors text-foreground">
+                  Export personal data
                 </button>
-                <button className="w-full text-left p-2 hover:bg-gray-50 rounded-lg transition-colors text-foreground">
-                  Tạm khóa tài khoản
-                </button>
-                <button className="w-full text-left p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600">
-                  Xóa tài khoản vĩnh viễn
-                </button>
+                <Popconfirm
+                  title="Delete account"
+                  description="Are you sure to delete this account?"
+                  onConfirm={handleDeleteAccount}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <button className="w-full text-left p-2 hover:opacity-60 cursor-pointer rounded-lg transition-colors text-red-600">
+                    Delete account permanently
+                  </button>
+                </Popconfirm>
               </div>
             </div>
           </div>

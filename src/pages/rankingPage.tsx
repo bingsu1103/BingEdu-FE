@@ -177,20 +177,23 @@ const RankingPage: React.FC = () => {
       userSubmissionCounts[submission.userId].submissionCount += 1;
     });
 
-    const topUsers: WeeklyTopUser[] = Object.entries(userSubmissionCounts).map(
-      ([userId, { submissionCount }]) => {
-        const user = listUser.find((u) => u._id === userId);
+    const topUsers = Object.entries(userSubmissionCounts)
+      .map(([userId, { submissionCount }]) => {
+        const user = listUser.find(
+          (u) => u._id === userId && u.deleted === false
+        );
+        if (!user) return null;
         return {
           userId,
-          userName: user?.name || `User ${userId}`,
+          userName: user?.name,
           avatar:
             user?.avatar ||
             "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=64",
           submissionCount,
           rank: 0,
         };
-      }
-    );
+      })
+      .filter(Boolean) as WeeklyTopUser[];
 
     topUsers.sort((a, b) => b.submissionCount - a.submissionCount);
     topUsers.forEach((user, index) => {

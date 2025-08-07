@@ -7,7 +7,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RiVipDiamondLine } from "react-icons/ri";
 import { RiAccountCircle2Fill } from "react-icons/ri";

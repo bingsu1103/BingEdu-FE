@@ -16,6 +16,7 @@ declare global {
     role: string;
     type: string;
     is_active?: boolean;
+    deleted: boolean;
     avatar?: string;
     location?: string;
     createdAt: string;
@@ -31,8 +32,9 @@ declare global {
   }
 
   interface IDelete {
-    acknowledged: true;
-    deletedCount: 0;
+    acknowledged: boolean;
+    deletedCount: boolean;
+    modifiedCount?: boolean;
   }
 
   interface IPaginate {
