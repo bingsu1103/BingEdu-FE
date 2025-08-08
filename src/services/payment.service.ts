@@ -21,6 +21,11 @@ const getAllPaymentAPI = async () => {
   return axios.get(urlBackend);
 };
 
+const getPaymentAPI = async (id: string) => {
+  const urlBackend = `/v1/api/payment/id/${id}`;
+  return axios.get(urlBackend);
+};
+
 const createVNPUrlAPI = async (amount: number, id: string) => {
   const payload = { amount, id };
   const urlBackend = "/v1/api/payment/vnpay/create";
@@ -29,6 +34,7 @@ const createVNPUrlAPI = async (amount: number, id: string) => {
 
 export default {
   createVNPUrlAPI,
+  getPaymentAPI,
   updatePaymentAPI,
   getAllPaymentAPI,
   createPaymentAPI,
