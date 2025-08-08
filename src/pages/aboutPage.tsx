@@ -24,6 +24,7 @@ import {
 import AnimatedSection from "../animations/animatedSection";
 import StaggeredAnimation from "../animations/staggeredAnimated";
 import { useNavigate } from "react-router";
+import avatarFounder from "@/assets/AnAvatar.jpg";
 
 const AboutPage = () => {
   const navigate = useNavigate();
@@ -94,8 +95,7 @@ const AboutPage = () => {
     role: "CEO & Founder",
     education:
       "3rd-year IT student, passionate about developing online learning platforms",
-    image:
-      "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400",
+    image: avatarFounder,
   };
 
   return (

@@ -24,6 +24,7 @@ import WritingTips from "./components/docs/writingTips.tsx";
 import BlogPost from "./components/docs/blogPost.tsx";
 import RankingPage from "@/pages/rankingPage.tsx";
 import { TestGuardProvider } from "./components/context/testGuard.context.tsx";
+import CorrectionPage from "./pages/detailCorrectionPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
             <TestDetailPage />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "/correction",
+        element: <CorrectionPage />,
       },
       {
         path: "/about",

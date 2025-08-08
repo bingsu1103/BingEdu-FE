@@ -135,6 +135,7 @@ declare global {
     correct_answer_key?: string;
     correct_answer_text?: string;
     _id: string;
+    explanation: string;
   }
 
   interface IAnswer {
@@ -161,6 +162,7 @@ declare global {
     _id: string;
     title: string;
     thumbnail: string;
+    price: number;
     type: string;
     description?: string;
   }

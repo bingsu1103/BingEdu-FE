@@ -56,9 +56,6 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
     const fetchCourses = async () => {
       const coursesRes = await coursesService.getAllCoursesAPI();
       const listCourses = coursesRes.data;
-      // if(!Array.isArray(listCourses) || listCourses.length === 0){
-
-      // }
       setCourses(listCourses || []);
     };
     fetchCourses();
@@ -199,84 +196,61 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
 
   const CourseCard = ({
     course,
-    showProgress = true,
   }: {
     course: ICourses;
     showProgress?: boolean;
-  }) => (
-    <div className="bg-background rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 group">
-      <div className="relative overflow-hidden">
-        <img
-          src={course.thumbnail}
-          alt={course.title}
-          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-        />
-        <div className="absolute top-3 left-3">
-          <span className="bg-background backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-gray-700">
-            {course.description}
-          </span>
-        </div>
-        {course.title && (
-          <div className="absolute top-3 right-3">
-            <div className="bg-yellow-400 p-1.5 rounded-full">
-              <Award size={14} className="text-white" />
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="p-5">
-        <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-          {course.title}
-        </h3>
-        <p className="text-gray-600 text-sm mb-3">Giảng viên: {course.title}</p>
-
-        <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-          <div className="flex items-center gap-1">
-            <Clock size={14} />
-            {course.description}
-          </div>
+  }) => {
+    return (
+      <div className="bg-background rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 group">
+        <div className="relative overflow-hidden">
+          <img
+            src={course.thumbnail}
+            alt={course.title}
+            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+          />
           {course.title && (
-            <div className="flex items-center gap-1 text-green-600">
-              <CheckCircle size={14} />
-              Hoàn thành
+            <div className="absolute top-3 right-3">
+              <div className="bg-yellow-400 p-1.5 rounded-full">
+                <Award size={14} className="text-white" />
+              </div>
             </div>
           )}
         </div>
 
-        {showProgress && (
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Tiến độ</span>
-              <span className="font-medium text-gray-900">
-                {course.description}%
-              </span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div
-                className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500"
-                style={{ width: `${course.thumbnail}%` }}
-              />
-            </div>
-          </div>
-        )}
+        <div className="p-5">
+          <h3 className="font-semibold truncate text-foreground mb-2 group-hover:text-blue-600 transition-colors">
+            {course.title}
+          </h3>
 
-        <button className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
-          {course.thumbnail ? (
-            <>
-              <Award size={16} />
-              Xem chứng chỉ
-            </>
-          ) : (
-            <>
-              <Play size={16} />
-              Tiếp tục học
-            </>
-          )}
-        </button>
+          <button className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
+            {progress
+              ?.filter((v) => v.coursesId === course._id)
+              .find((v) => v.completed) ? (
+              <>
+                <Award size={16} />
+                Xem chứng chỉ
+              </>
+            ) : (
+              <>
+                <Play size={16} />
+                Tiếp tục học
+              </>
+            )}
+          </button>
+          <div className="flex items-center justify-between text-sm text-gray-500 mt-4">
+            {progress
+              ?.filter((v) => v.coursesId === course._id)
+              .find((v) => v.completed) && (
+              <div className="flex items-center gap-1 text-green-600">
+                <CheckCircle size={14} />
+                Hoàn thành
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const AchievementBadge = ({ achievement }: { achievement: Achievement }) => (
     <div
@@ -378,7 +352,7 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
             <StatCard
               icon={Play}
               label="Khóa học hiện tại"
-              value={0}
+              value={progress?.length}
               color="green"
             />
             <StatCard
@@ -433,48 +407,6 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
                     achievement={achievement}
                   />
                 ))}
-            </div>
-          </div>
-
-          {/* Completed Courses */}
-          <div>
-            <h2 className="text-xl font-bold text-foreground mb-6">
-              Khóa học đã hoàn thành ({courses.length})
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {courses.map((course) => (
-                <CourseCard
-                  key={course._id}
-                  course={course}
-                  showProgress={false}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Progress toward next achievement */}
-          <div className="bg-background rounded-xl p-6 shadow-sm border border-gray-100">
-            <h3 className="text-lg font-semibold text-foreground mb-4">
-              Thành tích tiếp theo
-            </h3>
-            <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <div className="text-2xl">🔥</div>
-                <div className="flex-1">
-                  <div className="flex justify-between mb-1">
-                    <span className="font-medium text-foreground">
-                      Streak Champion
-                    </span>
-                    <span className="text-sm text-gray-600">7/30 ngày</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-gradient-to-r from-orange-400 to-red-500 h-2 rounded-full transition-all duration-500"
-                      style={{ width: "23%" }}
-                    />
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

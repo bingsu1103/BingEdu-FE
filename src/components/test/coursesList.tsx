@@ -7,6 +7,7 @@ import {
   Users,
   Star,
   Clock,
+  Combine,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -21,6 +22,8 @@ const getTypeIcon = (type: string) => {
       return <Users className="w-6 h-6" />;
     case "writing":
       return <FileText className="w-6 h-6" />;
+    case "mixed":
+      return <Combine className="w-6 h-6" />;
     default:
       return <BookOpen className="w-6 h-6" />;
   }
@@ -36,6 +39,8 @@ const getTypeColor = (type: string) => {
       return "from-purple-500 to-purple-600";
     case "writing":
       return "from-orange-500 to-orange-600";
+    case "mixed":
+      return "from-red-500 to-red-600";
     default:
       return "from-gray-500 to-gray-600";
   }

@@ -30,6 +30,7 @@ import { UseCurrentApp } from "@/components/context/app.context";
 import { message } from "antd";
 import SubmissionGraph from "@/components/ui/submission";
 import submissionService from "@/services/submission.service";
+import { Button } from "@/components/ui/button";
 
 const featuredCourses = [
   {
@@ -312,7 +313,7 @@ export default function HomePage() {
       setSubmission(resSubmission.data || []);
     };
     fetchSubmission();
-  });
+  }, [user]);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -821,7 +822,7 @@ export default function HomePage() {
 
                           <div className="lg:w-2/3">
                             <div className="flex items-center space-x-2 mb-2">
-                              <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-medium rounded-full border border-blue-500/30 animate-pulse-glow">
+                              <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-medium rounded-full border border-blue-500/30">
                                 {course.type}
                               </span>
                             </div>
@@ -865,9 +866,9 @@ export default function HomePage() {
                                   38% off
                                 </span>
                               </div>
-                              <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105 animate-pulse-glow">
+                              <Button className="px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                                 Start Learning
-                              </button>
+                              </Button>
                             </div>
                           </div>
                         </div>
@@ -913,9 +914,15 @@ export default function HomePage() {
                                   }}
                                 >
                                   <div className="flex items-start space-x-2">
-                                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold animate-pulse-glow">
-                                      {review.userName?.charAt(0) || "U"}
-                                    </div>
+                                    <img
+                                      src={
+                                        user?.avatar ||
+                                        "https://github.com/shadcn.png"
+                                      }
+                                      className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold"
+                                    />
+                                    {/* {review.userName?.charAt(0) || "U"}
+                                    </img> */}
                                     <div className="flex-1 min-w-0">
                                       <div className="flex items-center space-x-2 mb-1">
                                         <h5 className="font-medium text-foreground text-sm">
@@ -957,12 +964,12 @@ export default function HomePage() {
                                 onChange={(e) => setNewComment(e.target.value)}
                                 className="flex-1 px-3 py-2 bg-background/50 border border-white/20 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm"
                               />
-                              <button
+                              <Button
                                 onClick={handlePostComment}
-                                className="cursor-pointer px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all transform hover:scale-105 animate-pulse-glow"
+                                className="cursor-pointer px-4 py-2 rounded-xl hover:shadow-lg transition-all transform hover:scale-105"
                               >
                                 <Send className="w-4 h-4" />
-                              </button>
+                              </Button>
                             </div>
                           </div>
                         </div>

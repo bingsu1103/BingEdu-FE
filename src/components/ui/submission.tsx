@@ -156,7 +156,7 @@ const SubmissionGraph: React.FC<SubmissionGraphProps> = ({ submissions }) => {
   };
 
   return (
-    <div className="bg-background/90 p-6 rounded-lg">
+    <div className="bg-background/90 p-6 rounded-lg lg:pl-10">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2 text-foreground">
@@ -166,7 +166,7 @@ const SubmissionGraph: React.FC<SubmissionGraphProps> = ({ submissions }) => {
       </div>
 
       {/* Calendar Grid */}
-      <div className="relative max-w-full overflow-x-auto">
+      <div className="relative max-w-[890px] overflow-x-auto">
         {/* Month labels */}
         <div className="flex gap-1 mb-2 ml-8">
           {getMonthLabels().map((month, index) => (
@@ -214,7 +214,7 @@ const SubmissionGraph: React.FC<SubmissionGraphProps> = ({ submissions }) => {
         </div>
 
         {/* Legend */}
-        <div className="flex items-center gap-2 mt-4 text-foreground text-sm min-w-max">
+        <div className="flex items-center gap-2 mt-4 text-foreground text-sm min-w-max mb-3">
           <span>Less</span>
           <div className="flex gap-1">
             {[0, 1, 2, 3, 4].map((level) => (
