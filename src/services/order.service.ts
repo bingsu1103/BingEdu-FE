@@ -10,14 +10,30 @@ const createOrderAPI = async (
   return axios.post<IBackendRes<IOrder>>(urlBackend, payload);
 };
 
+const getOrderAPI = async (id: string) => {
+  const urlBackend = `/v1/api/order/id/${id}`;
+  return axios.get<IBackendRes<IOrder>>(urlBackend);
+};
+
 const deleteOrderAPI = async (id: string) => {
   const urlBackend = `/v1/api/order/id/${id}`;
-  return axios.delete(urlBackend);
+  return axios.delete<IBackendRes<IDelete>>(urlBackend);
 };
 
 const getAllOrderAPI = async () => {
   const urlBackend = "/v1/api/order";
-  return axios.get(urlBackend);
+  return axios.get<IBackendRes<IOrder>>(urlBackend);
 };
 
-export default { createOrderAPI, deleteOrderAPI, getAllOrderAPI };
+const getOrderByUserIdAPI = async (userId: string) => {
+  const urlBackend = `/v1/api/order/userId/${userId}`;
+  return axios.get<IBackendRes<IOrder[]>>(urlBackend);
+};
+
+export default {
+  createOrderAPI,
+  deleteOrderAPI,
+  getAllOrderAPI,
+  getOrderAPI,
+  getOrderByUserIdAPI,
+};
