@@ -4,12 +4,16 @@ import { useParams } from "react-router";
 import coursesService from "@/services/courses.service";
 import { Button } from "./button";
 import paymentService from "@/services/payment.service";
+import { UseCurrentApp } from "../context/app.context";
+import orderService from "@/services/order.service";
 
 export const CheckoutForm: React.FC = () => {
   const [selectedPayment, setSelectedPayment] = useState<string>("momo");
   const [course, setSelectedCourse] = useState<ICourses | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [idVNP, setIdVNP] = useState<string>("");
   const { id } = useParams<string>();
+  const { user } = UseCurrentApp();
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -28,10 +32,35 @@ export const CheckoutForm: React.FC = () => {
 
   const handleConfirmPayment = async () => {
     setIsLoading(true);
-    if (course?.price !== undefined && course?._id) {
+    try {
+      const userId = user?._id;
+      const courseId = course?._id;
+      const total = course?.price;
+      if (userId && courseId && total) {
+        const order = await orderService.createOrderAPI(
+          userId || "",
+          courseId || "",
+          total || 0
+        );
+        const orderData = order.data;
+        if (orderData) {
+          const payment = await paymentService.createPaymentAPI(
+            userId,
+            courseId,
+            selectedPayment
+          );
+          const idToVNPay = payment.data?._id;
+          setIdVNP(idToVNPay || "");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    if (course?.price !== undefined && idVNP !== "") {
       const VNPresponse = await paymentService.createVNPUrlAPI(
         course.price,
-        course._id
+        idVNP
       );
       if (VNPresponse.status) {
         setIsLoading(false);
