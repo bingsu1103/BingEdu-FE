@@ -31,6 +31,7 @@ import { message } from "antd";
 import SubmissionGraph from "@/components/ui/submission";
 import submissionService from "@/services/submission.service";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 
 const featuredCourses = [
   {
@@ -241,6 +242,7 @@ export default function HomePage() {
   const [listReview, setListReview] = useState<IReview[] | null>([]);
   const [submission, setSubmission] = useState<ISubmission[] | null>([]);
   const { user, isAuthenticated } = UseCurrentApp();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observeCards = () => {
@@ -884,7 +886,10 @@ export default function HomePage() {
                                   % off
                                 </span>
                               </div>
-                              <Button className="px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                              <Button
+                                onClick={() => navigate("/checkout")}
+                                className="px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                              >
                                 Start Learning
                               </Button>
                             </div>

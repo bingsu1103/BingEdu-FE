@@ -1,15 +1,9 @@
-// import { CheckoutForm } from "@/components/ui/checkOutForm";
 import { CourseCard } from "@/components/ui/coursesCard";
-// import { PaymentSuccess } from "@/components/ui/paymentSuccess";
 import coursesService from "@/services/courses.service";
-
 import { useEffect, useState } from "react";
 
 const CheckOutPage = () => {
   const [listCourses, setListCourses] = useState<ICourses[]>([]);
-  //   const [selectedPaymentMethod, setSelectedPaymentMethod] =
-  //     useState<string>("momo");
-
   useEffect(() => {
     const fetchAllCourses = async () => {
       const result = await coursesService.getAllCoursesAPI();
@@ -17,14 +11,6 @@ const CheckOutPage = () => {
     };
     fetchAllCourses();
   }, []);
-
-  //   const handleBackToCourse = () => navigate(`/checkout`);
-  //   const handleConfirmPayment = (paymentMethod: string) => {
-  //     // setSelectedPaymentMethod(paymentMethod);
-  //     navigate("/success");
-  //   };
-  //   const handleStartLearning = () => alert("Chuyển tới trang học tập!");
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="container mx-auto px-4 py-12">
@@ -53,14 +39,6 @@ const CheckOutPage = () => {
             ))}
           </div>
         </div>
-
-        {/* {currentState === "success" && selectedCourses && (
-          <PaymentSuccess
-            course={selectedCourses}
-            paymentMethod={selectedPaymentMethod}
-            onStartLearning={handleStartLearning}
-          />
-        )} */}
       </div>
     </div>
   );

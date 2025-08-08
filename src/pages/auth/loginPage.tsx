@@ -46,7 +46,9 @@ const LoginPage = () => {
       message.success("Login successfully!");
     }
     setIsLoading(false);
-    setUser(logRes?.data?.user ?? null);
+    setUser(
+      logRes?.data?.user ? { deleted: false, ...logRes.data.user } : null
+    );
   };
   return (
     <>

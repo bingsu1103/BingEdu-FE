@@ -133,9 +133,8 @@ const LessonDashboard: React.FC = () => {
   const handleViewDetail = async (lesson: ILesson) => {
     setViewingLessonDetail(lesson._id);
     setSelectedLesson(lesson);
-    const questionRes = await questionService.getQuestionByLessonIdAPI(
-      lesson._id
-    );
+    const questionRes =
+      await questionService.getQuestionByLessonIdWithAnswerAPI(lesson._id);
     setListQuestion(questionRes.data || []);
   };
 

@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { CreditCard, Smartphone } from "lucide-react";
+import data from "@/components/data/data";
 import { useParams } from "react-router";
 import coursesService from "@/services/courses.service";
 import { Button } from "./button";
 import paymentService from "@/services/payment.service";
 import { UseCurrentApp } from "../context/app.context";
 import orderService from "@/services/order.service";
+import { UseTheme } from "../context/theme.context";
+import formation from "@/utils/format";
 
 export const CheckoutForm: React.FC = () => {
   const [selectedPayment, setSelectedPayment] = useState<string>("momo");
   const [course, setSelectedCourse] = useState<ICourses | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [idVNP, setIdVNP] = useState<string>("");
   const { id } = useParams<string>();
   const { user } = UseCurrentApp();
+  const { theme } = UseTheme();
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -23,72 +25,48 @@ export const CheckoutForm: React.FC = () => {
     fetchCourses();
   }, [id]);
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
-  };
-
   const handleConfirmPayment = async () => {
     setIsLoading(true);
     try {
       const userId = user?._id;
       const courseId = course?._id;
       const total = course?.price;
-      if (userId && courseId && total) {
-        const order = await orderService.createOrderAPI(
-          userId || "",
-          courseId || "",
-          total || 0
-        );
-        const orderData = order.data;
-        if (orderData) {
-          const payment = await paymentService.createPaymentAPI(
-            userId,
-            courseId,
-            selectedPayment
-          );
-          const idToVNPay = payment.data?._id;
-          setIdVNP(idToVNPay || "");
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
 
-    if (course?.price !== undefined && idVNP !== "") {
-      const VNPresponse = await paymentService.createVNPUrlAPI(
-        course.price,
-        idVNP
-      );
-      if (VNPresponse.status) {
-        setIsLoading(false);
-        window.location.assign(VNPresponse.data || "");
+      if (!userId || !courseId || total === undefined) {
+        throw new Error("Thiếu thông tin thanh toán");
       }
+
+      // 1) Tạo order
+      const orderRes = await orderService.createOrderAPI(
+        userId,
+        courseId,
+        total
+      );
+      const orderData = orderRes?.data;
+      if (!orderData) throw new Error("Tạo order thất bại");
+
+      // 2) Tạo payment
+      const paymentRes = await paymentService.createPaymentAPI(
+        userId,
+        courseId,
+        selectedPayment
+      );
+      const idToVNPay = paymentRes?.data?._id;
+      if (!idToVNPay) throw new Error("Tạo payment thất bại");
+
+      // 3) Lấy VNP URL bằng **id vừa nhận được**, không dùng state
+      const vnpRes = await paymentService.createVNPUrlAPI(total, idToVNPay);
+      if (vnpRes?.status) {
+        window.location.assign(vnpRes.data || "");
+      } else {
+        throw new Error("Tạo VNP URL thất bại");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  const paymentMethods = [
-    {
-      id: "momo" as string,
-      name: "MoMo",
-      description: "Payment via MoMo e-wallet",
-      icon: Smartphone,
-      color: "text-momo",
-      bgColor: "#FCEAF3",
-      borderColor: "#F4B4D5",
-    },
-    {
-      id: "vnpay" as string,
-      name: "VNPay",
-      description: "Payment via VNPay gateway",
-      icon: CreditCard,
-      color: "text-vnpay",
-      bgColor: "#E9EBF7",
-      borderColor: "#ACB7E3",
-    },
-  ];
 
   return (
     <div className="max-w-2xl mx-auto bg-background">
@@ -119,19 +97,19 @@ export const CheckoutForm: React.FC = () => {
             <div className="text-right">
               <p className="text-foreground/70 text-sm">Price</p>
               <p className="text-xl font-bold text-primary">
-                {formatPrice(Number(course?.price))}
+                {formation.formatPrice(Number(course?.price))}
               </p>
             </div>
           </div>
         </div>
 
         {/* Payment Methods */}
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold text-foreground mb-4">
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-base sm:text-lg font-semibold text-foreground mb-4">
             Payment method
           </h2>
           <div className="space-y-3">
-            {paymentMethods.map((method) => {
+            {data.paymentMethods.map((method) => {
               const Icon = method.icon;
               return (
                 <label
@@ -140,10 +118,22 @@ export const CheckoutForm: React.FC = () => {
                     block cursor-pointer transition-all duration-200
                     ${
                       selectedPayment === method.id
-                        ? `border-2 ${method.borderColor} ${method.bgColor}`
-                        : "border border-border"
+                        ? `border-2 ${method.borderColor} ${
+                            theme === "light"
+                              ? `${method.bgColor}`
+                              : `${
+                                  selectedPayment === "momo"
+                                    ? `bg-[#ed5bab]`
+                                    : `bg-[#1A5BAB]`
+                                }`
+                          }`
+                        : `border border-border bg-background ${
+                            theme === "light"
+                              ? "hover:bg-gray-100"
+                              : "hover:bg-gray-800"
+                          } `
                     }
-                    rounded-lg p-4
+                    rounded-lg p-3 sm:p-4
                   `}
                 >
                   <input
@@ -159,14 +149,16 @@ export const CheckoutForm: React.FC = () => {
                   <div className="flex items-center">
                     <div
                       className={`
-                      flex items-center justify-center w-12 h-12 rounded-lg mr-4
+                      flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg mr-3 sm:mr-4
                       ${method.bgColor}
                     `}
                     >
-                      <Icon className={`w-6 h-6 ${method.color}`} />
+                      <Icon
+                        className={`w-5 h-5 sm:w-6 sm:h-6 ${method.color}`}
+                      />
                     </div>
                     <div>
-                      <h3 className="text-foreground font-semibold">
+                      <h3 className=" font-semibold text-sm sm:text-base">
                         {method.name}
                       </h3>
                       <p className="text-foreground/70 text-sm">
@@ -175,7 +167,7 @@ export const CheckoutForm: React.FC = () => {
                     </div>
                     <div className="ml-auto">
                       <div
-                        className={`
+                        className={`flex-shrink-0
                         w-5 h-5 rounded-full border-2 flex items-center justify-center
                         ${
                           selectedPayment === method.id
@@ -203,7 +195,7 @@ export const CheckoutForm: React.FC = () => {
           <div className="flex justify-between items-center text-lg">
             <span className="text-foreground font-semibold">Total:</span>
             <span className="text-2xl font-bold text-primary">
-              {formatPrice(Number(course?.price))}
+              {formation.formatPrice(Number(course?.price))}
             </span>
           </div>
         </div>
@@ -213,7 +205,7 @@ export const CheckoutForm: React.FC = () => {
           onClick={handleConfirmPayment}
           disabled={isLoading}
           className={`
-            w-full py-6 px-6 font-semibold transition-all duration-200
+            w-full py-6 px-6 font-semibold transition-all duration-200 cursor-pointer
             ${
               isLoading
                 ? "cursor-not-allowed"
@@ -227,7 +219,7 @@ export const CheckoutForm: React.FC = () => {
               Processing...
             </div>
           ) : (
-            `Pay ${formatPrice(Number(course?.price))} via ${
+            `Pay ${formation.formatPrice(Number(course?.price))} via ${
               selectedPayment === "momo" ? "MoMo" : "VNPay"
             }`
           )}

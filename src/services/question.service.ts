@@ -3,6 +3,11 @@ const getQuestionByLessonIdAPI = async (lessonId: string) => {
   const urlBackend = `/v1/api/question/lesson/${lessonId}`;
   return axios.get<IBackendRes<IQuestion[]>>(urlBackend);
 };
+
+const getQuestionByLessonIdWithAnswerAPI = async (lessonId: string) => {
+  const urlBackend = `/v1/api/question/lesson/answer/${lessonId}`;
+  return axios.get(urlBackend);
+};
 const createListQuestionAPI = async (file: File) => {
   const urlBackend = "/v1/api/question/multiple";
   const text = await file.text();
@@ -34,4 +39,5 @@ export default {
   createListQuestionAPI,
   updateQuestionAPI,
   deleteQuestionAPI,
+  getQuestionByLessonIdWithAnswerAPI,
 };

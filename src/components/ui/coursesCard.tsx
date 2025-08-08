@@ -56,7 +56,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
           }}
           className="cursor-pointer w-full bg-primary hover:bg-primary-hover py-3 px-4 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5"
         >
-          Mua khóa học ngay
+          Buy now
         </Button>
       </div>
     </div>

@@ -66,7 +66,7 @@ const CourseList: React.FC = () => {
       setListStudent(listStudent);
     };
     fetchStudent();
-  });
+  }, []);
   const navigate = useNavigate();
   return (
     <div className="container mx-auto px-8 py-8">

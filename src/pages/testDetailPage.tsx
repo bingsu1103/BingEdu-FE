@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import questionService from "@/services/question.service";
 import { UseTheme } from "@/components/context/theme.context";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { UseCurrentApp } from "@/components/context/app.context";
 import answerService from "@/services/answer.service";
@@ -34,13 +34,14 @@ const TestDetailPage: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState(1800);
   const [isFinished, setIsFinished] = useState(false);
   const [listQuestion, setListQuestion] = useState<IQuestion[]>([]);
+  const [totalScore, setTotalScore] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
+  const { setIsDoingTest } = UseTestGuard();
+  const navigate = useNavigate();
   const { lessonId } = useParams<{ lessonId: string }>();
   const { id } = useParams<{ id: string }>();
   const { theme } = UseTheme();
   const { user } = UseCurrentApp();
-  const [totalScore, setTotalScore] = useState<number>(0);
-  const { setIsDoingTest } = UseTestGuard();
-  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (timeLeft > 0 && !isFinished) {
@@ -133,6 +134,7 @@ const TestDetailPage: React.FC = () => {
 
       result.forEach((data) => {
         score += data?.score || 0;
+        console.log(score);
       });
       await submissionService.createSubmissionAPI(
         user?._id || "",
@@ -204,7 +206,11 @@ const TestDetailPage: React.FC = () => {
             </div>
           ) : (
             <div className="mt-10 space-y-3">
-              <Button variant="outline" className="cursor-pointer">
+              <Button
+                onClick={() => navigate("/checkout")}
+                variant="outline"
+                className="cursor-pointer"
+              >
                 <Crown />
                 Upgrade to VIP to view corrections
               </Button>
