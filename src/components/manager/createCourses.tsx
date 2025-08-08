@@ -87,9 +87,7 @@ const CreateCourses = () => {
           </div>
           <DialogFooter className="mt-5">
             <DialogClose asChild>
-              <Button ref={closeRef} variant="outline">
-                Cancel
-              </Button>
+              <Button variant="outline">Cancel</Button>
             </DialogClose>
             <Button type="submit">Submit</Button>
           </DialogFooter>

@@ -29,6 +29,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ProtectedLink from "@/pages/auth/protectedLink";
+import { message } from "antd";
 
 const AppHeader = () => {
   const { setTheme, theme } = UseTheme();
@@ -41,6 +42,7 @@ const AppHeader = () => {
       setIsAuthenticated(false);
       setUser(null);
       localStorage.removeItem("access_token");
+      message.success("Logged out");
     }
   };
   const avatar = user?.avatar || "https://github.com/shadcn.png";

@@ -33,12 +33,12 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
   const [location, setLocation] = useState<string>(user?.location || "");
   const { setTheme, theme } = UseTheme();
   const { setUser, setIsAuthenticated } = UseCurrentApp();
-  const [notifications, setNotifications] = useState({
-    email: true,
-    push: true,
-    sms: false,
-    marketing: true,
-  });
+  // const [notifications, setNotifications] = useState({
+  //   email: true,
+  //   push: true,
+  //   sms: false,
+  //   marketing: true,
+  // });
 
   // const [preferences, setPreferences] = useState({
   //   language: "vi",
@@ -47,12 +47,12 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
   //   quality: "auto",
   // });
 
-  const handleNotificationChange = (key: string) => {
-    setNotifications((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
-  };
+  // const handleNotificationChange = (key: string) => {
+  //   setNotifications((prev) => ({
+  //     ...prev,
+  //     [key]: !prev[key],
+  //   }));
+  // };
   const handleDeleteAccount = async () => {
     if (!user?._id) {
       message.error("User not found");
@@ -81,26 +81,26 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
     }
   };
 
-  const ToggleSwitch = ({
-    enabled,
-    onChange,
-  }: {
-    enabled: boolean;
-    onChange: () => void;
-  }) => (
-    <button
-      onClick={onChange}
-      className={`w-12 h-6 rounded-full transition-colors duration-200 ${
-        enabled ? "bg-blue-600" : "bg-gray-300"
-      }`}
-    >
-      <div
-        className={`w-5 h-5 bg-background rounded-full transition-transform duration-200 ${
-          enabled ? "translate-x-6" : "translate-x-1"
-        }`}
-      />
-    </button>
-  );
+  // const ToggleSwitch = ({
+  //   enabled,
+  //   onChange,
+  // }: {
+  //   enabled: boolean;
+  //   onChange: () => void;
+  // }) => (
+  //   <button
+  //     onClick={onChange}
+  //     className={`w-12 h-6 rounded-full transition-colors duration-200 ${
+  //       enabled ? "bg-blue-600" : "bg-gray-300"
+  //     }`}
+  //   >
+  //     <div
+  //       className={`w-5 h-5 bg-background rounded-full transition-transform duration-200 ${
+  //         enabled ? "translate-x-6" : "translate-x-1"
+  //       }`}
+  //     />
+  //   </button>
+  // );
 
   return (
     <div className="min-h-screen bg-background">
@@ -304,20 +304,20 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
                       Received message from email
                     </p>
                   </div>
-                  <ToggleSwitch
+                  {/* <ToggleSwitch
                     enabled={notifications.email}
                     onChange={() => handleNotificationChange("email")}
-                  />
+                  /> */}
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="font-medium text-foreground">SMS</span>
                     <p className="text-sm text-foreground">Nhận tin nhắn SMS</p>
                   </div>
-                  <ToggleSwitch
+                  {/* <ToggleSwitch
                     enabled={notifications.sms}
                     onChange={() => handleNotificationChange("sms")}
-                  />
+                  /> */}
                 </div>
               </div>
             </div>

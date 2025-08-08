@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import {
   MessageCircle,
@@ -5,19 +6,14 @@ import {
   Clock,
   Users,
   BookOpen,
-  Headphones,
-  FileText,
   Award,
   Search,
   MoreHorizontal,
   Send,
-  PenTool,
-  BookMarked,
   Play,
   ChevronRight,
   Trophy,
   Calendar,
-  Briefcase,
   ChevronLeft,
   Siren as Fire,
   Activity,
@@ -32,192 +28,7 @@ import SubmissionGraph from "@/components/ui/submission";
 import submissionService from "@/services/submission.service";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
-
-const featuredCourses = [
-  {
-    id: 1,
-    title: "Complete IELTS Preparation Bootcamp",
-    instructor: "John Davis",
-    image:
-      "https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=2",
-    rating: 4.9,
-    students: 15420,
-    price: 89.99,
-    originalPrice: 199.99,
-    tag: "Bestseller",
-    duration: "42 hours",
-  },
-  {
-    id: 2,
-    title: "English Grammar Fundamentals",
-    instructor: "Dr. Sarah Kim",
-    image:
-      "https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=2",
-    rating: 4.8,
-    students: 8930,
-    price: 79.99,
-    originalPrice: 149.99,
-    tag: "Hot",
-    duration: "28 hours",
-  },
-  {
-    id: 3,
-    title: "Business English Communication",
-    instructor: "Alex Rodriguez",
-    image:
-      "https://images.pexels.com/photos/265087/pexels-photo-265087.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=2",
-    rating: 4.7,
-    students: 12500,
-    price: 59.99,
-    originalPrice: 119.99,
-    tag: "New",
-    duration: "35 hours",
-  },
-];
-
-const categories = [
-  {
-    name: "IELTS Prep",
-    icon: <FileText className="w-8 h-8" />,
-    color: "from-blue-500 to-blue-600",
-  },
-  {
-    name: "Grammar",
-    icon: <PenTool className="w-8 h-8" />,
-    color: "from-purple-500 to-purple-600",
-  },
-  {
-    name: "Business English",
-    icon: <Briefcase className="w-8 h-8" />,
-    color: "from-green-500 to-green-600",
-  },
-  {
-    name: "Conversation",
-    icon: <MessageCircle className="w-8 h-8" />,
-    color: "from-orange-500 to-orange-600",
-  },
-  {
-    name: "Listening",
-    icon: <Headphones className="w-8 h-8" />,
-    color: "from-pink-500 to-pink-600",
-  },
-  {
-    name: "Writing",
-    icon: <BookOpen className="w-8 h-8" />,
-    color: "from-teal-500 to-teal-600",
-  },
-];
-
-const topStudents = [
-  {
-    name: "Jennifer Martinez",
-    title: "IELTS Band 8.5 Achiever",
-    avatar:
-      "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&dpr=2",
-    coursesCompleted: 45,
-    studyHours: 320,
-    rating: 4.9,
-    achievement: "Top Performer",
-  },
-  {
-    name: "Mark Thompson",
-    title: "Business English Expert",
-    avatar:
-      "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&dpr=2",
-    coursesCompleted: 38,
-    studyHours: 280,
-    rating: 4.8,
-    achievement: "Grammar Master",
-  },
-  {
-    name: "Lisa Wang",
-    title: "Academic Writing Specialist",
-    avatar:
-      "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&dpr=2",
-    coursesCompleted: 29,
-    studyHours: 250,
-    rating: 4.9,
-    achievement: "Writing Champion",
-  },
-];
-
-const liveEvents = [
-  {
-    id: 1,
-    title: "IELTS Speaking Practice Session",
-    instructor: "Sarah Chen",
-    time: "2:00 PM",
-    date: "Today",
-    attendees: 245,
-    type: "Live Session",
-  },
-  {
-    id: 2,
-    title: "Grammar Workshop: Advanced Tenses",
-    instructor: "Michael Brown",
-    time: "4:30 PM",
-    date: "Tomorrow",
-    attendees: 180,
-    type: "Workshop",
-  },
-  {
-    id: 3,
-    title: "Business English Presentation Skills",
-    instructor: "Emily Davis",
-    time: "10:00 AM",
-    date: "Sat, Nov 16",
-    attendees: 120,
-    type: "Masterclass",
-  },
-];
-
-const getTypeIcon = (type: string) => {
-  switch (type) {
-    case "listening":
-      return <Headphones className="w-5 h-5" />;
-    case "reading":
-      return <BookOpen className="w-5 h-5" />;
-    case "writing":
-      return <PenTool className="w-5 h-5" />;
-    case "grammar":
-      return <BookMarked className="w-5 h-5" />;
-    case "mixed":
-      return <FileText className="w-5 h-5" />;
-    default:
-      return <BookOpen className="w-5 h-5" />;
-  }
-};
-
-const getTypeColor = (type: string) => {
-  switch (type) {
-    case "listening":
-      return "from-blue-500 to-blue-600";
-    case "reading":
-      return "from-green-500 to-green-600";
-    case "writing":
-      return "from-purple-500 to-purple-600";
-    case "grammar":
-      return "from-orange-500 to-orange-600";
-    case "mixed":
-      return "from-pink-500 to-pink-600";
-    default:
-      return "from-gray-500 to-gray-600";
-  }
-};
-
-const formatTimeAgo = (dateString: string) => {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffInHours = Math.floor(
-    (now.getTime() - date.getTime()) / (1000 * 60 * 60)
-  );
-
-  if (diffInHours < 1) return "Just now";
-  if (diffInHours < 24) return `${diffInHours}h ago`;
-  const diffInDays = Math.floor(diffInHours / 24);
-  if (diffInDays < 7) return `${diffInDays}d ago`;
-  return date.toLocaleDateString();
-};
+import homepageultils from "@/utils/homepage";
 
 const renderStars = (rating: number) => {
   return Array.from({ length: 5 }, (_, index) => (
@@ -269,7 +80,9 @@ export default function HomePage() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % featuredCourses.length);
+      setCurrentSlide(
+        (prev) => (prev + 1) % homepageultils.featuredCourses.length
+      );
     }, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -453,7 +266,10 @@ export default function HomePage() {
               <button
                 onClick={() =>
                   setCurrentSlide(
-                    Math.min(featuredCourses.length - 1, currentSlide + 1)
+                    Math.min(
+                      homepageultils.featuredCourses.length - 1,
+                      currentSlide + 1
+                    )
                   )
                 }
                 className="p-2 rounded-full bg-background/50 border border-white/20 hover:bg-background/70 transition-all duration-300 hover:scale-110"
@@ -468,7 +284,7 @@ export default function HomePage() {
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
-              {featuredCourses.map((course) => (
+              {homepageultils.featuredCourses.map((course: any) => (
                 <div key={course.id} className="w-full flex-shrink-0">
                   <div className="relative h-96 bg-gradient-to-r from-gray-900/80 to-gray-800/80 rounded-2xl overflow-hidden group cursor-pointer">
                     <img
@@ -550,7 +366,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {categories.map((category, index) => (
+            {homepageultils.categories.map((category: any, index: number) => (
               <div
                 key={category.name}
                 id={`category-${index}`}
@@ -638,7 +454,7 @@ export default function HomePage() {
                 Live English Sessions
               </h3>
               <div className="space-y-3">
-                {liveEvents.map((event, index) => (
+                {homepageultils.liveEvents.map((event: any, index: number) => (
                   <div
                     key={event.id}
                     className="p-3 bg-background/30 rounded-xl hover:bg-background/50 transition-all duration-300 cursor-pointer hover:scale-105 animate-fade-in-up"
@@ -678,49 +494,51 @@ export default function HomePage() {
                 Top English Students
               </h3>
               <div className="space-y-4">
-                {topStudents.map((student, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center space-x-3 p-2 rounded-xl hover:bg-background/30 transition-all duration-300 cursor-pointer hover:scale-105 animate-fade-in-up"
-                    style={{ animationDelay: `${index * 150}ms` }}
-                  >
-                    <div className="relative">
-                      <img
-                        src={student.avatar}
-                        alt={student.name}
-                        className="w-10 h-10 rounded-full object-cover animate-pulse-glow"
-                      />
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
-                        <span className="text-xs font-bold text-gray-900">
-                          {index + 1}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-foreground text-sm truncate">
-                        {student.name}
-                      </h4>
-                      <p className="text-xs text-foreground/60 truncate">
-                        {student.title}
-                      </p>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <div className="flex items-center space-x-1">
-                          <Star className="w-3 h-3 text-yellow-400 fill-current animate-twinkle" />
-                          <span className="text-xs text-foreground/70">
-                            {student.rating}
+                {homepageultils.topStudents.map(
+                  (student: any, index: number) => (
+                    <div
+                      key={index}
+                      className="flex items-center space-x-3 p-2 rounded-xl hover:bg-background/30 transition-all duration-300 cursor-pointer hover:scale-105 animate-fade-in-up"
+                      style={{ animationDelay: `${index * 150}ms` }}
+                    >
+                      <div className="relative">
+                        <img
+                          src={student.avatar}
+                          alt={student.name}
+                          className="w-10 h-10 rounded-full object-cover animate-pulse-glow"
+                        />
+                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
+                          <span className="text-xs font-bold text-gray-900">
+                            {index + 1}
                           </span>
                         </div>
-                        <span className="text-xs text-foreground/50">•</span>
-                        <span className="text-xs text-foreground/60">
-                          {student.coursesCompleted} courses
-                        </span>
                       </div>
-                      <div className="text-xs text-green-400 font-medium">
-                        {student.achievement}
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-foreground text-sm truncate">
+                          {student.name}
+                        </h4>
+                        <p className="text-xs text-foreground/60 truncate">
+                          {student.title}
+                        </p>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <div className="flex items-center space-x-1">
+                            <Star className="w-3 h-3 text-yellow-400 fill-current animate-twinkle" />
+                            <span className="text-xs text-foreground/70">
+                              {student.rating}
+                            </span>
+                          </div>
+                          <span className="text-xs text-foreground/50">•</span>
+                          <span className="text-xs text-foreground/60">
+                            {student.coursesCompleted} courses
+                          </span>
+                        </div>
+                        <div className="text-xs text-green-400 font-medium">
+                          {student.achievement}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             </div>
           </div>
@@ -814,11 +632,11 @@ export default function HomePage() {
                                 </div>
                               </div>
                               <div
-                                className={`absolute top-3 left-3 w-10 h-10 bg-gradient-to-r ${getTypeColor(
+                                className={`absolute top-3 left-3 w-10 h-10 bg-gradient-to-r ${homepageultils.getTypeColor(
                                   course.type
                                 )} rounded-xl flex items-center justify-center text-white animate-float`}
                               >
-                                {getTypeIcon(course.type)}
+                                {homepageultils.getTypeIcon(course.type)}
                               </div>
                             </div>
                           </div>
@@ -953,7 +771,9 @@ export default function HomePage() {
                                         </h5>
                                         <span className="text-xs text-foreground/50">
                                           {review.createdAt
-                                            ? formatTimeAgo(review.createdAt)
+                                            ? homepageultils.formatTimeAgo(
+                                                review.createdAt
+                                              )
                                             : "Recently"}
                                         </span>
                                       </div>

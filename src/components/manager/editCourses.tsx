@@ -100,9 +100,7 @@ const EditCourses: React.FC<ICoursesProps> = ({ courses }) => {
         </div>
         <DialogFooter className="mt-5">
           <DialogClose asChild>
-            <Button ref={closeRef} variant="outline">
-              Cancel
-            </Button>
+            <Button variant="outline">Cancel</Button>
           </DialogClose>
           <Button type="submit" onClick={handleSubmit}>
             Submit
