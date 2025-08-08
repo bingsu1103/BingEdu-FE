@@ -198,6 +198,21 @@ declare global {
     updatedAt?: string;
   }
 
+  interface IOrder {
+    _id: string;
+    userId: string;
+    courseId: string;
+    total: number;
+  }
+
+  interface IPayment {
+    _id: string;
+    userId: string;
+    courseId: string;
+    method: string;
+    status: string;
+  }
+
   interface IProgressCourses {
     _id: string;
     userId: string;

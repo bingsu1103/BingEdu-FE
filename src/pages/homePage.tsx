@@ -846,11 +846,23 @@ export default function HomePage() {
                               </div>
                               <div className="flex items-center space-x-1 animate-fade-in-up animation-delay-100">
                                 {renderStars(5)}
-                                <span className="ml-1">4.8 (156 reviews)</span>
-                              </div>
-                              <div className="flex items-center space-x-1 animate-fade-in-up animation-delay-200">
-                                <BookMarked className="w-4 h-4" />
-                                <span>24 lessons</span>
+                                <span className="ml-1">
+                                  {(() => {
+                                    const reviews =
+                                      listReview?.filter(
+                                        (v) => v.courseID === course._id
+                                      ) ?? [];
+                                    const total = reviews.reduce(
+                                      (acc, v) => acc + (v.rating || 0),
+                                      0
+                                    );
+                                    const avg =
+                                      reviews.length > 0
+                                        ? total / reviews.length
+                                        : 0;
+                                    return avg.toFixed(2);
+                                  })()}
+                                </span>
                               </div>
                             </div>
 
@@ -858,13 +870,18 @@ export default function HomePage() {
                             <div className="flex items-center justify-between">
                               <div className="flex items-center space-x-2">
                                 <span className="text-2xl font-bold text-foreground animate-bounce-subtle">
-                                  $49.99
+                                  VND {course.price}
                                 </span>
                                 <span className="text-sm text-foreground/50 line-through">
-                                  $79.99
+                                  VND {course.price + 90000}
                                 </span>
                                 <span className="px-2 py-1 bg-red-500/20 text-red-400 text-xs font-medium rounded-full border border-red-500/30 animate-pulse-glow">
-                                  38% off
+                                  {(
+                                    (1 -
+                                      course.price / (90000 + course.price)) *
+                                    100
+                                  ).toFixed(2)}{" "}
+                                  % off
                                 </span>
                               </div>
                               <Button className="px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105">

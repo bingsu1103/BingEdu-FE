@@ -25,6 +25,10 @@ import BlogPost from "./components/docs/blogPost.tsx";
 import RankingPage from "@/pages/rankingPage.tsx";
 import { TestGuardProvider } from "./components/context/testGuard.context.tsx";
 import CorrectionPage from "./pages/detailCorrectionPage.tsx";
+import CheckOutPage from "./pages/checkOutPage.tsx";
+import { CheckoutForm } from "./components/ui/checkOutForm.tsx";
+import { PaymentSuccess } from "./components/ui/paymentSuccess.tsx";
+import { PaymentFailed } from "./components/ui/paymentFailed.tsx";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +58,22 @@ const router = createBrowserRouter([
       {
         path: "/correction",
         element: <CorrectionPage />,
+      },
+      {
+        path: "/checkout",
+        element: <CheckOutPage />,
+      },
+      {
+        path: "/checkout/:id",
+        element: <CheckoutForm />,
+      },
+      {
+        path: "/checkout/failed",
+        element: <PaymentFailed />,
+      },
+      {
+        path: "/checkout/success/:id",
+        element: <PaymentSuccess />,
       },
       {
         path: "/about",
