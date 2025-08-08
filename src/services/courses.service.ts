@@ -5,6 +5,11 @@ const createCourseAPI = async (data: object) => {
   return axios.post<IBackendRes<ICourses>>(urlBackend, data);
 };
 
+const updateCourseAPI = async (payload: object) => {
+  const urlBackend = "/v1/api/course";
+  return axios.put<IBackendRes<IUpdate>>(urlBackend, payload);
+};
+
 const getCourseAPI = async (id: string) => {
   const urlBackend = `/v1/api/course/id/${id}`;
   return axios.get<IBackendRes<ICourses>>(urlBackend);
@@ -23,4 +28,5 @@ export default {
   getCourseAPI,
   deleteCoursesAPI,
   createCourseAPI,
+  updateCourseAPI,
 };

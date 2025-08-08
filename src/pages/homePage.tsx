@@ -291,6 +291,7 @@ export default function HomePage() {
             _id: course._id || "",
             title: course.title || "Untitled Course",
             description: course.description || "",
+            price: course.price || 0,
             type: course.type || "mixed",
             thumbnail: course.thumbnail || "default-thumbnail.jpg",
           })) || [];

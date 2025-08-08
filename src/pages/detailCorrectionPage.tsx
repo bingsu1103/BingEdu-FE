@@ -283,7 +283,7 @@ const CorrectionPage: React.FC = () => {
             </div>
 
             <div className="space-y-6">
-              {sampleQuestions.map((question, index) => (
+              {sampleQuestions.map((question) => (
                 <div key={question._id}>
                   <QuestionDetail question={question} />
                 </div>

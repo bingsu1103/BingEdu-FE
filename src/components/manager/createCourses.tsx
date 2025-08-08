@@ -28,6 +28,7 @@ const CreateCourses = () => {
         title: formData.get("title"),
         type: formData.get("type"),
         description: formData.get("description"),
+        price: formData.get("price"),
         thumbnail:
           "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=400",
       };
@@ -61,6 +62,10 @@ const CreateCourses = () => {
               name="description"
               placeholder="Description"
             />
+          </div>
+          <div className="grid gap-3">
+            <Label htmlFor="price">Price</Label>
+            <Input id="price" name="price" placeholder="Price" />
           </div>
           <div className="grid gap-3">
             <Label htmlFor="type">Type</Label>

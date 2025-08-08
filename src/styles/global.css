@@ -642,3 +642,15 @@ html {
 .zoom-in-95 {
   animation: zoom-in 0.2s ease-out;
 }
+
+.ellipsis {
+  max-width: 150px;
+  /* Giới hạn tối đa chiều rộng */
+  white-space: nowrap;
+  /* Không xuống dòng */
+  overflow: hidden;
+  /* Ẩn phần vượt quá */
+  text-overflow: ellipsis;
+  /* Hiển thị dấu ... */
+  /* display: inline-block; */
+}

@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
   Tooltip,
   TooltipContent,
@@ -26,6 +26,7 @@ import { message, Popconfirm } from "antd";
 import coursesService from "@/services/courses.service";
 import { BookmarkPlus } from "lucide-react";
 import CreateCourses from "../manager/createCourses";
+import EditCourses from "../manager/editCourses";
 const CoursesDashboard: React.FC = () => {
   const [coursesData, setCoursesData] = useState<ICourses[]>([]);
 
@@ -81,6 +82,7 @@ const CoursesDashboard: React.FC = () => {
             <TableHead>ID</TableHead>
             <TableHead>Title</TableHead>
             <TableHead>Type</TableHead>
+            <TableHead>Price</TableHead>
             <TableHead>Description</TableHead>
             <TableHead className="text-center">Action</TableHead>
           </TableRow>
@@ -89,12 +91,29 @@ const CoursesDashboard: React.FC = () => {
           {coursesData.map((courses) => (
             <TableRow className="leading-12 text-foreground" key={courses._id}>
               <TableCell>{courses._id}</TableCell>
-              <TableCell>{courses.title}</TableCell>
+              <TableCell className="ellipsis">{courses.title}</TableCell>
               <TableCell>{courses.type}</TableCell>
-              <TableCell className="font-medium">
+              <TableCell>{courses.price || 0}</TableCell>
+              <TableCell className="font-medium ellipsis">
                 {courses.description}
               </TableCell>
               <TableCell className="flex gap-2 justify-center items-center">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="p-2 bg-transparent hover:bg-[#333] text-[#165DFB] cursor-pointer">
+                      <EditOutlined />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Edit courses</DialogTitle>
+                      <DialogDescription>
+                        Fill all fields below to edit a course
+                      </DialogDescription>
+                    </DialogHeader>
+                    <EditCourses courses={courses} />
+                  </DialogContent>
+                </Dialog>
                 <Tooltip>
                   <TooltipTrigger>
                     <Popconfirm
