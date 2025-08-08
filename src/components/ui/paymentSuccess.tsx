@@ -3,6 +3,7 @@ import { CheckCircle, Download, BookOpen } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
 import coursesService from "@/services/courses.service";
 import { Button } from "./button";
+import paymentService from "@/services/payment.service";
 
 export const PaymentSuccess: React.FC = () => {
   const formatPrice = (price: number) => {
@@ -13,15 +14,24 @@ export const PaymentSuccess: React.FC = () => {
   };
   const { id } = useParams<string>();
   const [course, setCourses] = useState<ICourses | null>(null);
+  const [courseID, setCourseID] = useState<string>("");
   const navigate = useNavigate();
 
   useEffect(() => {
+    const fetchPayment = async () => {
+      const result = await paymentService.getPaymentAPI(id!);
+      setCourseID(result.data?.courseId || "");
+    };
+    fetchPayment();
+  }, [id]);
+
+  useEffect(() => {
     const fetchCourses = async () => {
-      const result = await coursesService.getCourseAPI(id || "");
+      const result = await coursesService.getCourseAPI(courseID || "");
       setCourses(result?.data || null);
     };
     fetchCourses();
-  }, [id]);
+  }, [courseID]);
 
   return (
     <div className="max-w-2xl mx-auto bg-background text-center">
