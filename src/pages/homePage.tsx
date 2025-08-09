@@ -29,6 +29,7 @@ import submissionService from "@/services/submission.service";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import homepageultils from "@/utils/homepage";
+import formation from "@/utils/format";
 
 const renderStars = (rating: number) => {
   return Array.from({ length: 5 }, (_, index) => (
@@ -690,10 +691,10 @@ export default function HomePage() {
                             <div className="flex items-center justify-between">
                               <div className="flex items-center space-x-2">
                                 <span className="text-2xl font-bold text-foreground animate-bounce-subtle">
-                                  VND {course.price}
+                                  {formation.formatPrice(course.price)}
                                 </span>
                                 <span className="text-sm text-foreground/50 line-through">
-                                  VND {course.price + 90000}
+                                  {formation.formatPrice(course.price + 90000)}
                                 </span>
                                 <span className="px-2 py-1 bg-red-500/20 text-red-400 text-xs font-medium rounded-full border border-red-500/30 animate-pulse-glow">
                                   {(

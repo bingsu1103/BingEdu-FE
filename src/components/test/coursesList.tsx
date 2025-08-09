@@ -1,4 +1,5 @@
 import coursesService from "@/services/courses.service";
+import paymentService from "@/services/payment.service";
 import userService from "@/services/user.service";
 import {
   BookOpen,
@@ -11,6 +12,8 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { UseCurrentApp } from "../context/app.context";
+import { Button } from "../ui/button";
 
 const getTypeIcon = (type: string) => {
   switch (type) {
@@ -49,6 +52,8 @@ const getTypeColor = (type: string) => {
 const CourseList: React.FC = () => {
   const [listCourse, setListCourses] = useState<ICourses[]>([]);
   const [listStudent, setListStudent] = useState<IUser[]>([]);
+  const [listPayment, setListPayment] = useState<IPayment[]>([]);
+  const { user } = UseCurrentApp();
   useEffect(() => {
     const fetchCourse = async () => {
       const listCourse = await coursesService.getAllCoursesAPI();
@@ -56,6 +61,18 @@ const CourseList: React.FC = () => {
     };
     fetchCourse();
   }, []);
+
+  useEffect(() => {
+    const fetchPayment = async () => {
+      if (user && user._id !== null) {
+        const resultPayment = await paymentService.getPaymentByUserIdAPI(
+          user._id!
+        );
+        setListPayment(resultPayment.data || []);
+      }
+    };
+    fetchPayment();
+  }, [user]);
 
   useEffect(() => {
     const fetchStudent = async () => {
@@ -146,12 +163,24 @@ const CourseList: React.FC = () => {
 
             {/* Course Footer */}
             <div className="px-6 pb-6">
-              <button
-                onClick={() => navigate(`/courses/${course._id}/lesson`)}
-                className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-foreground py-3 rounded-xl font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 transform group-hover:scale-105"
-              >
-                Start Learning
-              </button>
+              {listPayment.some(
+                (payment) =>
+                  payment.courseId === course._id && payment.status === "paid"
+              ) ? (
+                <Button
+                  onClick={() => navigate(`/courses/${course._id}/lesson`)}
+                  className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-foreground py-6 rounded-xl font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 transform group-hover:scale-105"
+                >
+                  Start Learning
+                </Button>
+              ) : (
+                <Button
+                  disabled={true}
+                  className="w-full py-6 rounded-xl font-semibold transition-all duration-300 transform group-hover:scale-105"
+                >
+                  Unavailable
+                </Button>
+              )}
             </div>
           </div>
         ))}

@@ -124,12 +124,15 @@ const RankingPage: React.FC = () => {
       userStats[submission.userId].scores.push(submission.score);
     });
 
-    const rankings: UserRanking[] = Object.entries(userStats).map(
-      ([userId, stats]) => {
-        const user = listUser.find((u) => u._id === userId);
+    const rankings: UserRanking[] = Object.entries(userStats)
+      .map(([userId, stats]) => {
+        const user = listUser.find(
+          (u) => u._id === userId && u.deleted === false
+        );
+        if (!user) return null;
         return {
           userId,
-          userName: user?.name || `User ${userId}`,
+          userName: user?.name,
           avatar:
             user?.avatar ||
             "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=64",
@@ -139,8 +142,8 @@ const RankingPage: React.FC = () => {
             Math.round((stats.totalScore / stats.submissionCount) * 100) / 100,
           rank: 0,
         };
-      }
-    );
+      })
+      .filter((item): item is UserRanking => item !== null);
 
     rankings.sort((a, b) => b.totalScore - a.totalScore);
     rankings.forEach((user, index) => {
