@@ -14,6 +14,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { UseCurrentApp } from "../context/app.context";
 import { Button } from "../ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import progressService from "@/services/progress.service";
 
 const getTypeIcon = (type: string) => {
   switch (type) {
@@ -53,6 +56,7 @@ const CourseList: React.FC = () => {
   const [listCourse, setListCourses] = useState<ICourses[]>([]);
   const [listStudent, setListStudent] = useState<IUser[]>([]);
   const [listPayment, setListPayment] = useState<IPayment[]>([]);
+  const [listProgress, setListProgress] = useState<IProgressCourses[]>([]);
   const { user } = UseCurrentApp();
   useEffect(() => {
     const fetchCourse = async () => {
@@ -61,6 +65,16 @@ const CourseList: React.FC = () => {
     };
     fetchCourse();
   }, []);
+
+  useEffect(() => {
+    const fetchProgressAPI = async () => {
+      const listProgress = await progressService.getCourseProgressByUserAPI(
+        user?._id || ""
+      );
+      setListProgress(listProgress.data || []);
+    };
+    fetchProgressAPI();
+  });
 
   useEffect(() => {
     const fetchPayment = async () => {
@@ -115,11 +129,18 @@ const CourseList: React.FC = () => {
                 course.type
               )} p-6 relative overflow-hidden`}
             >
+              {listPayment.some(
+                (payment) =>
+                  payment.courseId === course._id && payment.status === "paid"
+              ) ? (
+                <Badge>Available</Badge>
+              ) : (
+                <Badge>Unavailable</Badge>
+              )}
               <div className="absolute top-4 right-4 bg-background bg-opacity-20 rounded-full p-2">
                 {getTypeIcon(course.type)}
               </div>
               <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-white bg-opacity-10 rounded-full"></div>
-              <div className="absolute -top-4 -left-4 w-16 h-16 bg-white bg-opacity-10 rounded-full"></div>
             </div>
 
             {/* Course Content */}
@@ -132,10 +153,6 @@ const CourseList: React.FC = () => {
                 >
                   {course.type.toUpperCase()}
                 </span>
-                <div className="flex items-center text-foreground">
-                  <Star className="w-4 h-4 fill-current" />
-                  <span className="text-xs text-foreground ml-1">4.8</span>
-                </div>
               </div>
 
               <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-foreground transition-colors truncate">
@@ -145,19 +162,40 @@ const CourseList: React.FC = () => {
               <div className="flex items-center justify-between text-sm text-foreground mb-4">
                 <div className="flex items-center">
                   <Clock className="w-4 h-4 mr-1" />
-                  <span>lessons</span>
+                  <span>OK</span>
                 </div>
-                {/* <div className="flex items-center">
+                <div className="flex items-center">
                   <Users className="w-4 h-4 mr-1" />
-                  <span>2.4k students</span>
-                </div> */}
+                  <span>
+                    {
+                      listPayment.filter((v) => v.courseId === course._id)
+                        .length
+                    }
+                    <span> students</span>
+                  </span>
+                </div>
               </div>
 
               <div className="flex items-center justify-between">
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full w-3/5"></div>
+                <div className="w-full rounded-full h-2">
+                  {(() => {
+                    const progress = listProgress.find(
+                      (v) =>
+                        v.coursesId === course._id && v.userId === user?._id
+                    );
+                    return (
+                      <div className="flex items-center">
+                        <Progress
+                          value={(progress?.progress ?? 0) * 100}
+                          className=""
+                        ></Progress>
+                        <span className="text-xs text-foreground ml-3">
+                          {(progress?.progress ?? 0) * 100}%
+                        </span>
+                      </div>
+                    );
+                  })()}
                 </div>
-                <span className="text-xs text-foreground ml-3">60%</span>
               </div>
             </div>
 
@@ -169,16 +207,16 @@ const CourseList: React.FC = () => {
               ) ? (
                 <Button
                   onClick={() => navigate(`/courses/${course._id}/lesson`)}
-                  className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-foreground py-6 rounded-xl font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 transform group-hover:scale-105"
+                  className="w-full bg-accent-foreground py-6 rounded-xl font-semibold transition-all duration-300 transform group-hover:scale-105"
                 >
                   Start Learning
                 </Button>
               ) : (
                 <Button
-                  disabled={true}
+                  onClick={() => navigate("/checkout")}
                   className="w-full py-6 rounded-xl font-semibold transition-all duration-300 transform group-hover:scale-105"
                 >
-                  Unavailable
+                  Buy now
                 </Button>
               )}
             </div>

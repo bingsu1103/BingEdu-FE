@@ -4,11 +4,13 @@ import { useNavigate } from "react-router";
 interface CourseCardProps {
   course: ICourses;
   selectedCourses: ICourses;
+  listPayment: IPayment[];
 }
 
 export const CourseCard: React.FC<CourseCardProps> = ({
   course,
   selectedCourses,
+  listPayment,
 }) => {
   const navigate = useNavigate();
   const formatPrice = (price: number) => {
@@ -49,15 +51,27 @@ export const CourseCard: React.FC<CourseCardProps> = ({
             {formatPrice(course.price)}
           </span>
         </div>
-
-        <Button
-          onClick={() => {
-            navigate(`/checkout/${selectedCourses._id}`);
-          }}
-          className="cursor-pointer w-full bg-primary hover:bg-primary-hover py-3 px-4 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5"
-        >
-          Buy now
-        </Button>
+        {listPayment.find(
+          (v) => v.courseId === course._id && v.status === "paid"
+        ) ? (
+          <Button
+            onClick={() => {
+              navigate(`/courses`);
+            }}
+            className="cursor-pointer w-full bg-[#34e537] text-black hover:bg-primary-hover py-3 px-4 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5"
+          >
+            Available
+          </Button>
+        ) : (
+          <Button
+            onClick={() => {
+              navigate(`/checkout/${selectedCourses._id}`);
+            }}
+            className="cursor-pointer w-full bg-primary hover:bg-primary-hover py-3 px-4 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5"
+          >
+            Check out
+          </Button>
+        )}
       </div>
     </div>
   );

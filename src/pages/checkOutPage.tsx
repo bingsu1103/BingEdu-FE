@@ -1,9 +1,13 @@
+import { UseCurrentApp } from "@/components/context/app.context";
 import { CourseCard } from "@/components/ui/coursesCard";
 import coursesService from "@/services/courses.service";
+import paymentService from "@/services/payment.service";
 import { useEffect, useState } from "react";
 
 const CheckOutPage = () => {
   const [listCourses, setListCourses] = useState<ICourses[]>([]);
+  const [listPayment, setListPayment] = useState<IPayment[]>([]);
+  const { user } = UseCurrentApp();
   useEffect(() => {
     const fetchAllCourses = async () => {
       const result = await coursesService.getAllCoursesAPI();
@@ -11,6 +15,17 @@ const CheckOutPage = () => {
     };
     fetchAllCourses();
   }, []);
+
+  useEffect(() => {
+    const fetchPayment = async () => {
+      if (!user) return;
+      const payment = await paymentService.getPaymentByUserIdAPI(
+        user._id || ""
+      );
+      setListPayment(payment.data || []);
+    };
+    fetchPayment();
+  }, [user]);
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="container mx-auto px-4 py-12">
@@ -34,7 +49,11 @@ const CheckOutPage = () => {
           >
             {listCourses.map((c) => (
               <div key={c._id} className="h-full">
-                <CourseCard course={c} selectedCourses={c} />
+                <CourseCard
+                  course={c}
+                  selectedCourses={c}
+                  listPayment={listPayment}
+                />
               </div>
             ))}
           </div>
