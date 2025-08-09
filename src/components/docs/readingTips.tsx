@@ -62,7 +62,7 @@ const ReadingTips = () => {
                 <span>{tip.date}</span>
               </div>
 
-              <h2 className="text-xl font-bold text-foreground group-hover:text-blue-600 transition-colors duration-200">
+              <h2 className="text-xl font-bold text-black group-hover:text-blue-600 transition-colors duration-200">
                 {tip.title}
               </h2>
 
@@ -107,7 +107,7 @@ const ReadingTips = () => {
           Join thousands of learners who have improved their reading skills with
           our comprehensive courses and personalized feedback.
         </p>
-        <button className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
+        <button className="bg-blue-600 cursor-pointer text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
           Start Learning Today
         </button>
       </div>

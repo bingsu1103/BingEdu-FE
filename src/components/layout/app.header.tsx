@@ -18,7 +18,15 @@ import authService from "services/auth.service";
 import { MdDashboard } from "react-icons/md";
 import logo from "@/assets/binglogo.jpg";
 import { MenuOutlined } from "@ant-design/icons";
-import { Moon, Sun, Bell } from "lucide-react";
+import {
+  Moon,
+  Sun,
+  Bell,
+  ShoppingCart,
+  History,
+  Cookie,
+  GlobeLock,
+} from "lucide-react";
 import { UseTheme } from "@/components/context/theme.context";
 import {
   DropdownMenu,
@@ -91,14 +99,26 @@ const AppHeader = () => {
                       </ProtectedLink>
                     </NavigationMenuLink>
                   </li>
-                  <ListItem to="/docs" title="Introduction">
-                    Re-usable components built using Radix UI and Tailwind CSS.
+                  <ListItem to="/checkout">
+                    <span className="flex items-center gap-2 font-bold">
+                      <ShoppingCart size={26} />
+                      Courses Store
+                    </span>
+                    <p>Welcome to our learning store</p>
                   </ListItem>
-                  <ListItem to="/docs/installation" title="Installation">
-                    How to install dependencies and structure your app.
+                  <ListItem to="/history">
+                    <span className="flex items-center gap-2 font-bold">
+                      <History size={26} />
+                      Payment History
+                    </span>
+                    <p>Review transaction history</p>
                   </ListItem>
-                  <ListItem to="/docs/primitives/typography" title="Typography">
-                    Styles for headings, paragraphs, lists...etc
+                  <ListItem to="/privacy">
+                    <span className="flex items-center gap-2 font-bold">
+                      <GlobeLock />
+                      Privacy and Policy
+                    </span>
+                    <p>Read how we protect your data.</p>
                   </ListItem>
                 </ul>
               </NavigationMenuContent>
@@ -297,7 +317,9 @@ function ListItem({
   children,
   to,
   ...props
-}: React.ComponentPropsWithoutRef<"li"> & { to: string }) {
+}: React.ComponentPropsWithoutRef<"li"> & {
+  to: string;
+}) {
   return (
     <li {...props}>
       <NavigationMenuLink asChild>

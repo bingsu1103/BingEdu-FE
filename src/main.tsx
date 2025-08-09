@@ -29,6 +29,7 @@ import CheckOutPage from "./pages/checkOutPage.tsx";
 import { CheckoutForm } from "./components/ui/checkOutForm.tsx";
 import { PaymentSuccess } from "./components/ui/paymentSuccess.tsx";
 import { PaymentFailed } from "./components/ui/paymentFailed.tsx";
+import PrivacyPolicy from "./pages/privacyPolicy.tsx";
 
 const router = createBrowserRouter([
   {
@@ -106,6 +107,10 @@ const router = createBrowserRouter([
       {
         path: "/writing/tips/:id",
         element: <BlogPost type="writing" />,
+      },
+      {
+        path: "/privacy",
+        element: <PrivacyPolicy />,
       },
       {
         path: "/overall",

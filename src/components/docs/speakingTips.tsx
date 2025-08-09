@@ -62,7 +62,7 @@ const SpeakingTips = () => {
                 <span>{tip.date}</span>
               </div>
 
-              <h2 className="text-xl font-bold text-foreground group-hover:text-green-600 transition-colors duration-200">
+              <h2 className="text-xl font-bold text-black group-hover:text-green-600 transition-colors duration-200">
                 {tip.title}
               </h2>
 
@@ -108,11 +108,11 @@ const SpeakingTips = () => {
             feedback.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium flex items-center justify-center space-x-2">
+            <button className="bg-green-600 cursor-pointer text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium flex items-center justify-center space-x-2">
               <Mic className="w-4 h-4" />
               <span>Start Voice Practice</span>
             </button>
-            <button className="bg-white text-green-600 border border-green-600 px-6 py-3 rounded-lg hover:bg-green-50 transition-colors duration-200 font-medium">
+            <button className="bg-white cursor-pointer text-green-600 border border-green-600 px-6 py-3 rounded-lg hover:bg-green-50 transition-colors duration-200 font-medium">
               Join Speaking Groups
             </button>
           </div>

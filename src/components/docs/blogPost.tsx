@@ -162,7 +162,7 @@ const BlogPost: React.FC<BlogPostProps> = ({ type }) => {
       <div className="bg-gray-50 rounded-xl p-8">
         <div className="flex items-center space-x-3 mb-6">
           <Target className={`w-6 h-6 text-${config.color}-600`} />
-          <h3 className="text-2xl font-bold text-foreground">Key Takeaways</h3>
+          <h3 className="text-2xl font-bold text-black">Key Takeaways</h3>
         </div>
         <div className="grid md:grid-cols-2 gap-4">
           {post.keyPoints.map((point, index) => (
@@ -178,9 +178,7 @@ const BlogPost: React.FC<BlogPostProps> = ({ type }) => {
       <div className={`bg-${config.color}-50 rounded-xl p-8`}>
         <div className="flex items-center space-x-3 mb-6">
           <Play className={`w-6 h-6 text-${config.color}-600`} />
-          <h3 className="text-2xl font-bold text-foreground">
-            Practice Exercises
-          </h3>
+          <h3 className="text-2xl font-bold text-black">Practice Exercises</h3>
         </div>
         <div className="space-y-4">
           {post.practiceExercises.map((exercise, index) => (
