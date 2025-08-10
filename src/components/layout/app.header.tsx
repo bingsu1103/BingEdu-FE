@@ -18,7 +18,6 @@ import authService from "services/auth.service";
 import { MdDashboard } from "react-icons/md";
 import logo from "@/assets/binglogo.jpg";
 import { MenuOutlined } from "@ant-design/icons";
-import { toast } from "sonner";
 
 import { Moon, Sun, Bell } from "lucide-react";
 import { UseTheme } from "@/components/context/theme.context";
@@ -236,15 +235,6 @@ const AppHeader = () => {
             </NavigationMenu>
             <Button
               variant="outline"
-              onClick={() =>
-                toast("Developing", {
-                  description: "Please try this feature later",
-                  action: {
-                    label: "Undo",
-                    onClick: () => console.log("Undo"),
-                  },
-                })
-              }
               className="max-sm:hidden cursor-pointer bg-transparent text-foreground border-none"
             >
               <Bell className="text-xl text-foreground " />
