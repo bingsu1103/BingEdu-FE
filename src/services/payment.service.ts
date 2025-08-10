@@ -36,6 +36,21 @@ const getPaymentByUserIdAPI = async (userId: string) => {
   const urlBackend = `/v1/api/payment/userId/${userId}`;
   return axios.get<IBackendRes<IPayment[]>>(urlBackend);
 };
+
+const getPaymentWithPaginateAPI = async (
+  page: number,
+  limit: number,
+  search: string
+) => {
+  const urlBackend = `/v1/api/payment/paginate`;
+  return axios.get<IBackendRes<IPaginate>>(urlBackend, {
+    params: {
+      page: page,
+      limit: limit,
+      search: search || "",
+    },
+  });
+};
 export default {
   createVNPUrlAPI,
   getPaymentAPI,
@@ -43,4 +58,5 @@ export default {
   getAllPaymentAPI,
   createPaymentAPI,
   getPaymentByUserIdAPI,
+  getPaymentWithPaginateAPI,
 };

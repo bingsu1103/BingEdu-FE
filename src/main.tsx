@@ -30,6 +30,7 @@ import { CheckoutForm } from "./components/ui/checkOutForm.tsx";
 import { PaymentSuccess } from "./components/ui/paymentSuccess.tsx";
 import { PaymentFailed } from "./components/ui/paymentFailed.tsx";
 import PrivacyPolicy from "./pages/privacyPolicy.tsx";
+import HistoryPage from "./pages/client/historyPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -42,7 +43,12 @@ const router = createBrowserRouter([
       },
       {
         path: "/courses",
-        element: <CoursesPage />,
+        element: (
+          <ProtectedRoute>
+            {" "}
+            <CoursesPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/courses/:id/lesson",
@@ -107,6 +113,10 @@ const router = createBrowserRouter([
       {
         path: "/writing/tips/:id",
         element: <BlogPost type="writing" />,
+      },
+      {
+        path: "/history",
+        element: <HistoryPage />,
       },
       {
         path: "/privacy",

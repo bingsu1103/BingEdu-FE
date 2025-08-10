@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   QuestionCircleOutlined,
   UserOutlined,
   BookOutlined,
+  WalletOutlined,
 } from "@ant-design/icons";
-import { Button, Layout, Menu } from "antd";
+import { Layout, Menu } from "antd";
 import UserDashBoard from "../../components/admin/userDashBoard.tsx";
 import { ConfigProvider, theme } from "antd";
 import CoursesDashboard from "@/components/admin/coursesDashboard.tsx";
 import LessonDashboard from "@/components/admin/lessonDashboard.tsx";
-const { Header, Sider, Content } = Layout;
+import PaymentDashboard from "@/components/admin/paymentDashboard.tsx";
+const { Sider, Content } = Layout;
 
 const AdminDashBoardPage: React.FC = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
@@ -34,6 +34,8 @@ const AdminDashBoardPage: React.FC = () => {
         return <CoursesDashboard />;
       case "3":
         return <LessonDashboard />;
+      case "4":
+        return <PaymentDashboard />;
 
       default:
         return <div>Select a menu item</div>;
@@ -46,7 +48,7 @@ const AdminDashBoardPage: React.FC = () => {
           algorithm: theme.darkAlgorithm,
         }}
       >
-        <Layout style={{ minHeight: "100vh" }} className="w-full">
+        <Layout style={{ flex: "1" }} className="w-full">
           <Sider
             trigger={null}
             breakpoint="md"
@@ -76,11 +78,16 @@ const AdminDashBoardPage: React.FC = () => {
                   icon: <BookOutlined />,
                   label: "Lesson",
                 },
+                {
+                  key: "4",
+                  icon: <WalletOutlined />,
+                  label: "Payment",
+                },
               ]}
             />
           </Sider>
           <Layout>
-            <Header
+            {/* <Header
               style={{
                 padding: 0,
                 backgroundColor: "#141414",
@@ -96,7 +103,7 @@ const AdminDashBoardPage: React.FC = () => {
                   height: 64,
                 }}
               />
-            </Header>
+            </Header> */}
             <Content
               style={{
                 margin: "15px",

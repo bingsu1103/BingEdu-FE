@@ -201,12 +201,28 @@ html {
   height: 100%;
   background: linear-gradient(135deg,
       #0c0c1e 0%,
+      #030309 25%,
+      #02000a 50%,
+      #0e0e20 75%,
+      #080816 100%);
+  z-index: -1;
+}
+
+/* .cosmic-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg,
+      #0c0c1e 0%,
       #1a1a3e 25%,
       #2d1b69 50%,
       #1a1a3e 75%,
       #0c0c1e 100%);
   z-index: -1;
-}
+} */
+
 
 /* Animated Stars */
 .stars,

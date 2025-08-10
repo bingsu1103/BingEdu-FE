@@ -57,6 +57,7 @@ const CheckOutPage = () => {
               </div>
             ))}
           </div>
+          <div>Upgrade to VIP</div>
         </div>
       </div>
     </div>

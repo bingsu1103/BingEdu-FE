@@ -18,15 +18,9 @@ import authService from "services/auth.service";
 import { MdDashboard } from "react-icons/md";
 import logo from "@/assets/binglogo.jpg";
 import { MenuOutlined } from "@ant-design/icons";
-import {
-  Moon,
-  Sun,
-  Bell,
-  ShoppingCart,
-  History,
-  Cookie,
-  GlobeLock,
-} from "lucide-react";
+import { toast } from "sonner";
+
+import { Moon, Sun, Bell } from "lucide-react";
 import { UseTheme } from "@/components/context/theme.context";
 import {
   DropdownMenu,
@@ -75,7 +69,7 @@ const AppHeader = () => {
                 <ProtectedLink to="/about">About</ProtectedLink>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <ProtectedLink to="/courses">Courses</ProtectedLink>
+                <ProtectedLink to="/courses">Learning</ProtectedLink>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <ProtectedLink to="/ranking">Ranking</ProtectedLink>
@@ -99,26 +93,14 @@ const AppHeader = () => {
                       </ProtectedLink>
                     </NavigationMenuLink>
                   </li>
-                  <ListItem to="/checkout">
-                    <span className="flex items-center gap-2 font-bold">
-                      <ShoppingCart size={26} />
-                      Courses Store
-                    </span>
-                    <p>Welcome to our learning store</p>
+                  <ListItem to="/checkout" title="Courses Store">
+                    <p>Explore our comprehensive learning store today</p>
                   </ListItem>
-                  <ListItem to="/history">
-                    <span className="flex items-center gap-2 font-bold">
-                      <History size={26} />
-                      Payment History
-                    </span>
-                    <p>Review transaction history</p>
+                  <ListItem to="/history" title="Payment History">
+                    <p>View your detailed transaction history records</p>
                   </ListItem>
-                  <ListItem to="/privacy">
-                    <span className="flex items-center gap-2 font-bold">
-                      <GlobeLock />
-                      Privacy and Policy
-                    </span>
-                    <p>Read how we protect your data.</p>
+                  <ListItem to="/privacy" title="Privacy and Policy">
+                    <p>Understand how we safeguard your personal data</p>
                   </ListItem>
                 </ul>
               </NavigationMenuContent>
@@ -138,7 +120,7 @@ const AppHeader = () => {
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
-                <ProtectedLink to="/courses">Courses</ProtectedLink>
+                <ProtectedLink to="/courses">Learning</ProtectedLink>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
@@ -152,7 +134,7 @@ const AppHeader = () => {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Tips</NavigationMenuTrigger>
+              <NavigationMenuTrigger>Blogs</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid w-[300px] gap-4">
                   <li>
@@ -254,7 +236,16 @@ const AppHeader = () => {
             </NavigationMenu>
             <Button
               variant="outline"
-              className="max-sm:hidden bg-transparent text-foreground border-none"
+              onClick={() =>
+                toast("Developing", {
+                  description: "Please try this feature later",
+                  action: {
+                    label: "Undo",
+                    onClick: () => console.log("Undo"),
+                  },
+                })
+              }
+              className="max-sm:hidden cursor-pointer bg-transparent text-foreground border-none"
             >
               <Bell className="text-xl text-foreground " />
             </Button>

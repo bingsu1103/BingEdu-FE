@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import {
   MessageCircle,
   Star,
-  Clock,
   Users,
   BookOpen,
   Award,
@@ -30,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import homepageultils from "@/utils/homepage";
 import formation from "@/utils/format";
+import paymentService from "@/services/payment.service";
 
 const renderStars = (rating: number) => {
   return Array.from({ length: 5 }, (_, index) => (
@@ -53,6 +53,7 @@ export default function HomePage() {
   const [listStudent, setListStudent] = useState<IUser[] | null>([]);
   const [listReview, setListReview] = useState<IReview[] | null>([]);
   const [submission, setSubmission] = useState<ISubmission[] | null>([]);
+  const [listPayment, setListPayment] = useState<IPayment[] | null>([]);
   const { user, isAuthenticated } = UseCurrentApp();
   const navigate = useNavigate();
 
@@ -78,15 +79,6 @@ export default function HomePage() {
     const cleanup = observeCards();
     return cleanup;
   }, [listCourses]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide(
-        (prev) => (prev + 1) % homepageultils.featuredCourses.length
-      );
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     const fetchAllUser = async () => {
@@ -144,6 +136,14 @@ export default function HomePage() {
     };
     fetchReviews();
   }, []);
+
+  useEffect(() => {
+    const fetchPayments = async () => {
+      const result = await paymentService.getAllPaymentAPI();
+      setListPayment(result.data || []);
+    };
+    fetchPayments();
+  }, []);
   const handlePostComment = async () => {
     if (!user) return;
     await reviewService.createReviewAPI(
@@ -192,13 +192,13 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-purple-900/20"></div>
+        <div className="absolute inset-0"></div>
         <div className="container mx-auto px-4 relative">
           <div className="text-center max-w-4xl mx-auto">
             <h2 className="text-5xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent animate-fade-in-up">
               Master English with Confidence
             </h2>
-            <p className="text-xl text-foreground/70 mb-8 leading-relaxed animate-fade-in-up animation-delay-200">
+            <p className="text-xl text-white/80 mb-8 leading-relaxed animate-fade-in-up animation-delay-200">
               Join thousands of learners worldwide and achieve your English
               language goals with our comprehensive courses, expert instructors,
               and interactive learning experience.
@@ -239,10 +239,10 @@ export default function HomePage() {
                   >
                     {stat.icon}
                   </div>
-                  <div className="text-2xl font-bold text-foreground animate-counter">
+                  <div className="text-2xl font-bold text-white/90 animate-counter">
                     {stat.value}
                   </div>
-                  <div className="text-sm text-foreground/60">{stat.label}</div>
+                  <div className="text-sm text-white/60">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -254,17 +254,17 @@ export default function HomePage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-3xl font-bold text-foreground animate-slide-in-left">
+            <h3 className="text-2xl font-bold text-white animate-slide-in-left">
               Featured English Courses
             </h3>
             <div className="flex items-center space-x-2">
-              <button
+              <Button
                 onClick={() => setCurrentSlide(Math.max(0, currentSlide - 1))}
-                className="p-2 rounded-full bg-background/50 border border-white/20 hover:bg-background/70 transition-all duration-300 hover:scale-110"
+                className="p-1 border border-border transition-all duration-200 hover:scale-110"
               >
                 <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() =>
                   setCurrentSlide(
                     Math.min(
@@ -273,10 +273,10 @@ export default function HomePage() {
                     )
                   )
                 }
-                className="p-2 rounded-full bg-background/50 border border-white/20 hover:bg-background/70 transition-all duration-300 hover:scale-110"
+                className="p-1 border border-border transition-all duration-200 hover:scale-110"
               >
                 <ChevronRight className="w-5 h-5" />
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -285,11 +285,11 @@ export default function HomePage() {
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
-              {homepageultils.featuredCourses.map((course: any) => (
-                <div key={course.id} className="w-full flex-shrink-0">
+              {listCourses.map((course: any) => (
+                <div key={course._id} className="w-full flex-shrink-0">
                   <div className="relative h-96 bg-gradient-to-r from-gray-900/80 to-gray-800/80 rounded-2xl overflow-hidden group cursor-pointer">
                     <img
-                      src={course.image}
+                      src={course.thumbnail}
                       alt={course.title}
                       className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-300 group-hover:scale-110"
                     />
@@ -305,7 +305,7 @@ export default function HomePage() {
                               : "bg-green-500"
                           }`}
                         >
-                          {course.tag}
+                          {course.type}
                         </span>
                         <div className="flex items-center space-x-1">
                           <Star className="w-4 h-4 text-yellow-400 fill-current animate-twinkle" />
@@ -315,35 +315,33 @@ export default function HomePage() {
                       <h4 className="text-2xl font-bold mb-2 animate-slide-in-left">
                         {course.title}
                       </h4>
-                      <p className="text-white/80 mb-4 animate-slide-in-left animation-delay-200">
-                        by {course.instructor}
-                      </p>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4 text-sm text-white/80">
                           <span className="flex items-center space-x-1">
                             <Users className="w-4 h-4" />
                             <span>
-                              {course.students.toLocaleString()} students
+                              {
+                                listPayment?.filter(
+                                  (v) => v.courseId === course._id
+                                ).length
+                              }{" "}
+                              students
                             </span>
-                          </span>
-                          <span className="flex items-center space-x-1">
-                            <Clock className="w-4 h-4" />
-                            <span>{course.duration}</span>
                           </span>
                         </div>
                         <div className="text-right">
                           <div className="text-2xl font-bold animate-bounce-subtle">
-                            ${course.price}
-                          </div>
-                          <div className="text-sm text-white/60 line-through">
-                            ${course.originalPrice}
+                            {formation.formatPrice(course.price)}
                           </div>
                         </div>
                       </div>
                     </div>
-                    <button className="absolute top-4 right-4 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 animate-pulse-glow">
+                    <Button
+                      onClick={() => navigate("/courses")}
+                      className="absolute cursor-pointer top-4 right-4 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 animate-pulse-glow"
+                    >
                       <Play className="w-5 h-5 ml-1" />
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -356,10 +354,10 @@ export default function HomePage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-foreground mb-4 animate-fade-in-up">
+            <h3 className="text-3xl font-bold text-white mb-4 animate-fade-in-up">
               Explore English Skills
             </h3>
-            <p className="text-foreground/70 max-w-2xl mx-auto animate-fade-in-up animation-delay-200">
+            <p className="text-white max-w-2xl mx-auto animate-fade-in-up animation-delay-200">
               Master different aspects of English language with our
               comprehensive course categories designed for all proficiency
               levels.
@@ -662,7 +660,12 @@ export default function HomePage() {
                               <div className="flex items-center space-x-1 animate-fade-in-up">
                                 <Users className="w-4 h-4" />
                                 <span className="animate-counter">
-                                  1,234 students
+                                  {
+                                    listPayment?.filter(
+                                      (v) => v.courseId === course._id
+                                    ).length
+                                  }{" "}
+                                  students
                                 </span>
                               </div>
                               <div className="flex items-center space-x-1 animate-fade-in-up animation-delay-100">
@@ -707,7 +710,7 @@ export default function HomePage() {
                               </div>
                               <Button
                                 onClick={() => navigate("/checkout")}
-                                className="px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                                className="px-6 py-3 cursor-pointer rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105"
                               >
                                 Start Learning
                               </Button>

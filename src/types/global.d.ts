@@ -38,7 +38,8 @@ declare global {
   }
 
   interface IPaginate {
-    users: IUser[];
+    users?: IUser[];
+    payments?: IPayment[];
     total: number;
     page: number;
     limit: number;
@@ -100,6 +101,7 @@ declare global {
     _id: string;
     title: string;
     type: string;
+    price: number;
     thumbnail: string;
   }
 
@@ -211,6 +213,7 @@ declare global {
     courseId: string;
     method: string;
     status: string;
+    createdAt: string;
   }
 
   interface IProgressCourses {

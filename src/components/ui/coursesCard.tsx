@@ -1,6 +1,8 @@
 import React from "react";
 import { Button } from "./button";
 import { useNavigate } from "react-router";
+import { UseCurrentApp } from "../context/app.context";
+import { message } from "antd";
 interface CourseCardProps {
   course: ICourses;
   selectedCourses: ICourses;
@@ -19,6 +21,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
       currency: "VND",
     }).format(price);
   };
+  const { isAuthenticated } = UseCurrentApp();
 
   return (
     <div className="bg-background border border-border rounded-xl shadow-lg overflow-hidden max-w-md mx-auto">
@@ -65,6 +68,10 @@ export const CourseCard: React.FC<CourseCardProps> = ({
         ) : (
           <Button
             onClick={() => {
+              if (!isAuthenticated) {
+                message.warning("You need to login!");
+                return;
+              }
               navigate(`/checkout/${selectedCourses._id}`);
             }}
             className="cursor-pointer w-full bg-primary hover:bg-primary-hover py-3 px-4 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5"

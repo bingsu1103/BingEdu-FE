@@ -1,15 +1,7 @@
 import coursesService from "@/services/courses.service";
 import paymentService from "@/services/payment.service";
 import userService from "@/services/user.service";
-import {
-  BookOpen,
-  Headphones,
-  FileText,
-  Users,
-  Star,
-  Clock,
-  Combine,
-} from "lucide-react";
+import { BookOpen, Headphones, FileText, Users, Combine } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { UseCurrentApp } from "../context/app.context";
@@ -74,7 +66,7 @@ const CourseList: React.FC = () => {
       setListProgress(listProgress.data || []);
     };
     fetchProgressAPI();
-  });
+  }, [user]);
 
   useEffect(() => {
     const fetchPayment = async () => {
@@ -160,10 +152,10 @@ const CourseList: React.FC = () => {
               </h3>
 
               <div className="flex items-center justify-between text-sm text-foreground mb-4">
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                   <Clock className="w-4 h-4 mr-1" />
                   <span>OK</span>
-                </div>
+                </div> */}
                 <div className="flex items-center">
                   <Users className="w-4 h-4 mr-1" />
                   <span>
