@@ -515,7 +515,7 @@ const AboutPage = () => {
                   {/* Founder Stats */}
                   <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-gray-200">
                     <div className="text-center">
-                      <div className="text-lg font-bold text-blue-600">22</div>
+                      <div className="text-lg font-bold text-blue-600">20</div>
                       <div className="text-xs text-foreground/70">Age</div>
                     </div>
                     <div className="text-center">

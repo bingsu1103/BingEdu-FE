@@ -32,6 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import paymentService from "@/services/payment.service";
+import { Link } from "react-router";
 
 interface IUserProfile {
   user: IUser | null;
@@ -209,7 +210,7 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
               </>
             ) : (
               <>
-                <Play className="h-4 w-4" /> Continue
+                <Play className="h-4 w-4" /> <Link to="/">Continue</Link>
               </>
             )}
           </Button>
