@@ -3,11 +3,12 @@ import axios from "@/configs/axios.config";
 const createReviewAPI = async (
   userID: string,
   userName: string,
+  avatar: string,
   courseID: string,
   comment: string,
   rating: number
 ) => {
-  const data = { userID, userName, courseID, comment, rating };
+  const data = { userID, userName, courseID, comment, rating, avatar };
   const urlBackend = "/v1/api/review";
   return axios.post<IBackendRes<IReview>>(urlBackend, data);
 };

@@ -186,6 +186,7 @@ declare global {
     userName: string;
     courseID: string;
     rating?: number;
+    avatar: string;
     comment: string;
     createdAt?: string;
     updatedAt?: string;

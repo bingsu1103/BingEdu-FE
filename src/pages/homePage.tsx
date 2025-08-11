@@ -150,6 +150,7 @@ export default function HomePage() {
     await reviewService.createReviewAPI(
       user._id,
       user.name,
+      user.avatar || "https://github.com/shadcn.png",
       courseId,
       newComments[courseId] || "", // Use course-specific comment
       5
@@ -785,7 +786,7 @@ export default function HomePage() {
                                   <div className="flex items-start space-x-2">
                                     <img
                                       src={
-                                        user?.avatar ||
+                                        review?.avatar ||
                                         "https://github.com/shadcn.png"
                                       }
                                       className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold"
