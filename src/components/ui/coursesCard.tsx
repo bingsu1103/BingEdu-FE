@@ -97,7 +97,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
                 (v) => v.courseId === course._id && v.status === "paid"
               ) ? (
               <Button
-                onClick={() => navigate(`/courses/${course._id}`)}
+                onClick={() => navigate(`/courses/${course._id}/lesson`)}
                 className="cursor-pointer w-full bg-[#34e537] text-black hover:bg-primary-hover py-3 px-4 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5"
               >
                 Available
