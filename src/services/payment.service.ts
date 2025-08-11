@@ -3,9 +3,10 @@ import axios from "@/configs/axios.config";
 const createPaymentAPI = async (
   userId: string,
   courseId: string,
-  method: string
+  method: string,
+  total: number
 ) => {
-  const payload = { userId, courseId, method };
+  const payload = { userId, courseId, method, total };
   const urlBackend = "/v1/api/payment";
   return axios.post<IBackendRes<IPayment>>(urlBackend, payload);
 };

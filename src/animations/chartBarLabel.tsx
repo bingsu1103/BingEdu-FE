@@ -13,6 +13,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 // import submissionService from "@/services/submission.service";
 // import { useEffect, useState } from "react";
 
@@ -87,62 +88,99 @@ const ChartBarLabel: React.FC<ChartBarLabelProps> = ({ listSubmission }) => {
 
   return (
     <Card className="bg-background border-border">
-      <CardHeader>
-        <CardTitle className="text-foreground">Monthly Submissions</CardTitle>
-        <CardDescription className="text-muted-foreground">
-          Total submissions across all lessons from {chartData[0]?.month} to{" "}
-          {chartData[chartData.length - 1]?.month}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <BarChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              top: 20,
-            }}
-          >
-            <CartesianGrid vertical={false} stroke="hsl(var(--border))" />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tick={{ fill: "hsl(var(--muted-foreground))" }}
-              tickFormatter={(value) => {
-                const [month, year] = value.split(" ");
-                return `${month.slice(0, 3)} ${year.slice(2)}`;
-              }}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Bar dataKey="submissions" fill="#2B7FFF" radius={8}>
-              <LabelList
-                position="top"
-                offset={12}
-                className="fill-foreground"
-                fontSize={12}
+      {/* Header */}
+      {!chartData?.length ? (
+        <CardHeader>
+          <div className="space-y-2">
+            <Skeleton className="h-6 w-44" /> {/* Title */}
+            <Skeleton className="h-4 w-72" /> {/* Description */}
+          </div>
+        </CardHeader>
+      ) : (
+        <CardHeader>
+          <CardTitle className="text-foreground">Monthly Submissions</CardTitle>
+          <CardDescription className="text-muted-foreground">
+            Total submissions across all lessons from {chartData[0]?.month} to{" "}
+            {chartData[chartData.length - 1]?.month}
+          </CardDescription>
+        </CardHeader>
+      )}
+
+      {/* Content */}
+      {!chartData?.length ? (
+        <CardContent>
+          {/* chart placeholder, chiều cao khớp biểu đồ thật */}
+          <div className="w-full h-64 sm:h-72 rounded-md border border-border p-3">
+            <div className="h-full grid grid-cols-12 items-end gap-2">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <Skeleton
+                  key={i}
+                  className="w-full rounded"
+                  style={{
+                    height: `${30 + ((i * 7) % 60)}%`, // cao thấp khác nhau cho tự nhiên
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      ) : (
+        <CardContent>
+          <ChartContainer config={chartConfig}>
+            <BarChart accessibilityLayer data={chartData} margin={{ top: 20 }}>
+              <CartesianGrid vertical={false} stroke="hsl(var(--border))" />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tick={{ fill: "hsl(var(--muted-foreground))" }}
+                tickFormatter={(value) => {
+                  const [month, year] = value.split(" ");
+                  return `${month.slice(0, 3)} ${year.slice(2)}`;
+                }}
               />
-            </Bar>
-          </BarChart>
-        </ChartContainer>
-      </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 leading-none font-medium text-foreground">
-          {trendPercentage > 0
-            ? `Trending up by ${trendPercentage}% this month`
-            : trendPercentage < 0
-            ? `Trending down by ${Math.abs(trendPercentage)}% this month`
-            : `No change in submissions this month`}
-          <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="text-muted-foreground leading-none">
-          Showing total submissions for the last 6 months
-        </div>
-      </CardFooter>
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
+              <Bar dataKey="submissions" fill="#2B7FFF" radius={8}>
+                <LabelList
+                  position="top"
+                  offset={12}
+                  className="fill-foreground"
+                  fontSize={12}
+                />
+              </Bar>
+            </BarChart>
+          </ChartContainer>
+        </CardContent>
+      )}
+
+      {/* Footer */}
+      {!chartData?.length ? (
+        <CardFooter className="flex-col items-start gap-2 text-sm">
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-4 w-56" />
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </div>
+          <Skeleton className="h-4 w-64" />
+        </CardFooter>
+      ) : (
+        <CardFooter className="flex-col items-start gap-2 text-sm">
+          <div className="flex gap-2 leading-none font-medium text-foreground items-center">
+            {trendPercentage > 0
+              ? `Trending up by ${trendPercentage}% this month`
+              : trendPercentage < 0
+              ? `Trending down by ${Math.abs(trendPercentage)}% this month`
+              : `No change in submissions this month`}
+            <TrendingUp className="h-4 w-4" />
+          </div>
+          <div className="text-muted-foreground leading-none">
+            Showing total submissions for the last 6 months
+          </div>
+        </CardFooter>
+      )}
     </Card>
   );
 };

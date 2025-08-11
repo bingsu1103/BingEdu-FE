@@ -8,6 +8,7 @@ import { UseCurrentApp } from "../context/app.context";
 import { Button } from "../ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import progressService from "@/services/progress.service";
 
 const getTypeIcon = (type: string) => {
@@ -109,111 +110,151 @@ const CourseList: React.FC = () => {
 
       {/* Course Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
-        {listCourse.map((course) => (
-          <div
-            key={course._id}
-            // onClick={() => onCourseSelect(course)}
-            className="group bg-background rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer overflow-hidden"
-          >
-            {/* Course Header */}
-            <div
-              className={`h-32 bg-gradient-to-r ${getTypeColor(
-                course.type
-              )} p-6 relative overflow-hidden`}
-            >
-              {listPayment.some(
-                (payment) =>
-                  payment.courseId === course._id && payment.status === "paid"
-              ) ? (
-                <Badge>Available</Badge>
-              ) : (
-                <Badge>Unavailable</Badge>
-              )}
-              <div className="absolute top-4 right-4 bg-background bg-opacity-20 rounded-full p-2">
-                {getTypeIcon(course.type)}
-              </div>
-              <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-white bg-opacity-10 rounded-full"></div>
-            </div>
+        {!listCourse?.length
+          ? // Skeleton state
+            Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="group bg-background rounded-2xl shadow-lg overflow-hidden"
+              >
+                {/* Skeleton Header */}
+                <div className="h-32 p-6 relative overflow-hidden">
+                  <Skeleton className="w-20 h-6 rounded-full mb-2" />{" "}
+                  {/* Badge */}
+                  <Skeleton className="absolute top-4 right-4 w-8 h-8 rounded-full" />{" "}
+                  {/* Icon */}
+                  <Skeleton className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full" />
+                </div>
 
-            {/* Course Content */}
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-3">
-                <span
-                  className={`px-3 py-1 text-xs font-semibold rounded-full text-foreground bg-gradient-to-r ${getTypeColor(
+                {/* Skeleton Content */}
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <Skeleton className="w-20 h-6 rounded-full" />{" "}
+                    {/* Type label */}
+                  </div>
+                  <Skeleton className="h-6 w-3/4 mb-3" /> {/* Title */}
+                  <div className="flex items-center justify-between text-sm mb-4">
+                    <div className="flex items-center">
+                      <Skeleton className="w-4 h-4 rounded mr-1" />{" "}
+                      {/* Users icon */}
+                      <Skeleton className="w-20 h-4" /> {/* Students */}
+                    </div>
+                  </div>
+                  {/* Progress */}
+                  <div className="flex items-center">
+                    <Skeleton className="h-2 w-full rounded-full" />
+                    <Skeleton className="h-4 w-8 ml-3" />
+                  </div>
+                </div>
+
+                {/* Skeleton Footer */}
+                <div className="px-6 pb-6">
+                  <Skeleton className="w-full h-12 rounded-xl" /> {/* Button */}
+                </div>
+              </div>
+            ))
+          : // Render danh sách course thật
+            listCourse.map((course) => (
+              <div
+                key={course._id}
+                className="group bg-background rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer overflow-hidden"
+              >
+                {/* Course Header */}
+                <div
+                  className={`h-32 bg-gradient-to-r ${getTypeColor(
                     course.type
-                  )}`}
+                  )} p-6 relative overflow-hidden`}
                 >
-                  {course.type.toUpperCase()}
-                </span>
-              </div>
+                  {listPayment.some(
+                    (payment) =>
+                      payment.courseId === course._id &&
+                      payment.status === "paid"
+                  ) ? (
+                    <Badge>Available</Badge>
+                  ) : (
+                    <Badge>Unavailable</Badge>
+                  )}
+                  <div className="absolute top-4 right-4 bg-background bg-opacity-20 rounded-full p-2">
+                    {getTypeIcon(course.type)}
+                  </div>
+                  <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-white bg-opacity-10 rounded-full"></div>
+                </div>
 
-              <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-foreground transition-colors truncate">
-                {course.title}
-              </h3>
+                {/* Course Content */}
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <span
+                      className={`px-3 py-1 text-xs font-semibold rounded-full text-foreground bg-gradient-to-r ${getTypeColor(
+                        course.type
+                      )}`}
+                    >
+                      {course.type.toUpperCase()}
+                    </span>
+                  </div>
 
-              <div className="flex items-center justify-between text-sm text-foreground mb-4">
-                {/* <div className="flex items-center">
-                  <Clock className="w-4 h-4 mr-1" />
-                  <span>OK</span>
-                </div> */}
-                <div className="flex items-center">
-                  <Users className="w-4 h-4 mr-1" />
-                  <span>
-                    {
-                      listPayment.filter((v) => v.courseId === course._id)
-                        .length
-                    }
-                    <span> students</span>
-                  </span>
+                  <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-foreground transition-colors truncate">
+                    {course.title}
+                  </h3>
+
+                  <div className="flex items-center justify-between text-sm text-foreground mb-4">
+                    <div className="flex items-center">
+                      <Users className="w-4 h-4 mr-1" />
+                      <span>
+                        {
+                          listPayment.filter((v) => v.courseId === course._id)
+                            .length
+                        }
+                        <span> students</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="w-full rounded-full h-2">
+                      {(() => {
+                        const progress = listProgress.find(
+                          (v) =>
+                            v.coursesId === course._id && v.userId === user?._id
+                        );
+                        return (
+                          <div className="flex items-center">
+                            <Progress
+                              value={(progress?.progress ?? 0) * 100}
+                            ></Progress>
+                            <span className="text-xs text-foreground ml-3">
+                              {(progress?.progress ?? 0) * 100}%
+                            </span>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Course Footer */}
+                <div className="px-6 pb-6">
+                  {listPayment.some(
+                    (payment) =>
+                      payment.courseId === course._id &&
+                      payment.status === "paid"
+                  ) ? (
+                    <Button
+                      onClick={() => navigate(`/courses/${course._id}/lesson`)}
+                      className="w-full cursor-pointer bg-accent-foreground py-6 rounded-xl font-semibold transition-all duration-300 transform group-hover:scale-105"
+                    >
+                      Start Learning
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => navigate("/checkout")}
+                      className="w-full cursor-pointer py-6 rounded-xl font-semibold transition-all duration-300 transform group-hover:scale-105"
+                    >
+                      Buy now
+                    </Button>
+                  )}
                 </div>
               </div>
-
-              <div className="flex items-center justify-between">
-                <div className="w-full rounded-full h-2">
-                  {(() => {
-                    const progress = listProgress.find(
-                      (v) =>
-                        v.coursesId === course._id && v.userId === user?._id
-                    );
-                    return (
-                      <div className="flex items-center">
-                        <Progress
-                          value={(progress?.progress ?? 0) * 100}
-                          className=""
-                        ></Progress>
-                        <span className="text-xs text-foreground ml-3">
-                          {(progress?.progress ?? 0) * 100}%
-                        </span>
-                      </div>
-                    );
-                  })()}
-                </div>
-              </div>
-            </div>
-
-            {/* Course Footer */}
-            <div className="px-6 pb-6">
-              {listPayment.some(
-                (payment) =>
-                  payment.courseId === course._id && payment.status === "paid"
-              ) ? (
-                <Button
-                  onClick={() => navigate(`/courses/${course._id}/lesson`)}
-                  className="w-full bg-accent-foreground py-6 rounded-xl font-semibold transition-all duration-300 transform group-hover:scale-105"
-                >
-                  Start Learning
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => navigate("/checkout")}
-                  className="w-full py-6 rounded-xl font-semibold transition-all duration-300 transform group-hover:scale-105"
-                >
-                  Buy now
-                </Button>
-              )}
-            </div>
-          </div>
-        ))}
+            ))}
       </div>
 
       {/* Stats Section */}

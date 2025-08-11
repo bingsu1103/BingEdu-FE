@@ -30,6 +30,7 @@ import { useNavigate } from "react-router";
 import homepageultils from "@/utils/homepage";
 import formation from "@/utils/format";
 import paymentService from "@/services/payment.service";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const renderStars = (rating: number) => {
   return Array.from({ length: 5 }, (_, index) => (
@@ -44,7 +45,7 @@ const renderStars = (rating: number) => {
 
 export default function HomePage() {
   const [selectedFeed, setSelectedFeed] = useState<string | null>(null);
-  const [newComment, setNewComment] = useState("");
+  const [newComments, setNewComments] = useState<{ [key: string]: string }>({});
   const [currentSlide, setCurrentSlide] = useState(0);
   const [animatedCards, setAnimatedCards] = useState<Set<string>>(new Set());
   const [listCourses, setListCourses] = useState<ICourses[]>([]);
@@ -144,13 +145,13 @@ export default function HomePage() {
     };
     fetchPayments();
   }, []);
-  const handlePostComment = async () => {
+  const handlePostComment = async (courseId: string) => {
     if (!user) return;
     await reviewService.createReviewAPI(
       user._id,
       user.name,
-      selectedFeed || "",
-      newComment,
+      courseId,
+      newComments[courseId] || "", // Use course-specific comment
       5
     );
     const res = await reviewService.getAllReviewAPI();
@@ -160,7 +161,10 @@ export default function HomePage() {
       ? [res.data]
       : [];
     setListReview(reviews);
-    setNewComment("");
+    setNewComments((prev) => ({
+      ...prev,
+      [courseId]: "",
+    }));
   };
   const handleDeleteComment = async (id: string) => {
     const res = await reviewService.deleteReviewAPI(id);
@@ -285,66 +289,86 @@ export default function HomePage() {
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
-              {listCourses.map((course: any) => (
-                <div key={course._id} className="w-full flex-shrink-0">
-                  <div className="relative h-96 bg-gradient-to-r from-gray-900/80 to-gray-800/80 rounded-2xl overflow-hidden group cursor-pointer">
-                    <img
-                      src={course.thumbnail}
-                      alt={course.title}
-                      className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-300 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    <div className="absolute bottom-0 left-0 p-8 text-white">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <span
-                          className={`px-3 py-1 text-xs font-semibold rounded-full animate-pulse-glow ${
-                            course.tag === "Bestseller"
-                              ? "bg-yellow-500"
-                              : course.tag === "Hot"
-                              ? "bg-red-500"
-                              : "bg-green-500"
-                          }`}
-                        >
-                          {course.type}
-                        </span>
-                        <div className="flex items-center space-x-1">
-                          <Star className="w-4 h-4 text-yellow-400 fill-current animate-twinkle" />
-                          <span className="text-sm">{course.rating}</span>
-                        </div>
-                      </div>
-                      <h4 className="text-2xl font-bold mb-2 animate-slide-in-left">
-                        {course.title}
-                      </h4>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4 text-sm text-white/80">
-                          <span className="flex items-center space-x-1">
-                            <Users className="w-4 h-4" />
-                            <span>
-                              {
-                                listPayment?.filter(
-                                  (v) => v.courseId === course._id
-                                ).length
-                              }{" "}
-                              students
+              {!listCourses?.length
+                ? // Render skeleton khi chưa có dữ liệu
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <Skeleton key={i} className="w-full flex-shrink-0">
+                      <Skeleton className="relative h-96 rounded-2xl overflow-hidden bg-gray-800 dark:bg-gray-800">
+                        <Skeleton className="absolute inset-0 w-full h-full" />
+                        <Skeleton className="absolute bottom-0 left-0 p-8 w-full">
+                          <Skeleton className="flex items-center space-x-2 mb-2">
+                            <Skeleton className="w-16 h-6 rounded-full" />
+                            <Skeleton className="w-10 h-4" />
+                          </Skeleton>
+                          <Skeleton className="w-2/3 h-8 mb-2" />
+                          <Skeleton className="flex items-center justify-between">
+                            <Skeleton className="w-24 h-4" />
+                            <Skeleton className="w-16 h-8" />
+                          </Skeleton>
+                        </Skeleton>
+                      </Skeleton>
+                    </Skeleton>
+                  ))
+                : listCourses.map((course: any) => (
+                    <div key={course._id} className="w-full flex-shrink-0">
+                      <div className="relative h-96 bg-gradient-to-r from-gray-900/80 to-gray-800/80 rounded-2xl overflow-hidden group cursor-pointer">
+                        <img
+                          src={course.thumbnail}
+                          alt={course.title}
+                          className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-300 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <div className="absolute bottom-0 left-0 p-8 text-white">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <span
+                              className={`px-3 py-1 text-xs font-semibold rounded-full animate-pulse-glow ${
+                                course.tag === "Bestseller"
+                                  ? "bg-yellow-500"
+                                  : course.tag === "Hot"
+                                  ? "bg-red-500"
+                                  : "bg-green-500"
+                              }`}
+                            >
+                              {course.type}
                             </span>
-                          </span>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold animate-bounce-subtle">
-                            {formation.formatPrice(course.price)}
+                            <div className="flex items-center space-x-1">
+                              <Star className="w-4 h-4 text-yellow-400 fill-current animate-twinkle" />
+                              <span className="text-sm">{course.rating}</span>
+                            </div>
+                          </div>
+                          <h4 className="text-2xl font-bold mb-2 animate-slide-in-left">
+                            {course.title}
+                          </h4>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-4 text-sm text-white/80">
+                              <span className="flex items-center space-x-1">
+                                <Users className="w-4 h-4" />
+                                <span>
+                                  {
+                                    listPayment?.filter(
+                                      (v) => v.courseId === course._id
+                                    ).length
+                                  }{" "}
+                                  students
+                                </span>
+                              </span>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-2xl font-bold animate-bounce-subtle">
+                                {formation.formatPrice(course.price)}
+                              </div>
+                            </div>
                           </div>
                         </div>
+                        <Button
+                          onClick={() => navigate("/courses")}
+                          className="absolute cursor-pointer top-4 right-4 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 animate-pulse-glow"
+                        >
+                          <Play className="w-5 h-5 ml-1" />
+                        </Button>
                       </div>
                     </div>
-                    <Button
-                      onClick={() => navigate("/courses")}
-                      className="absolute cursor-pointer top-4 right-4 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 animate-pulse-glow"
-                    >
-                      <Play className="w-5 h-5 ml-1" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                  ))}
             </div>
           </div>
         </div>
@@ -550,28 +574,28 @@ export default function HomePage() {
             {/* Course Feed */}
             {loading ? (
               <div className="space-y-6">
-                {[1, 2, 3].map((index) => (
-                  <div
+                {[1, 2, 3, 4].map((index) => (
+                  <Skeleton
                     key={index}
                     className="bg-background/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/10 overflow-hidden animate-pulse"
                   >
-                    <div className="p-6">
-                      <div className="flex flex-col lg:flex-row gap-6">
-                        <div className="lg:w-1/3">
-                          <div className="w-full h-48 bg-background/50 rounded-2xl"></div>
-                        </div>
-                        <div className="lg:w-2/3">
-                          <div className="h-6 bg-background/50 rounded mb-4"></div>
-                          <div className="h-4 bg-background/30 rounded mb-2"></div>
-                          <div className="h-4 bg-background/30 rounded mb-4"></div>
-                          <div className="flex space-x-2">
-                            <div className="h-8 w-20 bg-background/30 rounded"></div>
-                            <div className="h-8 w-24 bg-background/30 rounded"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    <Skeleton className="p-6">
+                      <Skeleton className="flex flex-col lg:flex-row gap-6">
+                        <Skeleton className="lg:w-1/3">
+                          <Skeleton className="w-full h-48 bg-background/50 rounded-2xl"></Skeleton>
+                        </Skeleton>
+                        <Skeleton className="lg:w-2/3">
+                          <Skeleton className="h-6 bg-background/50 rounded mb-4"></Skeleton>
+                          <Skeleton className="h-4 bg-background/30 rounded mb-2"></Skeleton>
+                          <Skeleton className="h-4 bg-background/30 rounded mb-4"></Skeleton>
+                          <Skeleton className="flex space-x-2">
+                            <Skeleton className="h-8 w-20 bg-background/30 rounded"></Skeleton>
+                            <Skeleton className="h-8 w-24 bg-background/30 rounded"></Skeleton>
+                          </Skeleton>
+                        </Skeleton>
+                      </Skeleton>
+                    </Skeleton>
+                  </Skeleton>
                 ))}
               </div>
             ) : (
@@ -807,12 +831,17 @@ export default function HomePage() {
                               <input
                                 type="text"
                                 placeholder="Share your thoughts about this English course..."
-                                value={newComment}
-                                onChange={(e) => setNewComment(e.target.value)}
+                                value={newComments[course._id] || ""}
+                                onChange={(e) =>
+                                  setNewComments((prev) => ({
+                                    ...prev,
+                                    [course._id]: e.target.value,
+                                  }))
+                                }
                                 className="flex-1 px-3 py-2 bg-background/50 border border-white/20 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm"
                               />
                               <Button
-                                onClick={handlePostComment}
+                                onClick={() => handlePostComment(course._id)}
                                 className="cursor-pointer px-4 py-2 rounded-xl hover:shadow-lg transition-all transform hover:scale-105"
                               >
                                 <Send className="w-4 h-4" />

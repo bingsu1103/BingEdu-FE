@@ -22,6 +22,7 @@ import userService from "@/services/user.service";
 import coursesService from "@/services/courses.service";
 import submissionService from "@/services/submission.service";
 import lessonService from "@/services/lesson.service";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface UserRanking {
   userId: string;
@@ -43,64 +44,72 @@ interface WeeklyTopUser {
 const RankingPage: React.FC = () => {
   const [selectedCourseId, setSelectedCourseId] = useState<string>("");
   const [selectedLessonId, setSelectedLessonId] = useState<string>("");
-  const [listUser, setListUser] = useState<IUser[]>([]);
-  const [listCourse, setListCourse] = useState<ICourses[]>([]);
-  const [listSubmission, setListSubmission] = useState<ISubmission[]>([]);
-  const [listLesson, setListLesson] = useState<ILesson[]>([]);
-  const [allLesson, setAllLesson] = useState<ILesson[]>([]);
 
+  // KHỞI TẠO = null để phân biệt loading / empty / data
+  const [listUser, setListUser] = useState<IUser[] | null>(null);
+  const [listCourse, setListCourse] = useState<ICourses[] | null>(null);
+  const [listSubmission, setListSubmission] = useState<ISubmission[] | null>(
+    null
+  );
+  const [listLesson, setListLesson] = useState<ILesson[] | null>(null);
+  const [allLesson, setAllLesson] = useState<ILesson[] | null>(null);
+
+  // Fetch users
   useEffect(() => {
-    const fetchUser = async () => {
+    (async () => {
       const res = await userService.getAllUser();
-      setListUser(res.data ?? []);
-    };
-    fetchUser();
+      setListUser(res?.data ?? []);
+    })();
   }, []);
 
+  // Fetch courses
   useEffect(() => {
-    const fetchCourse = async () => {
+    (async () => {
       const res = await coursesService.getAllCoursesAPI();
       setListCourse(res?.data ?? []);
-    };
-    fetchCourse();
+    })();
   }, []);
 
+  // Fetch submissions
   useEffect(() => {
-    const fetchSubmission = async () => {
+    (async () => {
       const res = await submissionService.getAllSubmissionAPI();
-      setListSubmission(res?.data || []);
-    };
-    fetchSubmission();
+      setListSubmission(res?.data ?? []);
+    })();
   }, []);
 
+  // Fetch all lessons
   useEffect(() => {
-    const fetchAllLesson = async () => {
+    (async () => {
       const res = await lessonService.getAllLessonAPI();
-      setAllLesson(res.data || []);
-    };
-    fetchAllLesson();
+      setAllLesson(res?.data ?? []);
+    })();
   }, []);
 
+  // Fetch lessons by course
   useEffect(() => {
-    const fetchLessons = async () => {
+    (async () => {
       if (selectedCourseId) {
         const res = await lessonService.getLessonByCourseIdAPI(
           selectedCourseId
         );
-        setListLesson(res?.data || []);
+        setListLesson(res?.data ?? []);
       } else {
-        setListLesson([]);
+        setListLesson([]); // đã biết là rỗng (không phải loading)
       }
-    };
-    fetchLessons();
+    })();
   }, [selectedCourseId]);
 
-  const filteredLessons = useMemo(() => {
+  const filteredLessons = useMemo<ILesson[] | null>(() => {
+    // Loading nếu listLesson đang null
+    if (listLesson === null) return null;
     return listLesson;
   }, [listLesson]);
 
-  const userRankings = useMemo(() => {
-    if (!selectedLessonId) return [];
+  // Rankings theo bài học — trả null khi đang loading, [] khi empty
+  const userRankings = useMemo<UserRanking[] | null>(() => {
+    if (!selectedLessonId) return []; // chưa chọn → coi như empty (để UI hiển thị prompt)
+    if (!listSubmission || !listUser) return null; // đang loading
 
     const lessonSubmissions = listSubmission.filter(
       (submission) => submission.lessonId === selectedLessonId
@@ -132,9 +141,9 @@ const RankingPage: React.FC = () => {
         if (!user) return null;
         return {
           userId,
-          userName: user?.name,
+          userName: user.name,
           avatar:
-            user?.avatar ||
+            user.avatar ||
             "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=64",
           totalScore: stats.totalScore,
           submissionCount: stats.submissionCount,
@@ -143,17 +152,17 @@ const RankingPage: React.FC = () => {
           rank: 0,
         };
       })
-      .filter((item): item is UserRanking => item !== null);
+      .filter((v): v is UserRanking => v !== null);
 
     rankings.sort((a, b) => b.totalScore - a.totalScore);
-    rankings.forEach((user, index) => {
-      user.rank = index + 1;
-    });
-
-    return rankings;
+    rankings.forEach((u, idx) => (u.rank = idx + 1));
+    return rankings; // có thể []
   }, [selectedLessonId, listSubmission, listUser]);
 
-  const weeklyTopUsers = useMemo(() => {
+  // Top Submitters trong tuần — null khi loading, [] khi empty
+  const weeklyTopUsers = useMemo<WeeklyTopUser[] | null>(() => {
+    if (!listSubmission || !listUser) return null; // loading
+
     const currentDate = new Date("2025-08-06T17:13:00+07:00");
     const currentDayOfWeek = currentDate.getDay();
     const startOfWeek = new Date(currentDate);
@@ -171,46 +180,38 @@ const RankingPage: React.FC = () => {
       return submissionDate >= startOfWeek && submissionDate <= endOfWeek;
     });
 
-    const userSubmissionCounts: Record<string, { submissionCount: number }> =
-      {};
-    weeklySubmissions.forEach((submission) => {
-      if (!userSubmissionCounts[submission.userId]) {
-        userSubmissionCounts[submission.userId] = { submissionCount: 0 };
-      }
-      userSubmissionCounts[submission.userId].submissionCount += 1;
+    const userSubmissionCounts: Record<string, number> = {};
+    weeklySubmissions.forEach((s) => {
+      userSubmissionCounts[s.userId] =
+        (userSubmissionCounts[s.userId] ?? 0) + 1;
     });
 
-    const topUsers = Object.entries(userSubmissionCounts)
-      .map(([userId, { submissionCount }]) => {
+    const users: WeeklyTopUser[] = Object.entries(userSubmissionCounts)
+      .map(([userId, submissionCount]) => {
         const user = listUser.find(
           (u) => u._id === userId && u.deleted === false
         );
         if (!user) return null;
         return {
           userId,
-          userName: user?.name,
+          userName: user.name,
           avatar:
-            user?.avatar ||
+            user.avatar ||
             "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=64",
           submissionCount,
           rank: 0,
         };
       })
-      .filter(Boolean) as WeeklyTopUser[];
+      .filter((v): v is WeeklyTopUser => v !== null);
 
-    topUsers.sort((a, b) => b.submissionCount - a.submissionCount);
-    topUsers.forEach((user, index) => {
-      user.rank = index + 1;
-    });
-
-    return topUsers.slice(0, 3);
+    users.sort((a, b) => b.submissionCount - a.submissionCount);
+    users.forEach((u, i) => (u.rank = i + 1));
+    return users.slice(0, 3); // có thể []
   }, [listSubmission, listUser]);
 
-  const selectedCourse = listCourse.find(
-    (course) => course._id === selectedCourseId
-  );
-  const selectedLesson = filteredLessons.find(
-    (lesson) => lesson._id === selectedLessonId
+  const selectedCourse = listCourse?.find((c) => c._id === selectedCourseId);
+  const selectedLesson = filteredLessons?.find(
+    (l) => l._id === selectedLessonId
   );
 
   const getRankIcon = (rank: number) => {
@@ -277,45 +278,84 @@ const RankingPage: React.FC = () => {
         {/* Chart Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <ChartBarLabel listSubmission={listSubmission} />
+            {!listSubmission ? (
+              // Skeleton chart
+              <div className="w-full h-64 sm:h-100 md:h-130 rounded-xl border border-border p-4 animate-pulse">
+                <div className="h-full grid grid-cols-12 items-end gap-2">
+                  {Array.from({ length: 12 }).map((_, i) => (
+                    <div key={i} className="w-full">
+                      <div
+                        className="w-full bg-muted rounded"
+                        style={{ height: `${30 + ((i * 7) % 60)}%` }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <ChartBarLabel listSubmission={listSubmission} />
+            )}
           </div>
 
-          {/* Quick Stats */}
+          {/* Right column */}
           <div className="space-y-4">
+            {/* Quick Stats */}
             <div className="bg-card rounded-2xl p-6 border border-border shadow-sm">
               <div className="flex items-center space-x-3 mb-4">
                 <Star className="w-6 h-6 text-yellow-500" />
-                <h3 className="text-lg font-semibold text-foreground">
-                  Quick Stats
-                </h3>
+                {!listCourse || !allLesson || !listSubmission || !listUser ? (
+                  <Skeleton className="h-5 w-28" />
+                ) : (
+                  <h3 className="text-lg font-semibold text-foreground">
+                    Quick Stats
+                  </h3>
+                )}
               </div>
+
               <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Total Courses</span>
-                  <span className="font-semibold text-foreground">
-                    {listCourse.length}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Total Lessons</span>
-                  <span className="font-semibold text-foreground">
-                    {allLesson.length}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">
-                    Total Submissions
-                  </span>
-                  <span className="font-semibold text-foreground">
-                    {listSubmission.length}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Active Users</span>
-                  <span className="font-semibold text-foreground">
-                    {listUser.filter((user) => user.is_active).length}
-                  </span>
-                </div>
+                {!listCourse || !allLesson || !listSubmission || !listUser ? (
+                  Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="flex justify-between items-center">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-4 w-10" />
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">
+                        Total Courses
+                      </span>
+                      <span className="font-semibold text-foreground">
+                        {listCourse.length}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">
+                        Total Lessons
+                      </span>
+                      <span className="font-semibold text-foreground">
+                        {allLesson.length}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">
+                        Total Submissions
+                      </span>
+                      <span className="font-semibold text-foreground">
+                        {listSubmission.length}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">
+                        Active Users
+                      </span>
+                      <span className="font-semibold text-foreground">
+                        {listUser.filter((u) => u.is_active).length}
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -327,7 +367,28 @@ const RankingPage: React.FC = () => {
                   Top Submitters This Week
                 </h3>
               </div>
-              {weeklyTopUsers.length > 0 ? (
+
+              {!weeklyTopUsers ? (
+                // LOADING
+                <div className="space-y-4">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="flex items-center space-x-4">
+                      <Skeleton className="w-10 h-10 rounded-full" />
+                      <Skeleton className="w-10 h-10 rounded-full" />
+                      <div className="flex-1 space-y-1">
+                        <Skeleton className="h-4 w-40" />
+                        <Skeleton className="h-3 w-24" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : weeklyTopUsers.length === 0 ? (
+                // EMPTY
+                <div className="text-center text-muted-foreground">
+                  No submissions this week
+                </div>
+              ) : (
+                // DATA
                 <div className="space-y-4">
                   {weeklyTopUsers.map((user) => (
                     <div
@@ -346,8 +407,8 @@ const RankingPage: React.FC = () => {
                         alt={user.userName}
                         className="w-10 h-10 rounded-full object-cover shadow-md border border-border"
                       />
-                      <div className="flex-1">
-                        <p className="font-semibold text-foreground">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-foreground truncate">
                           {user.userName}
                         </p>
                         <p className="text-sm text-muted-foreground">
@@ -358,16 +419,11 @@ const RankingPage: React.FC = () => {
                     </div>
                   ))}
                 </div>
-              ) : (
-                <div className="text-center text-muted-foreground">
-                  No submissions this week
-                </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* Filters */}
         {/* Filters */}
         <div className="bg-card rounded-2xl shadow-sm p-8 border border-border">
           <div className="flex items-center space-x-3 mb-6">
@@ -383,33 +439,40 @@ const RankingPage: React.FC = () => {
               <label className="block text-sm font-medium text-foreground">
                 Course
               </label>
-              <Select
-                value={selectedCourseId}
-                onValueChange={(value) => {
-                  setSelectedCourseId(value);
-                  setSelectedLessonId("");
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a course..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {listCourse.map((course) => (
-                    <SelectItem key={course._id} value={course._id}>
-                      <div className="flex items-center space-x-3 w-full max-w-[250px]">
-                        <div
-                          className={`px-2 py-1 rounded-md text-xs font-medium ${getTypeBadgeColor(
-                            course.type
-                          )}`}
-                        >
-                          {course.type}
+              {!listCourse ? (
+                <div className="space-y-2">
+                  <Skeleton className="h-10 w-full rounded-md" />
+                  <Skeleton className="h-10 w-full rounded-md" />
+                </div>
+              ) : (
+                <Select
+                  value={selectedCourseId}
+                  onValueChange={(value) => {
+                    setSelectedCourseId(value);
+                    setSelectedLessonId("");
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a course..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {listCourse.map((course) => (
+                      <SelectItem key={course._id} value={course._id}>
+                        <div className="flex items-center space-x-3 w-full max-w-[250px]">
+                          <div
+                            className={`px-2 py-1 rounded-md text-xs font-medium ${getTypeBadgeColor(
+                              course.type
+                            )}`}
+                          >
+                            {course.type}
+                          </div>
+                          <span className="truncate">{course.title}</span>
                         </div>
-                        <span className="truncate">{course.title}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
 
             {/* Lesson Selection */}
@@ -417,35 +480,42 @@ const RankingPage: React.FC = () => {
               <label className="block text-sm font-medium text-foreground">
                 Lesson
               </label>
-              <Select
-                value={selectedLessonId}
-                onValueChange={setSelectedLessonId}
-                disabled={!selectedCourseId}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a lesson..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {filteredLessons.map((lesson) => (
-                    <SelectItem key={lesson._id} value={lesson._id}>
-                      <div className="flex items-center space-x-3 w-full max-w-[250px]">
-                        <div
-                          className={`px-2 py-1 rounded-md text-xs font-medium ${getLevelBadgeColor(
-                            lesson.level
-                          )}`}
-                        >
-                          {lesson.level}
+              {!filteredLessons ? (
+                <div className="space-y-2">
+                  <Skeleton className="h-10 w-full rounded-md" />
+                  <Skeleton className="h-10 w-full rounded-md" />
+                </div>
+              ) : (
+                <Select
+                  value={selectedLessonId}
+                  onValueChange={setSelectedLessonId}
+                  disabled={!selectedCourseId}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a lesson..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {filteredLessons.map((lesson) => (
+                      <SelectItem key={lesson._id} value={lesson._id}>
+                        <div className="flex items-center space-x-3 w-full max-w-[250px]">
+                          <div
+                            className={`px-2 py-1 rounded-md text-xs font-medium ${getLevelBadgeColor(
+                              lesson.level
+                            )}`}
+                          >
+                            {lesson.level}
+                          </div>
+                          <span className="truncate">{lesson.title}</span>
+                          <div className="flex items-center text-xs text-muted-foreground flex-shrink-0">
+                            <Clock className="w-3 h-3 mr-1" />
+                            {lesson.time}m
+                          </div>
                         </div>
-                        <span className="truncate">{lesson.title}</span>
-                        <div className="flex items-center text-xs text-muted-foreground flex-shrink-0">
-                          <Clock className="w-3 h-3 mr-1" />
-                          {lesson.time}m
-                        </div>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
           </div>
 
@@ -492,17 +562,93 @@ const RankingPage: React.FC = () => {
         </div>
 
         {/* Rankings */}
-        {selectedLessonId && userRankings.length > 0 ? (
+        {!selectedLessonId ? (
+          // Prompt chọn bài học
+          <div className="text-center py-16">
+            <div className="bg-card rounded-2xl shadow-sm p-12 border border-border">
+              <Target className="w-20 h-20 text-muted-foreground mx-auto mb-6" />
+              <h3 className="text-2xl font-semibold text-foreground mb-3">
+                Select Course & Lesson
+              </h3>
+              <p className="text-muted-foreground text-lg">
+                Choose a course and lesson above to view user rankings and
+                performance statistics.
+              </p>
+            </div>
+          </div>
+        ) : userRankings === null ? (
+          // ĐÃ CHỌN LESSON nhưng đang loading rankings → skeleton
+          <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+            <div className="px-3 sm:px-6 py-4 bg-muted/30 border-b border-border">
+              <Skeleton className="h-6 w-48" />
+            </div>
+            <div className="divide-y divide-border">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="px-3 sm:px-6 py-3 sm:py-4">
+                  <div className="hidden sm:flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4 flex-1">
+                      <Skeleton className="w-10 h-10 rounded-full" />
+                      <Skeleton className="w-12 h-12 rounded-full" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-48" />
+                        <Skeleton className="h-3 w-24" />
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-6">
+                      <Skeleton className="h-5 w-10" />
+                      <Skeleton className="h-5 w-10" />
+                      <Skeleton className="h-2 w-12 rounded-full" />
+                    </div>
+                  </div>
+
+                  {/* Mobile row skeleton */}
+                  <div className="sm:hidden space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="w-7 h-7 rounded-full" />
+                      <Skeleton className="w-9 h-9 rounded-full" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-40" />
+                        <Skeleton className="h-3 w-24" />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-4">
+                        <Skeleton className="h-5 w-10" />
+                        <Skeleton className="h-5 w-10" />
+                      </div>
+                      <Skeleton className="h-2 w-16 rounded-full" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : userRankings.length === 0 ? (
+          // Empty state khi đã load mà không có ai nộp
+          <div className="text-center py-16">
+            <div className="bg-card rounded-2xl shadow-sm p-12 border border-border">
+              <Trophy className="w-20 h-20 text-muted-foreground mx-auto mb-6" />
+              <h3 className="text-2xl font-semibold text-foreground mb-3">
+                No Submissions Found
+              </h3>
+              <p className="text-muted-foreground text-lg">
+                No users have submitted this lesson yet. Be the first to
+                compete!
+              </p>
+            </div>
+          </div>
+        ) : (
+          // DATA — giữ nguyên phần podium + bảng xếp hạng (rút gọn podium nếu muốn)
           <div className="space-y-8">
             {/* Top 3 Podium */}
             {userRankings.length >= 3 && (
               <div className="bg-card rounded-2xl shadow-sm p-8 border border-border">
-                <h3 className="text-2xl font-semibold text-foreground mb-8 text-center flex items-center justify-center space-x-3">
+                <h3 className="text-2xl font-semibold text-foreground mb-8 text-center flex items-center justify-center gap-3">
                   <Trophy className="w-7 h-7 text-yellow-500" />
                   <span>Top Performers</span>
                 </h3>
-                <div className="flex justify-center items-end space-x-12">
-                  {/* Second Place */}
+                <div className="flex justify-center items-end gap-12">
+                  {/* 2nd */}
                   <div className="flex flex-col items-center">
                     <div className="relative mb-4">
                       <img
@@ -525,10 +671,10 @@ const RankingPage: React.FC = () => {
                         Avg: {userRankings[1].averageScore}
                       </p>
                     </div>
-                    <div className="w-28 h-20 bg-gradient-to-t from-gray-400 to-gray-300 rounded-t-2xl shadow-lg"></div>
+                    <div className="w-28 h-20 bg-gradient-to-t from-gray-400 to-gray-300 rounded-t-2xl shadow-lg" />
                   </div>
 
-                  {/* First Place */}
+                  {/* 1st */}
                   <div className="flex flex-col items-center">
                     <div className="relative mb-4">
                       <img
@@ -551,10 +697,10 @@ const RankingPage: React.FC = () => {
                         Avg: {userRankings[0].averageScore}
                       </p>
                     </div>
-                    <div className="w-32 h-24 bg-gradient-to-t from-yellow-500 to-yellow-400 rounded-t-2xl shadow-xl"></div>
+                    <div className="w-32 h-24 bg-gradient-to-t from-yellow-500 to-yellow-400 rounded-t-2xl shadow-xl" />
                   </div>
 
-                  {/* Third Place */}
+                  {/* 3rd */}
                   <div className="flex flex-col items-center">
                     <div className="relative mb-4">
                       <img
@@ -577,7 +723,7 @@ const RankingPage: React.FC = () => {
                         Avg: {userRankings[2].averageScore}
                       </p>
                     </div>
-                    <div className="w-28 h-16 bg-gradient-to-t from-amber-600 to-amber-500 rounded-t-2xl shadow-lg"></div>
+                    <div className="w-28 h-16 bg-gradient-to-t from-amber-600 to-amber-500 rounded-t-2xl shadow-lg" />
                   </div>
                 </div>
               </div>
@@ -605,7 +751,6 @@ const RankingPage: React.FC = () => {
                     <div className="block sm:hidden">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2 min-w-0 flex-1">
-                          {/* Rank Badge */}
                           <div
                             className={`flex items-center justify-center w-7 h-7 rounded-full flex-shrink-0 ${getRankBadgeColor(
                               user.rank
@@ -619,8 +764,6 @@ const RankingPage: React.FC = () => {
                               </span>
                             )}
                           </div>
-
-                          {/* User Info */}
                           <div className="flex items-center gap-2 min-w-0 flex-1">
                             <img
                               src={user.avatar}
@@ -639,8 +782,6 @@ const RankingPage: React.FC = () => {
                           </div>
                         </div>
                       </div>
-
-                      {/* Mobile Scores */}
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-4">
                           <div className="text-center">
@@ -675,7 +816,6 @@ const RankingPage: React.FC = () => {
                     {/* Desktop Layout */}
                     <div className="hidden sm:flex items-center justify-between gap-4 min-w-0">
                       <div className="flex items-center gap-4 min-w-0 flex-1">
-                        {/* Rank Badge */}
                         <div
                           className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full flex-shrink-0 ${getRankBadgeColor(
                             user.rank
@@ -689,8 +829,6 @@ const RankingPage: React.FC = () => {
                             </span>
                           )}
                         </div>
-
-                        {/* User Info */}
                         <div className="flex items-center gap-3 min-w-0 flex-1">
                           <img
                             src={user.avatar}
@@ -708,8 +846,6 @@ const RankingPage: React.FC = () => {
                           </div>
                         </div>
                       </div>
-
-                      {/* Desktop Scores */}
                       <div className="flex items-center gap-3 sm:gap-6 flex-shrink-0">
                         <div className="text-right">
                           <p className="text-xs text-muted-foreground mb-1 hidden sm:block">
@@ -743,32 +879,6 @@ const RankingPage: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-        ) : selectedLessonId && userRankings.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="bg-card rounded-2xl shadow-sm p-12 border border-border">
-              <Trophy className="w-20 h-20 text-muted-foreground mx-auto mb-6" />
-              <h3 className="text-2xl font-semibold text-foreground mb-3">
-                No Submissions Found
-              </h3>
-              <p className="text-muted-foreground text-lg">
-                No users have submitted this lesson yet. Be the first to
-                compete!
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className="text-center py-16">
-            <div className="bg-card rounded-2xl shadow-sm p-12 border border-border">
-              <Target className="w-20 h-20 text-muted-foreground mx-auto mb-6" />
-              <h3 className="text-2xl font-semibold text-foreground mb-3">
-                Select Course & Lesson
-              </h3>
-              <p className="text-muted-foreground text-lg">
-                Choose a course and lesson above to view user rankings and
-                performance statistics.
-              </p>
             </div>
           </div>
         )}

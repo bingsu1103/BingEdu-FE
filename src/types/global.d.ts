@@ -212,6 +212,7 @@ declare global {
     userId: string;
     courseId: string;
     method: string;
+    total: number;
     status: string;
     createdAt: string;
   }

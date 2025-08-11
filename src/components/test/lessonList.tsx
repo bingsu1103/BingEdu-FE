@@ -26,6 +26,7 @@ import lessonService from "@/services/lesson.service";
 import { Button } from "../ui/button";
 import progressService from "@/services/progress.service";
 import { UseCurrentApp } from "../context/app.context";
+import { Skeleton } from "../ui/skeleton";
 
 // Define ICourse interface for course data
 const getLevelColor = (level: string) => {
@@ -121,243 +122,306 @@ const LessonList: React.FC = () => {
       <div className="mb-8">
         <button
           onClick={() => navigate("/courses")}
-          className="inline-flex items-center text-indigo-600 hover:text-indigo-800 mb-6 group transition-colors"
+          className="cursor-pointer inline-flex items-center text-indigo-600 hover:text-indigo-800 mb-6 group transition-colors"
         >
           <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
           Back to Courses
         </button>
 
-        <div
-          className={`${
-            theme === "dark" ? "bg-blue-400" : "bg-background"
-          } rounded-2xl shadow-lg p-8`}
-        >
-          <div className="flex items-start justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-background rounded-2xl flex items-center justify-center text-foreground">
-                {getCourseTypeIcon(selectedCourse?.type || "")}
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-foreground mb-2">
-                  {selectedCourse?.title || "Loading Course..."}
-                </h1>
-                <div className="flex items-center space-x-4 text-foreground">
-                  <span className="flex items-center">
-                    <BookOpen className="w-4 h-4 mr-1" />
-                    {selectedListLesson.length} Lessons
-                  </span>
-                  <span className="flex items-center">
-                    <Clock className="w-4 h-4 mr-1" />
-                    {selectedListLesson.reduce(
-                      (acc, lesson) => acc + (lesson.time || 0),
-                      0
-                    )}
-                    <span>m</span>
-                  </span>
-                  <span className="flex items-center">
-                    <Award className="w-4 h-4 mr-1" />
-                    Certificate
-                  </span>
-                </div>
-              </div>
-            </div>
-            <span
-              className={`px-4 py-2 rounded-full text-sm font-semibold ${getCourseTypeColor(
-                selectedCourse?.type || ""
-              )}`}
-            >
-              {selectedCourse?.type.toUpperCase() || "UNKNOWN"}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Progress Overview */}
-      <div className="bg-background rounded-2xl shadow-lg p-6 mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-foreground">
-            Course Progress
-          </h2>
-          <span className="text-sm text-foreground">
-            {courseProgress?.lessonsIdComplete.length ?? 0} of{" "}
-            {selectedListLesson.length} completed
-          </span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-3">
+        {!selectedCourse ? (
           <div
-            className="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full"
-            style={{
-              width: `${
-                selectedListLesson.length > 0
-                  ? ((courseProgress?.lessonsIdComplete?.length ?? 0) /
-                      selectedListLesson.length) *
-                    100
-                  : 0
-              }%`,
-            }}
-          ></div>
-        </div>
-      </div>
+            className={`${
+              theme === "dark" ? "bg-transparent" : "bg-background"
+            } rounded-2xl shadow-lg p-8`}
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex items-center space-x-4">
+                {/* Icon placeholder */}
+                <Skeleton className="w-16 h-16 rounded-2xl" />
 
-      {/* Lessons List */}
-      <div className="space-y-4">
-        {selectedListLesson.length === 0 ? (
-          <div className="bg-background rounded-2xl shadow-lg p-12 text-center">
-            <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">
-              No lessons available
-            </h3>
-            <p className="text-foreground">
-              Lessons for this course will be available soon.
-            </p>
-          </div>
-        ) : (
-          selectedListLesson.map((lesson, index) => {
-            const isCompleted =
-              courseProgress?.lessonsIdComplete?.includes(lesson._id) ?? false;
-            const isLocked = index > 4;
-
-            return (
-              <div
-                key={lesson._id}
-                className={`bg-background rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 ${
-                  !isLocked
-                    ? "cursor-pointer hover:-translate-y-1"
-                    : "opacity-60"
-                } `}
-              >
-                <div className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      {/* Lesson Status Icon */}
-                      <div
-                        className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                          isCompleted
-                            ? "bg-green-100 text-green-600"
-                            : isLocked
-                            ? "bg-gray-100 text-gray-400"
-                            : "bg-blue-100 text-blue-600"
-                        }`}
-                      >
-                        {isCompleted ? (
-                          <CheckCircle className="w-6 h-6" />
-                        ) : isLocked ? (
-                          <Lock className="w-6 h-6" />
-                        ) : (
-                          <Play className="w-6 h-6" />
-                        )}
-                      </div>
-
-                      {/* Lesson Info */}
-                      <div>
-                        <h3 className="text-xl font-semibold text-foreground mb-1">
-                          {lesson.title}
-                        </h3>
-                        <div className="flex items-center space-x-4 text-sm text-foreground">
-                          <span className="flex items-center">
-                            {getTypeIcon(lesson.type)}
-                            <span className="ml-1 capitalize">
-                              {lesson.type.replace("_", " ")}
-                            </span>
-                          </span>
-                          <span className="flex items-center">
-                            <Clock className="w-4 h-4 mr-1" />
-                            {lesson.time} min
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Lesson Level and Action */}
-                    <div className="flex items-center space-x-3">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${getLevelColor(
-                          lesson.level
-                        )}`}
-                      >
-                        {lesson.level.toUpperCase()}
-                      </span>
-
-                      {!isLocked && (
-                        <Dialog>
-                          <DialogTrigger>
-                            <Button
-                              className="cursor-pointer"
-                              variant="outline"
-                            >
-                              {isCompleted ? (
-                                <span>Retry</span>
-                              ) : (
-                                <span>Start</span>
-                              )}
-                            </Button>
-                          </DialogTrigger>
-                          {isAuthenticated ? (
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>
-                                  Ready to start the test?
-                                </DialogTitle>
-                                <DialogDescription>
-                                  <div className="flex gap-2 mt-2 float-end">
-                                    <Button
-                                      onClick={() =>
-                                        navigate(
-                                          `/courses/${id}/lesson/${lesson._id}`
-                                        )
-                                      }
-                                      className={`cursor-pointer ${
-                                        isCompleted
-                                          ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                                          : "bg-blue-500 text-white hover:bg-blue-600"
-                                      }`}
-                                    >
-                                      OK
-                                    </Button>
-                                    <DialogTrigger>
-                                      <Button className="cursor-pointer">
-                                        Cancel
-                                      </Button>
-                                    </DialogTrigger>
-                                  </div>
-                                </DialogDescription>
-                              </DialogHeader>
-                            </DialogContent>
-                          ) : (
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>You need to login!</DialogTitle>
-                                <DialogDescription>
-                                  <div className="flex gap-2 mt-2 float-end">
-                                    <Button
-                                      onClick={() => navigate("/login")}
-                                      className={`cursor-pointer ${
-                                        isCompleted
-                                          ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                                          : "bg-blue-500 text-white hover:bg-blue-600"
-                                      }`}
-                                    >
-                                      Login
-                                    </Button>
-                                    <DialogTrigger>
-                                      <Button className="cursor-pointer">
-                                        Cancel
-                                      </Button>
-                                    </DialogTrigger>
-                                  </div>
-                                </DialogDescription>
-                              </DialogHeader>
-                            </DialogContent>
-                          )}
-                        </Dialog>
-                      )}
-                    </div>
+                {/* Title + meta */}
+                <div>
+                  <Skeleton className="h-8 w-48 mb-3 rounded" /> {/* Title */}
+                  <div className="flex items-center space-x-4">
+                    <Skeleton className="h-4 w-24 rounded" /> {/* Lessons */}
+                    <Skeleton className="h-4 w-20 rounded" /> {/* Time */}
+                    <Skeleton className="h-4 w-28 rounded" />{" "}
+                    {/* Certificate */}
                   </div>
                 </div>
               </div>
-            );
-          })
+
+              {/* Type badge */}
+              <Skeleton className="h-8 w-24 rounded-full" />
+            </div>
+          </div>
+        ) : (
+          <div
+            className={`${
+              theme === "dark" ? "bg-blue-400" : "bg-background"
+            } rounded-2xl shadow-lg p-8`}
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="w-16 h-16 bg-background rounded-2xl flex items-center justify-center text-foreground">
+                  {getCourseTypeIcon(selectedCourse.type)}
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-foreground mb-2">
+                    {selectedCourse.title}
+                  </h1>
+                  <div className="flex items-center space-x-4 text-foreground">
+                    <span className="flex items-center">
+                      <BookOpen className="w-4 h-4 mr-1" />
+                      {selectedListLesson.length} Lessons
+                    </span>
+                    <span className="flex items-center">
+                      <Clock className="w-4 h-4 mr-1" />
+                      {selectedListLesson.reduce(
+                        (acc, lesson) => acc + (lesson.time || 0),
+                        0
+                      )}
+                      <span>m</span>
+                    </span>
+                    <span className="flex items-center">
+                      <Award className="w-4 h-4 mr-1" />
+                      Certificate
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <span
+                className={`px-4 py-2 rounded-full text-sm font-semibold ${getCourseTypeColor(
+                  selectedCourse.type
+                )}`}
+              >
+                {selectedCourse.type.toUpperCase()}
+              </span>
+            </div>
+          </div>
         )}
+      </div>
+
+      {/* Progress Overview */}
+      {!courseProgress || !selectedListLesson ? (
+        // Skeleton loading state
+        <div className="bg-background rounded-2xl shadow-lg p-6 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <Skeleton className="h-6 w-40 rounded" /> {/* Tiêu đề */}
+            <Skeleton className="h-4 w-24 rounded" /> {/* Text progress */}
+          </div>
+          {/* Thanh progress */}
+          <Skeleton className="h-3 w-full rounded-full" />
+        </div>
+      ) : (
+        // Data state
+        <div className="bg-background rounded-2xl shadow-lg p-6 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-foreground">
+              Course Progress
+            </h2>
+            <span className="text-sm text-foreground">
+              {courseProgress?.lessonsIdComplete.length ?? 0} of{" "}
+              {selectedListLesson.length} completed
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-3">
+            <div
+              className="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full"
+              style={{
+                width: `${
+                  selectedListLesson.length > 0
+                    ? ((courseProgress?.lessonsIdComplete?.length ?? 0) /
+                        selectedListLesson.length) *
+                      100
+                    : 0
+                }%`,
+              }}
+            ></div>
+          </div>
+        </div>
+      )}
+
+      {/* Lessons List */}
+      <div className="space-y-4">
+        {selectedListLesson.length === 0
+          ? // Skeleton loading state
+            Array.from({ length: 5 }).map((_, index) => (
+              <div
+                key={index}
+                className="bg-background rounded-2xl shadow-lg overflow-hidden p-6"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    {/* Status Icon */}
+                    <Skeleton className="w-12 h-12 rounded-full" />
+
+                    {/* Lesson Info */}
+                    <div>
+                      <Skeleton className="h-5 w-40 mb-2" /> {/* Title */}
+                      <div className="flex items-center space-x-4">
+                        <Skeleton className="h-4 w-24" /> {/* Type */}
+                        <Skeleton className="h-4 w-16" /> {/* Time */}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Level + Button */}
+                  <div className="flex items-center space-x-3">
+                    <Skeleton className="h-6 w-16 rounded-full" />{" "}
+                    {/* Level badge */}
+                    <Skeleton className="h-8 w-20 rounded" />{" "}
+                    {/* Action button */}
+                  </div>
+                </div>
+              </div>
+            ))
+          : selectedListLesson.map((lesson, index) => {
+              const isCompleted =
+                courseProgress?.lessonsIdComplete?.includes(lesson._id) ??
+                false;
+              const isLocked = index > 4;
+
+              return (
+                <div
+                  key={lesson._id}
+                  className={`bg-background rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 ${
+                    !isLocked
+                      ? "cursor-pointer hover:-translate-y-1"
+                      : "opacity-60"
+                  } `}
+                >
+                  <div className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        {/* Lesson Status Icon */}
+                        <div
+                          className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                            isCompleted
+                              ? "bg-green-100 text-green-600"
+                              : isLocked
+                              ? "bg-gray-100 text-gray-400"
+                              : "bg-blue-100 text-blue-600"
+                          }`}
+                        >
+                          {isCompleted ? (
+                            <CheckCircle className="w-6 h-6" />
+                          ) : isLocked ? (
+                            <Lock className="w-6 h-6" />
+                          ) : (
+                            <Play className="w-6 h-6" />
+                          )}
+                        </div>
+
+                        {/* Lesson Info */}
+                        <div>
+                          <h3 className="text-xl font-semibold text-foreground mb-1">
+                            {lesson.title}
+                          </h3>
+                          <div className="flex items-center space-x-4 text-sm text-foreground">
+                            <span className="flex items-center">
+                              {getTypeIcon(lesson.type)}
+                              <span className="ml-1 capitalize">
+                                {lesson.type.replace("_", " ")}
+                              </span>
+                            </span>
+                            <span className="flex items-center">
+                              <Clock className="w-4 h-4 mr-1" />
+                              {lesson.time} min
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Lesson Level and Action */}
+                      <div className="flex items-center space-x-3">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-semibold ${getLevelColor(
+                            lesson.level
+                          )}`}
+                        >
+                          {lesson.level.toUpperCase()}
+                        </span>
+
+                        {!isLocked && (
+                          <Dialog>
+                            <DialogTrigger>
+                              <Button
+                                className="cursor-pointer"
+                                variant="outline"
+                              >
+                                {isCompleted ? (
+                                  <span>Retry</span>
+                                ) : (
+                                  <span>Start</span>
+                                )}
+                              </Button>
+                            </DialogTrigger>
+                            {isAuthenticated ? (
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>
+                                    Ready to start the test?
+                                  </DialogTitle>
+                                  <DialogDescription>
+                                    <div className="flex gap-2 mt-2 float-end">
+                                      <Button
+                                        onClick={() =>
+                                          navigate(
+                                            `/courses/${id}/lesson/${lesson._id}`
+                                          )
+                                        }
+                                        className={`cursor-pointer ${
+                                          isCompleted
+                                            ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                            : "bg-blue-500 text-white hover:bg-blue-600"
+                                        }`}
+                                      >
+                                        OK
+                                      </Button>
+                                      <DialogTrigger>
+                                        <Button className="cursor-pointer">
+                                          Cancel
+                                        </Button>
+                                      </DialogTrigger>
+                                    </div>
+                                  </DialogDescription>
+                                </DialogHeader>
+                              </DialogContent>
+                            ) : (
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>You need to login!</DialogTitle>
+                                  <DialogDescription>
+                                    <div className="flex gap-2 mt-2 float-end">
+                                      <Button
+                                        onClick={() => navigate("/login")}
+                                        className={`cursor-pointer ${
+                                          isCompleted
+                                            ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                            : "bg-blue-500 text-white hover:bg-blue-600"
+                                        }`}
+                                      >
+                                        Login
+                                      </Button>
+                                      <DialogTrigger>
+                                        <Button className="cursor-pointer">
+                                          Cancel
+                                        </Button>
+                                      </DialogTrigger>
+                                    </div>
+                                  </DialogDescription>
+                                </DialogHeader>
+                              </DialogContent>
+                            )}
+                          </Dialog>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
       </div>
 
       {/* Course Completion Card */}

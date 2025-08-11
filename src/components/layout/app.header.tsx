@@ -19,7 +19,7 @@ import { MdDashboard } from "react-icons/md";
 import logo from "@/assets/binglogo.jpg";
 import { MenuOutlined } from "@ant-design/icons";
 
-import { Moon, Sun, Bell } from "lucide-react";
+import { Moon, Sun, Bell, Loader2 } from "lucide-react";
 import { UseTheme } from "@/components/context/theme.context";
 import {
   DropdownMenu,
@@ -31,13 +31,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import ProtectedLink from "@/pages/auth/protectedLink";
 import { message } from "antd";
+import { useState } from "react";
 
 const AppHeader = () => {
   const { setTheme, theme } = UseTheme();
+  const [loadingLogOut, setLoadingLogOut] = useState<boolean>(false);
   const navigate = useNavigate();
   const { setIsAuthenticated, user, isAuthenticated, setUser } =
     UseCurrentApp();
   const handleLogout = async () => {
+    setLoadingLogOut(true);
     const resLog = await authService.logoutAPI();
     if (resLog.status) {
       setIsAuthenticated(false);
@@ -45,6 +48,7 @@ const AppHeader = () => {
       localStorage.removeItem("access_token");
       message.success("Logged out");
     }
+    setLoadingLogOut(false);
   };
   const avatar = user?.avatar || "https://github.com/shadcn.png";
   return (
@@ -219,10 +223,17 @@ const AppHeader = () => {
                         <NavigationMenuLink asChild>
                           <ProtectedLink to="#" className="flex-row">
                             <button
+                              disabled={loadingLogOut}
                               onClick={handleLogout}
-                              className="flex items-center gap-2 w-full"
+                              className={`flex items-center gap-2 w-full ${
+                                loadingLogOut && "cursor-not-allowed"
+                              }`}
                             >
-                              <RiLogoutCircleRLine />
+                              {loadingLogOut ? (
+                                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                              ) : (
+                                <RiLogoutCircleRLine />
+                              )}
                               <span>Log Out</span>
                             </button>
                           </ProtectedLink>
