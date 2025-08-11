@@ -9,6 +9,8 @@ import orderService from "@/services/order.service";
 import { UseTheme } from "../context/theme.context";
 import formation from "@/utils/format";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
 
 export const CheckoutForm: React.FC = () => {
   const [selectedPayment, setSelectedPayment] = useState<string>("momo");
@@ -243,6 +245,23 @@ export const CheckoutForm: React.FC = () => {
                 })}
           </div>
         </div>
+        <Alert variant="default">
+          <Terminal />
+          <AlertTitle>
+            Due to VNPay's development mode, please use this test card to make
+            payments.
+          </AlertTitle>
+          <AlertDescription className="mt-2">
+            <span className="font-bold text-blue-300">
+              Thẻ nội địa và tài khoản ngân hàng
+            </span>
+            <span>Ngân hàng: NCB</span>
+            <span>Số thẻ: 9704198526191432198</span>
+            <span>Tên chủ thẻ:NGUYEN VAN A</span>
+            <span>Ngày phát hành:07/15 </span>
+            <span>Mật khẩu OTP:123456</span>
+          </AlertDescription>
+        </Alert>
 
         {/* Order Summary */}
         {!course ? (

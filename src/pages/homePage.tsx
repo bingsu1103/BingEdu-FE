@@ -572,7 +572,6 @@ export default function HomePage() {
             {submission && isAuthenticated && (
               <SubmissionGraph submissions={submission ?? []} />
             )}
-            {/* Course Feed */}
             {loading ? (
               <div className="space-y-6">
                 {[1, 2, 3, 4].map((index) => (
