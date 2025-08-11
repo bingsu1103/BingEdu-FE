@@ -72,9 +72,7 @@ const CourseList: React.FC = () => {
   useEffect(() => {
     const fetchPayment = async () => {
       if (user && user._id !== null) {
-        const resultPayment = await paymentService.getPaymentByUserIdAPI(
-          user._id!
-        );
+        const resultPayment = await paymentService.getAllPaymentAPI();
         setListPayment(resultPayment.data || []);
       }
     };
