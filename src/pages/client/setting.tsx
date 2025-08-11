@@ -75,6 +75,8 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
         phone,
         location,
       });
+      setUser((prev) => (prev ? { ...prev, name, phone, location } : prev));
+      message.success("Updated");
     } catch (error) {
       console.log(error);
       message.error("Update failed");

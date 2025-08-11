@@ -16,6 +16,7 @@ import { message } from "antd";
 import coursesService from "@/services/courses.service";
 import progressService from "@/services/progress.service";
 import uploadService from "@/services/upload.service";
+import { UseCurrentApp } from "@/components/context/app.context";
 
 interface Achievement {
   id: string;
@@ -36,6 +37,7 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
     user?.avatar || "https://github.com/shadcn.png"
   );
   const [progress, setProgress] = useState<IProgressCourses[] | null>([]);
+  const { setUser } = UseCurrentApp();
   const dateString = user?.createdAt
     ? new Date(user.createdAt).toISOString().split("T")[0]
     : "";
@@ -63,7 +65,6 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    console.log(file);
     if (file) {
       setUploading(true);
       try {
@@ -112,6 +113,9 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
                     return;
                   }
                   setAvatar(uploadedUrl);
+                  setUser((prev) =>
+                    prev ? { ...prev, avatar: uploadedUrl } : prev
+                  );
                 }
               }, "image/png");
             }

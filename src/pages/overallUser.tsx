@@ -17,7 +17,6 @@ import CoursesPage from "@/pages/client/coursesPage";
 
 const OverallUser = () => {
   const [activeTabClient, setActiveTabClient] = useState(() => {
-    // Retrieve the saved tab from localStorage, default to "profile" if not found
     return sessionStorage.getItem("activeTabClient") || "profile";
   });
   const { theme } = UseTheme();
