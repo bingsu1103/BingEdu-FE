@@ -52,8 +52,8 @@ const LoginPage = () => {
   };
   return (
     <>
-      <div className="grid max-sm:grid-cols-1 grid-cols-[4fr_7fr] h-screen relative sm:p-20">
-        <div className="max-sm:hidden flex bg-[#E5F6FF] flex-col items-center justify-self-end justify-center w-full sm:rounded-l-2xl">
+      <div className="grid max-lg:grid-cols-1 grid-cols-[4fr_7fr] h-screen relative sm:p-20">
+        <div className="max-lg:hidden flex bg-[#E5F6FF] flex-col items-center justify-self-end justify-center w-full sm:rounded-l-2xl">
           <div className="px-10 rounded-2xl">
             <img
               width={400}
@@ -63,7 +63,7 @@ const LoginPage = () => {
             />
           </div>
         </div>
-        <div className="flex w-full justify-center items-center flex-col relative sm:mr-20 sm:border-1 sm:border-[#E5F6FF] sm:rounded-r-2xl">
+        <div className="flex w-full justify-center items-center flex-col relative lg:mr-20 lg:border-1 lg:border-[#E5F6FF] sm:rounded-r-2xl">
           <div className="">
             <h1 className="scroll-m-20 text-center text-2xl font-extrabold tracking-tight text-balance ">
               Log in
