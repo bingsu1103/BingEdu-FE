@@ -350,24 +350,38 @@ export default function HomePage() {
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
               {!listCourses?.length
-                ? // Render skeleton khi chưa có dữ liệu
-                  Array.from({ length: 3 }).map((_, i) => (
-                    <Skeleton key={i} className="w-full flex-shrink-0">
-                      <Skeleton className="relative h-96 rounded-2xl overflow-hidden">
+                ? Array.from({ length: 3 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="w-full flex max-lg:flex-col flex-shrink-0"
+                    >
+                      <div className="relative h-96 w-[50%] max-lg:w-full bg-gray-200 rounded-2xl overflow-hidden">
                         <Skeleton className="absolute inset-0 w-full h-full" />
-                        <Skeleton className="absolute bottom-0 left-0 p-8 w-full">
-                          <Skeleton className="flex items-center space-x-2 mb-2">
-                            <Skeleton className="w-16 h-6 rounded-full" />
-                            <Skeleton className="w-10 h-4" />
-                          </Skeleton>
-                          <Skeleton className="w-2/3 h-8 mb-2" />
-                          <Skeleton className="flex items-center justify-between">
-                            <Skeleton className="w-24 h-4" />
-                            <Skeleton className="w-16 h-8" />
-                          </Skeleton>
-                        </Skeleton>
-                      </Skeleton>
-                    </Skeleton>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <div className="relative h-full w-full p-6 flex flex-col justify-end text-white">
+                          <div className="space-y-2">
+                            <div className="flex items-center space-x-2">
+                              <Skeleton className="h-6 w-16 rounded-full" />
+                              <div className="flex items-center space-x-1">
+                                <Skeleton className="h-4 w-12" />
+                              </div>
+                            </div>
+                            <Skeleton className="h-8 w-3/4" />
+                            <div className="flex items-center justify-between">
+                              <Skeleton className="h-4 w-1/3" />
+                              <Skeleton className="h-6 w-1/4" />
+                            </div>
+                          </div>
+                        </div>
+                        <Skeleton className="absolute top-4 right-4 w-12 h-12 rounded-full" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex max-sm:flex-col items-center justify-around gap-2 p-2">
+                          <Skeleton className="h-86 w-[280px] rounded-2xl" />
+                          <Skeleton className="h-86 w-[280px] rounded-2xl" />
+                        </div>
+                      </div>
+                    </div>
                   ))
                 : listCourses.map((course: any) => (
                     <div
