@@ -715,7 +715,7 @@ export default function HomePage() {
                             </div>
 
                             {/* Price and Action */}
-                            <div className="flex items-center justify-between">
+                            <div className="grid grid-cols-2 lg:flex lg:items-center justify-between">
                               <div className="flex items-center space-x-2">
                                 <span className="text-2xl font-bold text-foreground animate-bounce-subtle">
                                   {formation.formatPrice(course.price)}
