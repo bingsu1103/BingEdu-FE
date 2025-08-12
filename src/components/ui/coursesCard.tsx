@@ -26,7 +26,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
 
   return (
     <div className="max-w-md mx-auto">
-      {!course ? (
+      {!course || !listPayment ? (
         // SKELETON CARD
         <div className="bg-background border border-border rounded-xl shadow-lg overflow-hidden">
           <div className="relative">

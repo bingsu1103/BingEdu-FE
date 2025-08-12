@@ -52,7 +52,7 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
     closeRef.current?.click();
   };
   return (
-    <>
+    <div>
       <form onSubmit={onSubmit}>
         <SheetHeader>
           <SheetTitle>Edit profile</SheetTitle>
@@ -125,7 +125,7 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
           </SheetClose>
         </SheetFooter>
       </form>
-    </>
+    </div>
   );
 };
 export default EditUser;
