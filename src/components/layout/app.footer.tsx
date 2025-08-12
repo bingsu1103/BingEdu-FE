@@ -26,7 +26,7 @@ const AppFooter = () => {
             <Mail className="w-5 h-5" />
           </a>
           <a
-            href="https://github.com/"
+            href="https://github.com/bingsu1103"
             target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-primary transition-colors"
@@ -35,7 +35,7 @@ const AppFooter = () => {
             <Github className="w-5 h-5" />
           </a>
           <a
-            href="https://facebook.com/"
+            href="https://facebook.com/bingsu1103"
             target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground hover:text-primary transition-colors"
