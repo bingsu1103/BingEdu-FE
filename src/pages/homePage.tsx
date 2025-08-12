@@ -31,6 +31,7 @@ import homepageultils from "@/utils/homepage";
 import formation from "@/utils/format";
 import paymentService from "@/services/payment.service";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 
 const renderStars = (rating: number) => {
   return Array.from({ length: 5 }, (_, index) => (
@@ -239,7 +240,7 @@ export default function HomePage() {
                   style={{ animationDelay: `${800 + index * 150}ms` }}
                 >
                   <div
-                    className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white mx-auto mb-2 group-hover:scale-110 transition-transform duration-300 animate-float"
+                    className="w-12 h-12 bg-background rounded-xl flex items-center justify-center text-foreground mx-auto mb-2 group-hover:scale-110 transition-transform duration-300 animate-float"
                     style={{ animationDelay: `${index * 0.5}s` }}
                   >
                     {stat.icon}
@@ -510,61 +511,6 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-
-            {/* Top Students */}
-            <div className="bg-background/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/10 p-6 animate-slide-in-left animation-delay-400">
-              <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
-                <Trophy className="w-5 h-5 mr-2 text-yellow-400" />
-                Top English Students
-              </h3>
-              <div className="space-y-4">
-                {homepageultils.topStudents.map(
-                  (student: any, index: number) => (
-                    <div
-                      key={index}
-                      className="flex items-center space-x-3 p-2 rounded-xl hover:bg-background/30 transition-all duration-300 cursor-pointer hover:scale-105 animate-fade-in-up"
-                      style={{ animationDelay: `${index * 150}ms` }}
-                    >
-                      <div className="relative">
-                        <img
-                          src={student.avatar}
-                          alt={student.name}
-                          className="w-10 h-10 rounded-full object-cover animate-pulse-glow"
-                        />
-                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
-                          <span className="text-xs font-bold text-gray-900">
-                            {index + 1}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-foreground text-sm truncate">
-                          {student.name}
-                        </h4>
-                        <p className="text-xs text-foreground/60 truncate">
-                          {student.title}
-                        </p>
-                        <div className="flex items-center space-x-2 mt-1">
-                          <div className="flex items-center space-x-1">
-                            <Star className="w-3 h-3 text-yellow-400 fill-current animate-twinkle" />
-                            <span className="text-xs text-foreground/70">
-                              {student.rating}
-                            </span>
-                          </div>
-                          <span className="text-xs text-foreground/50">•</span>
-                          <span className="text-xs text-foreground/60">
-                            {student.coursesCompleted} courses
-                          </span>
-                        </div>
-                        <div className="text-xs text-green-400 font-medium">
-                          {student.achievement}
-                        </div>
-                      </div>
-                    </div>
-                  )
-                )}
-              </div>
-            </div>
           </div>
 
           {/* Main Content */}
@@ -612,31 +558,6 @@ export default function HomePage() {
                       }`}
                       style={{ animationDelay: `${index * 150}ms` }}
                     >
-                      {/* Feed Header */}
-                      <div className="p-6 border-b border-white/10">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold animate-pulse-glow">
-                              {course.title.charAt(0)}
-                            </div>
-                            <div>
-                              <h4 className="font-semibold text-foreground">
-                                English Learning Course
-                              </h4>
-                              <p className="text-sm text-foreground/50">
-                                Expert Instructor
-                              </p>
-                              <p className="text-xs text-foreground/40">
-                                Recently updated
-                              </p>
-                            </div>
-                          </div>
-                          <button className="p-2 text-foreground/40 hover:text-foreground/70 rounded-full hover:bg-background/50 transition-all duration-300 hover:scale-105">
-                            <MoreHorizontal className="w-5 h-5" />
-                          </button>
-                        </div>
-                      </div>
-
                       {/* Course Content */}
                       <div className="p-6">
                         <div className="flex flex-col lg:flex-row gap-6">
@@ -666,9 +587,9 @@ export default function HomePage() {
 
                           <div className="lg:w-2/3">
                             <div className="flex items-center space-x-2 mb-2">
-                              <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs font-medium rounded-full border border-blue-500/30">
+                              <Badge variant="default" className="bg-blue-500">
                                 {course.type}
-                              </span>
+                              </Badge>
                             </div>
 
                             <h3 className="text-xl font-bold text-foreground mb-2 line-clamp-2 animate-slide-in-left">
@@ -715,7 +636,7 @@ export default function HomePage() {
                             </div>
 
                             {/* Price and Action */}
-                            <div className="grid grid-cols-2 lg:flex lg:items-center justify-between">
+                            <div className="grid grid-cols-1 gap-3 lg:flex lg:items-center justify-between">
                               <div className="flex items-center space-x-2">
                                 <span className="text-2xl font-bold text-foreground animate-bounce-subtle">
                                   {formation.formatPrice(course.price)}
@@ -723,18 +644,18 @@ export default function HomePage() {
                                 <span className="text-sm text-foreground/50 line-through">
                                   {formation.formatPrice(course.price + 90000)}
                                 </span>
-                                <span className="px-2 py-1 bg-red-500/20 text-red-400 text-xs font-medium rounded-full border border-red-500/30 animate-pulse-glow">
+                                <Badge variant="destructive">
                                   {(
                                     (1 -
                                       course.price / (90000 + course.price)) *
                                     100
                                   ).toFixed(2)}{" "}
                                   % off
-                                </span>
+                                </Badge>
                               </div>
                               <Button
                                 onClick={() => navigate("/checkout")}
-                                className="px-6 py-3 cursor-pointer rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                                className="px-6 py-3 cursor-pointer w-fit rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105"
                               >
                                 Start Learning
                               </Button>
