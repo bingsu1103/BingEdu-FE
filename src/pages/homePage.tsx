@@ -145,6 +145,7 @@ export default function HomePage() {
             title: course.title || "Untitled Course",
             description: course.description || "",
             price: course.price || 0,
+            banner: course.banner || "",
             type: course.type || "mixed",
             thumbnail: course.thumbnail || "default-thumbnail.jpg",
           })) || [];
@@ -358,7 +359,7 @@ export default function HomePage() {
                     <div key={course._id} className="w-full flex-shrink-0">
                       <div className="relative h-96 bg-gradient-to-r from-gray-900/80 to-gray-800/80 rounded-2xl overflow-hidden group cursor-pointer">
                         <img
-                          src={course.thumbnail}
+                          src={course.banner}
                           alt={course.title}
                           className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-300 group-hover:scale-110"
                         />
