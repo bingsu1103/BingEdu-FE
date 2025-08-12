@@ -64,8 +64,8 @@ export const AppProvider = (props: TProps) => {
           {props.children}
         </CurrentAppContext.Provider>
       ) : (
-        <div className="fixed left-1/2 top-1/2 transform translate-x-1/2 translate-y-1/2">
-          <HashLoader cssOverride={{}} loading size={100} speedMultiplier={1} />
+        <div className="flex flex-col items-center justify-center h-screen">
+          <HashLoader loading size={100} speedMultiplier={1} />
         </div>
       )}
     </>

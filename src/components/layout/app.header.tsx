@@ -56,8 +56,7 @@ const AppHeader = () => {
       <div className="w-full p-5 flex justify-between sm:justify-around items-center sticky z-50 top-0 bg-background">
         <div className="sm:hidden">
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              {" "}
+            <DropdownMenuTrigger asChild>
               <Button className="sm:hidden">
                 <MenuOutlined className="text-2xl" />
               </Button>
