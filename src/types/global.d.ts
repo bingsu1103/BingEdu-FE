@@ -164,6 +164,7 @@ declare global {
     _id: string;
     title: string;
     thumbnail: string;
+    banner: string;
     price: number;
     type: string;
     description?: string;
