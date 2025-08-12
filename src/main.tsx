@@ -45,7 +45,6 @@ const router = createBrowserRouter([
         path: "/courses",
         element: (
           <ProtectedRoute>
-            {" "}
             <CoursesPage />
           </ProtectedRoute>
         ),
@@ -126,7 +125,7 @@ const router = createBrowserRouter([
         path: "/overall",
         element: (
           <ProtectedRoute>
-            <OverallUser />,
+            <OverallUser />
           </ProtectedRoute>
         ),
       },

@@ -1,7 +1,7 @@
 import authService from "@/services/auth.service";
 import userService from "@/services/user.service";
 import { createContext, useContext, useEffect, useState } from "react";
-import { ScaleLoader } from "react-spinners";
+import { HashLoader } from "react-spinners";
 
 interface IAppContext {
   isAuthenticated: boolean;
@@ -65,7 +65,7 @@ export const AppProvider = (props: TProps) => {
         </CurrentAppContext.Provider>
       ) : (
         <div className="fixed left-1/2 top-1/2 transform translate-x-1/2 translate-y-1/2">
-          <ScaleLoader />
+          <HashLoader cssOverride={{}} loading size={100} speedMultiplier={1} />
         </div>
       )}
     </>
