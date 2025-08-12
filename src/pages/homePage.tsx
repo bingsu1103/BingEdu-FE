@@ -350,7 +350,7 @@ export default function HomePage() {
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
               {!listCourses?.length
-                ? Array.from({ length: 3 }).map((_, i) => (
+                ? Array.from({ length: 4 }).map((_, i) => (
                     <div
                       key={i}
                       className="w-full flex max-lg:flex-col flex-shrink-0"
