@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MessageCircle,
   Star,
@@ -7,17 +7,19 @@ import {
   BookOpen,
   Award,
   Search,
-  MoreHorizontal,
   Send,
   Play,
   ChevronRight,
   Trophy,
   Calendar,
   ChevronLeft,
-  Siren as Fire,
-  Activity,
   Trash2,
+  ArrowRight,
+  CheckCircle,
+  Circle,
+  Power,
 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import coursesService from "@/services/courses.service";
 import userService from "@/services/user.service";
 import reviewService from "@/services/review.service";
@@ -32,6 +34,7 @@ import formation from "@/utils/format";
 import paymentService from "@/services/payment.service";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 const renderStars = (rating: number) => {
   return Array.from({ length: 5 }, (_, index) => (
@@ -43,6 +46,44 @@ const renderStars = (rating: number) => {
     />
   ));
 };
+
+interface TimelineStep {
+  id: number;
+  title: string;
+  description: string;
+  status: "start" | "acceleration" | "final-sprint" | "finish-line";
+}
+
+const timelineData: TimelineStep[] = [
+  {
+    id: 1,
+    title: "Roadmap 1",
+    description:
+      "Detailed description for the first step in the development roadmap",
+    status: "start",
+  },
+  {
+    id: 2,
+    title: "Roadmap 2",
+    description:
+      "Detailed description for the second step in the development roadmap",
+    status: "acceleration",
+  },
+  {
+    id: 3,
+    title: "Roadmap 3",
+    description:
+      "Detailed description for the third step in the development roadmap",
+    status: "final-sprint",
+  },
+  {
+    id: 4,
+    title: "Roadmap 4",
+    description:
+      "Detailed description for the final step in the development roadmap",
+    status: "finish-line",
+  },
+];
 
 export default function HomePage() {
   const [selectedFeed, setSelectedFeed] = useState<string | null>(null);
@@ -422,56 +463,105 @@ export default function HomePage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Personal Dashboard */}
-            <div className="bg-background/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/10 p-6 animate-slide-in-left">
-              <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
-                <Activity className="w-5 h-5 mr-2" />
-                Your English Journey
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-foreground/70">Learning Streak</span>
-                  <div className="flex items-center space-x-1">
-                    <Fire className="w-4 h-4 text-orange-500 animate-flicker" />
-                    <span className="font-semibold text-orange-400 animate-counter">
-                      15 days
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-foreground/70">
-                    Courses in Progress
-                  </span>
-                  <span className="font-semibold text-blue-400 animate-counter">
-                    4
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-foreground/70">
-                    Certificates Earned
-                  </span>
-                  <span className="font-semibold text-green-400 animate-counter">
-                    12
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-foreground/70">
-                    Study Hours This Week
-                  </span>
-                  <span className="font-semibold text-purple-400 animate-counter">
-                    18.5h
-                  </span>
-                </div>
-              </div>
-              <div className="mt-4 p-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl border border-white/10 animate-pulse-glow">
-                <div className="flex items-center space-x-2">
-                  <Trophy className="w-5 h-5 text-yellow-400 animate-bounce-subtle" />
-                  <span className="text-sm font-medium text-foreground">
-                    Keep going! 2 more days for IELTS Master badge
-                  </span>
-                </div>
-              </div>
-            </div>
+            <Card className="w-full max-w-2xl mx-auto">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl font-semibold text-center">
+                  Development Roadmap
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4">
+                <div className="relative">
+                  {timelineData.map((step, index) => (
+                    <div
+                      key={step.id}
+                      className="relative flex items-start mb-6 last:mb-0"
+                    >
+                      {/* Timeline Line */}
+                      {index !== timelineData.length - 1 && (
+                        <div className="absolute left-5 top-10 w-0.5 h-12 bg-border"></div>
+                      )}
 
+                      {/* Timeline Icon */}
+                      <div className="relative z-10 flex-shrink-0">
+                        <div
+                          className={cn(
+                            "flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors",
+                            step.status === "start" &&
+                              "bg-foreground border-foreground text-background",
+                            step.status === "acceleration" &&
+                              "bg-background border-foreground text-foreground",
+                            step.status === "final-sprint" &&
+                              "bg-background border-muted-foreground text-muted-foreground"
+                          )}
+                        >
+                          {step.status === "finish-line" ? (
+                            <CheckCircle className="w-5 h-5" />
+                          ) : step.status === "final-sprint" ? (
+                            <ArrowRight className="w-5 h-5" />
+                          ) : step.status === "start" ? (
+                            <Power />
+                          ) : (
+                            <Circle className="w-5 h-5" />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="ml-4 flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3
+                            className={cn(
+                              "text-base font-medium",
+                              step.status === "start" && "text-foreground",
+                              step.status === "acceleration" &&
+                                "text-foreground",
+                              step.status === "final-sprint" &&
+                                "text-muted-foreground"
+                            )}
+                          >
+                            {step.title}
+                          </h3>
+                          <Badge
+                            variant={
+                              step.status === "finish-line"
+                                ? "default"
+                                : "outline"
+                            }
+                            className={cn(
+                              "text-xs h-5",
+                              step.status === "start" &&
+                                "bg-foreground text-background",
+                              step.status === "acceleration" &&
+                                "border-foreground text-foreground",
+                              step.status === "final-sprint" &&
+                                "border-muted-foreground text-muted-foreground"
+                            )}
+                          >
+                            {step.status === "start"
+                              ? "Starter"
+                              : step.status === "acceleration"
+                              ? "Acceleration"
+                              : step.status === "final-sprint"
+                              ? " Final Sprint"
+                              : "Finish Line"}
+                          </Badge>
+                        </div>
+                        <p
+                          className={cn(
+                            "text-sm leading-relaxed",
+                            step.status === "start"
+                              ? "text-muted-foreground"
+                              : "text-foreground"
+                          )}
+                        >
+                          {step.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
             {/* Live Events */}
             <div className="bg-background/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/10 p-6 animate-slide-in-left animation-delay-200">
               <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
