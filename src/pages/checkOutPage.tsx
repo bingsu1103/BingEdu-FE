@@ -1,4 +1,4 @@
-import { UseCurrentApp } from "@/components/context/app.context";
+import { useCurrentApp } from "@/components/context/app.context";
 import { CourseCard } from "@/components/ui/coursesCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import coursesService from "@/services/courses.service";
@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 const CheckOutPage = () => {
   const [listCourses, setListCourses] = useState<ICourses[]>([]);
   const [listPayment, setListPayment] = useState<IPayment[]>([]);
-  const { user } = UseCurrentApp();
+  const { user } = useCurrentApp();
   useEffect(() => {
     const fetchAllCourses = async () => {
       const result = await coursesService.getAllCoursesAPI();

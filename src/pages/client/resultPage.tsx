@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BookOpen, ChevronDown } from "lucide-react";
-// import { UseCurrentApp } from "@/components/context/app.context";
+// import { useCurrentApp } from "@/components/context/app.context";
 import {
   Card,
   CardContent,
@@ -31,7 +31,7 @@ interface ICourses {
 }
 
 const ResultPage: React.FC = () => {
-  // const { user } = UseCurrentApp();
+  // const { user } = useCurrentApp();
   const [courses, setCourses] = useState<ICourses[]>([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
   const [activeCourseId, setActiveCourseId] = useState<string | null>(null);

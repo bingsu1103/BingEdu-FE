@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import authService from "@/services/auth.service";
-import { UseCurrentApp } from "@/components/context/app.context";
+import { useCurrentApp } from "@/components/context/app.context";
 import { Loader2, Eye, EyeOff, Check, X } from "lucide-react";
 import { message } from "antd";
 import { FcGoogle } from "react-icons/fc";
@@ -28,7 +28,7 @@ const LoginPage = () => {
   const [passwordError, setPasswordError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const { setIsAuthenticated, setUser } = UseCurrentApp();
+  const { setIsAuthenticated, setUser } = useCurrentApp();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

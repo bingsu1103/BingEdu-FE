@@ -24,7 +24,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import coursesService from "@/services/courses.service";
 import userService from "@/services/user.service";
 import reviewService from "@/services/review.service";
-import { UseCurrentApp } from "@/components/context/app.context";
+import { useCurrentApp } from "@/components/context/app.context";
 import { message } from "antd";
 import SubmissionGraph from "@/components/ui/submission";
 import submissionService from "@/services/submission.service";
@@ -109,7 +109,7 @@ export default function HomePage() {
   const [listReview, setListReview] = useState<IReview[] | null>([]);
   const [submission, setSubmission] = useState<ISubmission[] | null>([]);
   const [listPayment, setListPayment] = useState<IPayment[] | null>([]);
-  const { user, isAuthenticated } = UseCurrentApp();
+  const { user, isAuthenticated } = useCurrentApp();
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -11,8 +11,8 @@ import {
   Save,
 } from "lucide-react";
 
-import { UseTheme } from "@/components/context/theme.context";
-import { UseCurrentApp } from "@/components/context/app.context";
+import { useTheme } from "@/components/context/theme.context";
+import { useCurrentApp } from "@/components/context/app.context";
 
 // shadcn/ui primitives
 import { Button } from "@/components/ui/button";
@@ -52,8 +52,8 @@ const SettingPage: React.FC<ISettingUser> = ({ user }) => {
   const [phone, setPhone] = useState<string>(user?.phone || "");
   const [name, setName] = useState<string>(user?.name || "");
   const [location, setLocation] = useState<string>(user?.location || "");
-  const { setTheme, theme } = UseTheme();
-  const { setUser, setIsAuthenticated } = UseCurrentApp();
+  const { setTheme, theme } = useTheme();
+  const { setUser, setIsAuthenticated } = useCurrentApp();
 
   const handleDeleteAccount = async () => {
     try {

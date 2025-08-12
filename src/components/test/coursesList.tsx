@@ -4,7 +4,7 @@ import userService from "@/services/user.service";
 import { BookOpen, Headphones, FileText, Users, Combine } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { UseCurrentApp } from "../context/app.context";
+import { useCurrentApp } from "../context/app.context";
 import { Button } from "../ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -50,7 +50,7 @@ const CourseList: React.FC = () => {
   const [listStudent, setListStudent] = useState<IUser[]>([]);
   const [listPayment, setListPayment] = useState<IPayment[]>([]);
   const [listProgress, setListProgress] = useState<IProgressCourses[]>([]);
-  const { user } = UseCurrentApp();
+  const { user } = useCurrentApp();
   useEffect(() => {
     const fetchCourse = async () => {
       const listCourse = await coursesService.getAllCoursesAPI();

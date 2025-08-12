@@ -9,14 +9,14 @@ import {
   Loader2,
 } from "lucide-react";
 import questionService from "@/services/question.service";
-import { UseTheme } from "@/components/context/theme.context";
+import { useTheme } from "@/components/context/theme.context";
 import { Link, useNavigate, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
-import { UseCurrentApp } from "@/components/context/app.context";
+import { useCurrentApp } from "@/components/context/app.context";
 import answerService from "@/services/answer.service";
 import progressService from "@/services/progress.service";
 import submissionService from "@/services/submission.service";
-import { UseTestGuard } from "@/components/context/testGuard.context";
+import { useTestGuard } from "@/components/context/testGuard.context";
 import aiService from "@/services/ai.service";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -34,15 +34,15 @@ const TestDetailPage: React.FC = () => {
   }>({});
   const [timeLeft, setTimeLeft] = useState(1800);
   const [isFinished, setIsFinished] = useState(false);
-  const [listQuestion, setListQuestion] = useState<IQuestion[] | null>(null); // ⬅️ null để skeleton
+  const [listQuestion, setListQuestion] = useState<IQuestion[] | null>(null);
   const [totalScore, setTotalScore] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(false); // dùng để dừng timer khi submit
-  const { setIsDoingTest } = UseTestGuard();
+  const [loading, setLoading] = useState<boolean>(false);
+  const { setIsDoingTest } = useTestGuard();
   const navigate = useNavigate();
   const { lessonId } = useParams<{ lessonId: string }>();
   const { id } = useParams<{ id: string }>();
-  const { theme } = UseTheme();
-  const { user } = UseCurrentApp();
+  const { theme } = useTheme();
+  const { user } = useCurrentApp();
 
   useEffect(() => {
     if (

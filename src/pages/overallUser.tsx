@@ -15,8 +15,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import ProfilePage from "@/pages/client/profilePage";
 import ResultPage from "@/pages/client/resultPage";
 import SettingPage from "@/pages/client/setting";
-import { UseTheme } from "@/components/context/theme.context";
-import { UseCurrentApp } from "@/components/context/app.context";
+import { useTheme } from "@/components/context/theme.context";
+import { useCurrentApp } from "@/components/context/app.context";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function cn(...classes: any) {
@@ -27,8 +27,8 @@ const OverallUser = () => {
   const [activeTabClient, setActiveTabClient] = useState(
     () => sessionStorage.getItem("activeTabClient") || "profile"
   );
-  const { theme } = UseTheme();
-  const { user } = UseCurrentApp();
+  const { theme } = useTheme();
+  const { user } = useCurrentApp();
 
   useEffect(() => {
     sessionStorage.setItem("activeTabClient", activeTabClient);

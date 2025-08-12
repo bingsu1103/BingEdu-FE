@@ -15,7 +15,7 @@ import userService from "@/services/user.service";
 import coursesService from "@/services/courses.service";
 import progressService from "@/services/progress.service";
 import uploadService from "@/services/upload.service";
-import { UseCurrentApp } from "@/components/context/app.context";
+import { useCurrentApp } from "@/components/context/app.context";
 
 // shadcn/ui primitives
 import { Button } from "@/components/ui/button";
@@ -46,7 +46,7 @@ const ProfilePage: React.FC<IUserProfile> = ({ user }) => {
     user?.avatar || "https://github.com/shadcn.png"
   );
   const [progress, setProgress] = useState<IProgressCourses[] | null>([]);
-  const { setUser } = UseCurrentApp();
+  const { setUser } = useCurrentApp();
 
   const dateString = user?.createdAt
     ? new Date(user.createdAt).toISOString().split("T")[0]

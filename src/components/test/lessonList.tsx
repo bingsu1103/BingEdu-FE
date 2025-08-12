@@ -18,14 +18,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { UseTheme } from "../context/theme.context";
+import { useTheme } from "../context/theme.context";
 import { useNavigate, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import coursesService from "@/services/courses.service";
 import lessonService from "@/services/lesson.service";
 import { Button } from "../ui/button";
 import progressService from "@/services/progress.service";
-import { UseCurrentApp } from "../context/app.context";
+import { useCurrentApp } from "../context/app.context";
 import { Skeleton } from "../ui/skeleton";
 
 // Define ICourse interface for course data
@@ -92,9 +92,9 @@ const LessonList: React.FC = () => {
   const [courseProgress, setCourseProgress] = useState<IProgressCourses | null>(
     null
   );
-  const { theme } = UseTheme();
+  const { theme } = useTheme();
   const navigate = useNavigate();
-  const { user, isAuthenticated } = UseCurrentApp();
+  const { user, isAuthenticated } = useCurrentApp();
 
   useEffect(() => {
     const fetchData = async () => {

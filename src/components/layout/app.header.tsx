@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RiVipDiamondLine } from "react-icons/ri";
 import { RiAccountCircle2Fill } from "react-icons/ri";
 import { RiLogoutCircleRLine } from "react-icons/ri";
-import { UseCurrentApp } from "../context/app.context";
+import { useCurrentApp } from "@/components/context/app.context";
 import { Button } from "../ui/button";
 import authService from "services/auth.service";
 import { MdDashboard } from "react-icons/md";
@@ -20,7 +20,7 @@ import logo from "@/assets/binglogo.jpg";
 import { MenuOutlined } from "@ant-design/icons";
 
 import { Moon, Sun, Bell, Loader2 } from "lucide-react";
-import { UseTheme } from "@/components/context/theme.context";
+import { useTheme } from "@/components/context/theme.context";
 import {
   DropdownMenu,
   DropdownMenuItem,
@@ -34,11 +34,11 @@ import { message } from "antd";
 import { useState } from "react";
 
 const AppHeader = () => {
-  const { setTheme, theme } = UseTheme();
+  const { setTheme, theme } = useTheme();
   const [loadingLogOut, setLoadingLogOut] = useState<boolean>(false);
   const navigate = useNavigate();
   const { setIsAuthenticated, user, isAuthenticated, setUser } =
-    UseCurrentApp();
+    useCurrentApp();
   const handleLogout = async () => {
     setLoadingLogOut(true);
     const resLog = await authService.logoutAPI();

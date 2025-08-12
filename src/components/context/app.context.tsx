@@ -72,7 +72,7 @@ export const AppProvider = (props: TProps) => {
   );
 };
 
-export const UseCurrentApp = () => {
+export const useCurrentApp = () => {
   const currentAppContext = useContext(CurrentAppContext);
 
   if (!currentAppContext) {

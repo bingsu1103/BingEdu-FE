@@ -4,9 +4,9 @@ import { useParams } from "react-router";
 import coursesService from "@/services/courses.service";
 import { Button } from "./button";
 import paymentService from "@/services/payment.service";
-import { UseCurrentApp } from "../context/app.context";
+import { useCurrentApp } from "../context/app.context";
 import orderService from "@/services/order.service";
-import { UseTheme } from "../context/theme.context";
+import { useTheme } from "../context/theme.context";
 import formation from "@/utils/format";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -17,8 +17,8 @@ export const CheckoutForm: React.FC = () => {
   const [course, setSelectedCourse] = useState<ICourses | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams<string>();
-  const { user } = UseCurrentApp();
-  const { theme } = UseTheme();
+  const { user } = useCurrentApp();
+  const { theme } = useTheme();
 
   useEffect(() => {
     const fetchCourses = async () => {

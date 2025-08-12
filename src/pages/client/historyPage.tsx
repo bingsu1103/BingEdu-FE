@@ -1,4 +1,4 @@
-import { UseCurrentApp } from "@/components/context/app.context";
+import { useCurrentApp } from "@/components/context/app.context";
 import coursesService from "@/services/courses.service";
 import paymentService from "@/services/payment.service";
 import React, { useState, useEffect, useMemo } from "react";
@@ -9,7 +9,7 @@ const HistoryPage: React.FC = () => {
   // ĐỂ SKELETON: dùng null khi chưa fetch xong
   const [listCourses, setListCourses] = useState<ICourses[] | null>(null);
   const [listPayment, setListPayment] = useState<IPayment[] | null>(null);
-  const { user } = UseCurrentApp();
+  const { user } = useCurrentApp();
 
   useEffect(() => {
     const fetchPayment = async () => {

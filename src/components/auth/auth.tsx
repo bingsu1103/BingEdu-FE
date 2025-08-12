@@ -1,5 +1,5 @@
 import { useLocation } from "react-router";
-import { UseCurrentApp } from "../context/app.context";
+import { useCurrentApp } from "../context/app.context";
 import UnauthorizedPage from "@/pages/auth/unauthorizedPage";
 import AccessDeniedPage from "@/pages/auth/accessDeniedPage";
 
@@ -7,7 +7,7 @@ interface IProps {
   children: React.ReactNode;
 }
 const ProtectedRoute = (props: IProps) => {
-  const { isAuthenticated, user } = UseCurrentApp();
+  const { isAuthenticated, user } = useCurrentApp();
   const location = useLocation();
 
   if (isAuthenticated === false) {

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "./button";
 import { useNavigate } from "react-router";
-import { UseCurrentApp } from "../context/app.context";
+import { useCurrentApp } from "../context/app.context";
 import { message } from "antd";
 import { Skeleton } from "@/components/ui/skeleton";
 interface CourseCardProps {
@@ -22,7 +22,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
       currency: "VND",
     }).format(price);
   };
-  const { isAuthenticated } = UseCurrentApp();
+  const { isAuthenticated } = useCurrentApp();
 
   return (
     <div className="max-w-md mx-auto">

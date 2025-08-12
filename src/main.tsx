@@ -162,11 +162,11 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")!).render(
-  <TestGuardProvider>
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <AppProvider>
+  <AppProvider>
+    <TestGuardProvider>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <RouterProvider router={router} />
-      </AppProvider>
-    </ThemeProvider>
-  </TestGuardProvider>
+      </ThemeProvider>
+    </TestGuardProvider>
+  </AppProvider>
 );

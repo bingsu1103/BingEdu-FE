@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { UseTestGuard } from "@/components/context/testGuard.context";
+import { useTestGuard } from "@/components/context/testGuard.context";
 import { useState } from "react";
 import {
   Dialog,
@@ -22,7 +22,7 @@ const ProtectedLink: React.FC<ProtectedLinkProps> = ({
   className,
 }) => {
   const navigate = useNavigate();
-  const { isDoingTest } = UseTestGuard();
+  const { isDoingTest } = useTestGuard();
   const [showDialog, setShowDialog] = useState(false);
   const [pendingTo, setPendingTo] = useState<string | null>(null);
 

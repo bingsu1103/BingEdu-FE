@@ -21,7 +21,7 @@ export const TestGuardProvider = ({
   );
 };
 
-export const UseTestGuard = () => {
+export const useTestGuard = () => {
   const ctx = useContext(TestGuardContext);
   if (!ctx)
     throw new Error("UseTextGuard must be used inside <TextGuardProvider>");
