@@ -67,30 +67,26 @@ interface TimelineStep {
 const timelineData: TimelineStep[] = [
   {
     id: 1,
-    title: "Roadmap 1",
-    description:
-      "Detailed description for the first step in the development roadmap",
+    title: "English for Beginners",
+    description: "Build essential vocabulary and grammar",
     status: "start",
   },
   {
     id: 2,
-    title: "Roadmap 2",
-    description:
-      "Detailed description for the second step in the development roadmap",
+    title: "Everyday English Communication",
+    description: "Speak and understand daily English with confidence",
     status: "acceleration",
   },
   {
     id: 3,
-    title: "Roadmap 3",
-    description:
-      "Detailed description for the third step in the development roadmap",
+    title: "IELTS Mastery: From 0 to 7.0+",
+    description: "Prepare for IELTS and reach target score",
     status: "final-sprint",
   },
   {
     id: 4,
-    title: "Roadmap 4",
-    description:
-      "Detailed description for the final step in the development roadmap",
+    title: "Mastering English Writing",
+    description: "Achieve precision and style in writing",
     status: "finish-line",
   },
 ];
@@ -332,7 +328,7 @@ export default function HomePage() {
                 onClick={() =>
                   setCurrentSlide(
                     Math.min(
-                      homepageultils.featuredCourses.length - 1,
+                      homepageultils.featuredCourses.length,
                       currentSlide + 1
                     )
                   )
@@ -526,7 +522,7 @@ export default function HomePage() {
                     >
                       {/* Timeline Line */}
                       {index !== timelineData.length - 1 && (
-                        <div className="absolute left-5 top-10 w-0.5 h-12 bg-border"></div>
+                        <div className="absolute left-5 top-10 w-0.5 h-25 bg-border"></div>
                       )}
 
                       {/* Timeline Icon */}
@@ -556,19 +552,7 @@ export default function HomePage() {
 
                       {/* Content */}
                       <div className="ml-4 flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3
-                            className={cn(
-                              "text-base font-medium",
-                              step.status === "start" && "text-foreground",
-                              step.status === "acceleration" &&
-                                "text-foreground",
-                              step.status === "final-sprint" &&
-                                "text-muted-foreground"
-                            )}
-                          >
-                            {step.title}
-                          </h3>
+                        <div className="flex flex-col justify-center gap-2 mb-1">
                           <Badge
                             variant={
                               step.status === "finish-line"
@@ -593,6 +577,18 @@ export default function HomePage() {
                               ? " Final Sprint"
                               : "Finish Line"}
                           </Badge>
+                          <h3
+                            className={cn(
+                              "text-base font-medium",
+                              step.status === "start" && "text-foreground",
+                              step.status === "acceleration" &&
+                                "text-foreground",
+                              step.status === "final-sprint" &&
+                                "text-muted-foreground"
+                            )}
+                          >
+                            {step.title}
+                          </h3>
                         </div>
                         <p
                           className={cn(
