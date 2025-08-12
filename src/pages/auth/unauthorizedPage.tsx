@@ -4,8 +4,8 @@ import { Link } from "react-router";
 const UnauthorizedPage = () => {
   return (
     <div className="flex flex-1 flex-col items-center justify-center bg-[#E5F6FF]">
-      <h1 className="text-2xl font-semibold text-[#14253F] mb-4 ">
-        Unauthorized! Please login to use this service
+      <h1 className="text-xl sm:text-2xl font-semibold text-[#14253F] mb-4 ">
+        Please login to use this service
       </h1>
       <img
         width={600}
