@@ -294,7 +294,7 @@ export default function HomePage() {
                 ? // Render skeleton khi chưa có dữ liệu
                   Array.from({ length: 3 }).map((_, i) => (
                     <Skeleton key={i} className="w-full flex-shrink-0">
-                      <Skeleton className="relative h-96 rounded-2xl overflow-hidden bg-gray-800 dark:bg-gray-800">
+                      <Skeleton className="relative h-96 rounded-2xl overflow-hidden">
                         <Skeleton className="absolute inset-0 w-full h-full" />
                         <Skeleton className="absolute bottom-0 left-0 p-8 w-full">
                           <Skeleton className="flex items-center space-x-2 mb-2">
@@ -394,7 +394,7 @@ export default function HomePage() {
               <div
                 key={category.name}
                 id={`category-${index}`}
-                className={`animate-on-scroll group cursor-pointer p-6 bg-background/90 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-white/30 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:scale-105 ${
+                className={`animate-on-scroll group cursor-pointer p-6 bg-background/10 text-foreground backdrop-blur-sm rounded-2xl border border-white/10 hover:border-white/30 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 hover:scale-105 ${
                   animatedCards.has(`category-${index}`)
                     ? "animate-fade-in-up"
                     : "opacity-0"
@@ -402,12 +402,12 @@ export default function HomePage() {
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div
-                  className={`w-16 h-16 bg-gradient-to-r ${category.color} rounded-2xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform mx-auto animate-float`}
+                  className={`w-16 h-16 bg-background text-foreground rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform mx-auto animate-float`}
                   style={{ animationDelay: `${index * 0.3}s` }}
                 >
                   {category.icon}
                 </div>
-                <h4 className="font-semibold text-foreground text-center">
+                <h4 className="font-semibold text-white text-center">
                   {category.name}
                 </h4>
               </div>
@@ -854,7 +854,7 @@ export default function HomePage() {
                   ))
                 ) : (
                   <div className="bg-background/50 backdrop-blur-sm rounded-2xl shadow-lg border border-white/10 p-12 text-center animate-fade-in-up">
-                    <div className="w-20 h-20 bg-background/30 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse-glow">
+                    <div className="w-20 h-20 bg-background/30 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Search className="w-10 h-10 text-foreground/40" />
                     </div>
                     <h3 className="text-xl font-semibold text-foreground mb-2">

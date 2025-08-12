@@ -53,33 +53,33 @@ const featuredCourses = [
 const categories = [
   {
     name: "IELTS Prep",
-    icon: <FileText className="w-8 h-8" />,
-    color: "from-blue-500 to-blue-600",
+    icon: <FileText className="w-10 h-10" />,
+    color: "",
   },
   {
     name: "Grammar",
-    icon: <PenTool className="w-8 h-8" />,
-    color: "from-purple-500 to-purple-600",
+    icon: <PenTool className="w-10 h-10" />,
+    color: "",
   },
   {
     name: "Business English",
-    icon: <Briefcase className="w-8 h-8" />,
-    color: "from-green-500 to-green-600",
+    icon: <Briefcase className="w-10 h-10" />,
+    color: "",
   },
   {
     name: "Conversation",
-    icon: <MessageCircle className="w-8 h-8" />,
-    color: "from-orange-500 to-orange-600",
+    icon: <MessageCircle className="w-10 h-10" />,
+    color: "",
   },
   {
     name: "Listening",
-    icon: <Headphones className="w-8 h-8" />,
-    color: "from-pink-500 to-pink-600",
+    icon: <Headphones className="w-10 h-10" />,
+    color: "",
   },
   {
     name: "Writing",
-    icon: <BookOpen className="w-8 h-8" />,
-    color: "from-teal-500 to-teal-600",
+    icon: <BookOpen className="w-10 h-10" />,
+    color: "",
   },
 ];
 
