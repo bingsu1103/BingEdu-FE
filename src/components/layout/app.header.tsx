@@ -80,22 +80,25 @@ const AppHeader = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <NavigationMenu className="max-sm:hidden" viewport={false}>
+        <NavigationMenu className="max-sm:hidden" viewport={true}>
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuTrigger>Home</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                  <li className="row-span-3">
+                  <li className="row-span-3 max-lg:hidden">
                     <NavigationMenuLink asChild>
                       <ProtectedLink
                         to="/"
-                        className="from-muted/50 to-muted flex h-full w-full flex-col justify-end rounded-md bg-linear-to-b p-6 no-underline outline-hidden select-none focus:shadow-md"
+                        className="from-muted/50 to-muted flex flex-col justify-center items-center rounded-md bg-linear-to-b no-underline outline-hidden select-none focus:shadow-md"
                       >
                         <img className="w-full" src={logo} alt="" />
                       </ProtectedLink>
                     </NavigationMenuLink>
                   </li>
+                  <ListItem className="lg:hidden" to="/" title="Home">
+                    <p>Back to home</p>
+                  </ListItem>
                   <ListItem to="/checkout" title="Courses Store">
                     <p>Explore our comprehensive learning store today</p>
                   </ListItem>
