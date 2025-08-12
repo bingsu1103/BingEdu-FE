@@ -18,6 +18,7 @@ import {
   CheckCircle,
   Circle,
   Power,
+  Clock,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import coursesService from "@/services/courses.service";
@@ -35,6 +36,7 @@ import paymentService from "@/services/payment.service";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const renderStars = (rating: number) => {
   return Array.from({ length: 5 }, (_, index) => (
@@ -563,44 +565,71 @@ export default function HomePage() {
               </CardContent>
             </Card>
             {/* Live Events */}
-            <div className="bg-background/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/10 p-6 animate-slide-in-left animation-delay-200">
-              <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
-                <Calendar className="w-5 h-5 mr-2" />
-                Live English Sessions
-              </h3>
-              <div className="space-y-3">
-                {homepageultils.liveEvents.map((event: any, index: number) => (
-                  <div
+            <Card className="bg-background/90 backdrop-blur-sm border-white/10 shadow-lg">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center text-lg">
+                  <Calendar className="w-5 h-5 mr-2" />
+                  Live English Sessions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {homepageultils.liveEvents.map((event: any) => (
+                  <Card
                     key={event.id}
-                    className="p-3 bg-background/30 rounded-xl hover:bg-background/50 transition-all duration-300 cursor-pointer hover:scale-105 animate-fade-in-up"
-                    style={{ animationDelay: `${index * 100}ms` }}
+                    className="p-3 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-[1.02] border-muted/50"
                   >
-                    <div className="flex items-center justify-between mb-1">
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full animate-pulse-glow ${
-                          event.type === "Live Session"
-                            ? "bg-red-500/20 text-red-400 border border-red-500/30"
-                            : event.type === "Workshop"
-                            ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
-                            : "bg-green-500/20 text-green-400 border border-green-500/30"
-                        }`}
-                      >
-                        {event.type}
-                      </span>
-                      <span className="text-xs text-foreground/60">
-                        {event.attendees} attending
-                      </span>
+                    <div className="space-y-2">
+                      {/* Header with badge and attendees */}
+                      <div className="flex items-center justify-between">
+                        <Badge
+                          variant={
+                            event.type === "Live Session"
+                              ? "destructive"
+                              : event.type === "Workshop"
+                              ? "default"
+                              : "secondary"
+                          }
+                          className="text-xs"
+                        >
+                          {event.type}
+                        </Badge>
+                        <div className="flex items-center text-xs text-muted-foreground">
+                          <Users className="w-3 h-3 mr-1" />
+                          {event.attendees} attending
+                        </div>
+                      </div>
+
+                      {/* Title */}
+                      <h4 className="font-medium text-foreground text-sm">
+                        {event.title}
+                      </h4>
+
+                      {/* Instructor and schedule */}
+                      <div className="grid grid-col-1 gap-1 items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Avatar className="w-6 h-6">
+                            <AvatarFallback className="text-xs">
+                              {event.instructor
+                                .split(" ")
+                                .map((n: string) => n[0])
+                                .join("")
+                                .toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-xs text-muted-foreground">
+                            {event.instructor}
+                          </span>
+                        </div>
+                        <div className="flex items-center text-xs text-muted-foreground">
+                          <Clock className="w-3 h-3 mr-1" />
+                          {event.date} at {event.time}
+                        </div>
+                      </div>
                     </div>
-                    <h4 className="font-medium text-foreground text-sm mb-1">
-                      {event.title}
-                    </h4>
-                    <p className="text-xs text-foreground/60">
-                      {event.instructor} • {event.date} at {event.time}
-                    </p>
-                  </div>
+                  </Card>
                 ))}
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Main Content */}
@@ -637,7 +666,7 @@ export default function HomePage() {
             ) : (
               <div className="space-y-6">
                 {listCourses.length > 0 ? (
-                  listCourses.slice(0, 3).map((course, index) => (
+                  listCourses.slice(0, 4).map((course, index) => (
                     <div
                       key={course._id}
                       id={`feed-${index}`}
