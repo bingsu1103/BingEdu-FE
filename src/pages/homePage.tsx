@@ -37,6 +37,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import chat1 from "@/assets/chat1.jpg";
+import chat2 from "@/assets/chat2.jpg";
+import chat3 from "@/assets/chat3.jpg";
+import chat4 from "@/assets/chat4.jpg";
+import chat5 from "@/assets/chat5.jpg";
+import chat6 from "@/assets/chat6.jpg";
+import chat7 from "@/assets/chat7.jpg";
+import chat8 from "@/assets/chat8.jpg";
 
 const renderStars = (rating: number) => {
   return Array.from({ length: 5 }, (_, index) => (
@@ -86,6 +94,12 @@ const timelineData: TimelineStep[] = [
     status: "finish-line",
   },
 ];
+const coursesReview = new Map([
+  ["688da31adbcf9225b048cf1e", [chat1, chat2]],
+  ["688da351dbcf9225b048cf22", [chat3, chat4]],
+  ["688da36fdbcf9225b048cf28", [chat5, chat6]],
+  ["688da3a7dbcf9225b048cf2a", [chat7, chat8]],
+]);
 
 export default function HomePage() {
   const [selectedFeed, setSelectedFeed] = useState<string | null>(null);
@@ -356,62 +370,79 @@ export default function HomePage() {
                     </Skeleton>
                   ))
                 : listCourses.map((course: any) => (
-                    <div key={course._id} className="w-full flex-shrink-0">
-                      <div className="relative h-96 bg-gradient-to-r from-gray-900/80 to-gray-800/80 rounded-2xl overflow-hidden group cursor-pointer">
+                    <div
+                      key={course._id}
+                      className="w-full flex max-lg:flex-col flex-shrink-0"
+                    >
+                      <div
+                        onClick={() =>
+                          navigate(`/courses/${course._id}/lesson`)
+                        }
+                        className="relative h-100 w-[50%] max-lg:w-full bg-gradient-to-r from-gray-900/80 to-gray-800/80 rounded-2xl overflow-hidden group cursor-pointer"
+                      >
                         <img
                           src={course.banner}
                           alt={course.title}
-                          className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-300 group-hover:scale-110"
+                          className="absolute inset-0 w-full h-full object-cover group-hover:opacity-40 transition-opacity duration-300 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <div className="absolute bottom-0 left-0 p-8 text-white">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <span
-                              className={`px-3 py-1 text-xs font-semibold rounded-full animate-pulse-glow ${
-                                course.tag === "Bestseller"
-                                  ? "bg-yellow-500"
-                                  : course.tag === "Hot"
-                                  ? "bg-red-500"
-                                  : "bg-green-500"
-                              }`}
-                            >
-                              {course.type}
-                            </span>
-                            <div className="flex items-center space-x-1">
-                              <Star className="w-4 h-4 text-yellow-400 fill-current animate-twinkle" />
-                              <span className="text-sm">{course.rating}</span>
-                            </div>
-                          </div>
-                          <h4 className="text-2xl font-bold mb-2 animate-slide-in-left">
-                            {course.title}
-                          </h4>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-4 text-sm text-white/80">
-                              <span className="flex items-center space-x-1">
-                                <Users className="w-4 h-4" />
-                                <span>
-                                  {
-                                    listPayment?.filter(
-                                      (v) => v.courseId === course._id
-                                    ).length
-                                  }{" "}
-                                  students
-                                </span>
+                        <div className="relative h-full w-full p-6 flex flex-col justify-end text-white">
+                          <div className="space-y-2">
+                            <div className="flex items-center space-x-2">
+                              <span
+                                className={`px-3 py-1 text-xs font-semibold rounded-full animate-pulse-glow ${
+                                  course.tag === "Bestseller"
+                                    ? "bg-yellow-500"
+                                    : course.tag === "Hot"
+                                    ? "bg-red-500"
+                                    : "bg-green-500"
+                                }`}
+                              >
+                                {course.type}
                               </span>
+                              <div className="flex items-center space-x-1">
+                                <Star className="w-4 h-4 text-yellow-400 fill-current animate-twinkle" />
+                                <span className="text-sm">{course.rating}</span>
+                              </div>
                             </div>
-                            <div className="text-right">
-                              <div className="text-2xl font-bold animate-bounce-subtle">
-                                {formation.formatPrice(course.price)}
+                            <h4 className="text-2xl font-bold mb-2 animate-slide-in-left">
+                              {course.title}
+                            </h4>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-4 text-sm text-white/80">
+                                <span className="flex items-center space-x-1">
+                                  <Users className="w-4 h-4" />
+                                  <span>
+                                    {
+                                      listPayment?.filter(
+                                        (v) => v.courseId === course._id
+                                      ).length
+                                    }{" "}
+                                    students
+                                  </span>
+                                </span>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-2xl font-bold animate-bounce-subtle">
+                                  {formation.formatPrice(course.price)}
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                         <Button
                           onClick={() => navigate("/courses")}
-                          className="absolute cursor-pointer top-4 right-4 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 animate-pulse-glow"
+                          className="absolute top-4 right-4 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 animate-pulse-glow"
                         >
                           <Play className="w-5 h-5 ml-1" />
                         </Button>
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex max-sm:flex-col items-center justify-around gap-2 p-2">
+                          {coursesReview.get(course._id)?.map((v) => (
+                            <img className="rounded-2xl" src={v} width={280} />
+                          ))}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -682,11 +713,11 @@ export default function HomePage() {
                       <div className="p-6">
                         <div className="flex flex-col lg:flex-row gap-6">
                           <div className="lg:w-1/3">
-                            <div className="relative group cursor-pointer">
+                            <div className="relative w-[50%] m-auto lg:w-[70%] group cursor-pointer">
                               <img
                                 src={course.thumbnail}
                                 alt={course.title}
-                                className="w-full h-48 object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
+                                className=" w-full h-auto object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
                               />
                               <div className="absolute inset-0 bg-black/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity">
                                 <div className="absolute inset-0 flex items-center justify-center">
